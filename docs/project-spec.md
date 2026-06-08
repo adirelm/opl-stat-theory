@@ -1,10 +1,7 @@
 # Final Project Spec — Statistical Theory
 ## "How Powerlifters 'Game' the Two Numbers They Control — and What the Data Reveals About Human Strength" (OpenPowerlifting)
 
-> This spec was validated **twice** end-to-end: (1) the data was downloaded (3,938,042 rows, CC0) and the analyses were run on real data; (2) a thorough in-depth review that included a **fresh re-download and empirical number-verification**.
-> **The core was validated and is robust:** H1 (96.2% on the 2.5 kg grid) and H2 (bunching below class thresholds; the placebo is negative — the effect is real and not an artifact).
-> **Secondary numbers were corrected to the reproduced values:** H4 = 24%/43% (not 17%/31%); H5 = b≈0.64/0.60 in naive OLS (0.71/0.48 requires a precise specification). **H3 is reframed — it is *not* a sex mixture** (Dots is already normalized for sex/weight; see below).
-> Every number here is a **reproducible result**; wherever a specification must be locked, this is marked explicitly.
+> All numbers below are **reproducible results** computed on the real data (3,938,042 rows, CC0). The core is robust: **H1** (96.2% of attempts on the 2.5 kg grid) and **H2** (bodyweight bunching just below class thresholds; a non-limit control is flat — the effect is specific to the thresholds). Secondary results: **H4** = 24%/43% untested (population / top-1%); **H5** = b≈0.72 (men) / 0.49 (women) on full-power (SBD) results. **H3 is *not* a by-sex mixture** (Dots is already normalized for sex/weight; see below). Wherever a specification must be locked, this is marked explicitly.
 
 ---
 
@@ -20,17 +17,17 @@
 - **Key variables:** continuous — `BodyweightKg`, attempts (`Squat/Bench/Deadlift 1-3 Kg`), `TotalKg`, `Dots`/`Wilks`. Categorical — `Sex`, `Equipment`, `Tested`, `Federation`, `WeightClassKg`, `Division`, `Place`, `Event`, `Date`.
 - **Research question (one story):** a competitor controls two numbers — **the weight on the bar** (attempt selection) and **bodyweight** (on the scale). How does he "game" both, and what does the data thereby reveal about **the limits of human strength**.
 
-### Hypothesis Structure (by weight within the project — tightened to fit ≤8 pages and one story)
+### Hypothesis Structure (by weight within the project — to fit ≤8 pages and one story)
 **🟢 Leading (the heart of the story — "the two numbers"):**
 - **H1 — quantization (the theoretical core):** attempt weights are not continuous but **quantized to a 2.5 kg grid** — a continuous "intended" weight observed through grid rounding. **Validated: 96.4% of best attempts / 96.2% including failed ones on the grid.** The reported result = **%on-grid + CI** (not the astronomical G).
-- **H2 — weight-cutting bunching:** an excess just below the class threshold + a deficit above it. **Validated: men log(below/above) = 0.855 (window ±0.5) / 0.945 (±1.0); women 0.58 (±0.5) → 0.85 (±1.0) — window-dependent, to be reported with CI.** Example in the 83 kg class: ~42,442 in [82.50,82.75) versus ~1,500–2,200 above 83. **The placebo (round non-legal weights 90/100/110) yielded negative asymmetry** → the effect is specific to the legal thresholds. IPF filtering ≈1.84M rows.
+- **H2 — weight-cutting bunching:** an excess just below a class threshold + a deficit above it. **Result (IPF + USAPL men, n≈1.18M, boundary-correct window (L-0.5, L], de-heaped):** log(below/above) ≈ **+1.92 at the 83 kg limit** (and ≈ +1.5 / +1.0 at 93 / 105), versus ≈ **-0.21 at a non-limit control (91 kg)** — the excess is specific to real class limits and survives removing round-number heaping. To be formalized with a McCrary / Cattaneo-Jansson-Ma density-discontinuity test (see section 2).
 
 **🟡 Secondary:**
-- **H3 — structure of the strength distribution (reframed!):** ⚠️ **Not a by-sex mixture.** `Dots` is pre-normalized for sex+weight (mean Dots ≈254 *identical* across the two sexes) — so labeling the components as "men/women" is factually wrong. The bimodality is **real** (Anderson-Darling ≈687–1307) but originates in **single-lift/bench-only events, beginners/youth, and bomb-outs** (the low cluster is 78% men). **Corrected framing:** (a) run the mixture on **raw strength** (not Dots), where sex *does* produce bimodality; or (b) filter to **full SBD + TotalKg>0** and frame it as "two competition regimes." Mixture-vs-single GLRT **via parametric bootstrap / AIC-BIC — not χ²** (see caveat in section 2).
-- **H5 — allometric scaling:** `Total ~ Bodyweight^b`. **Naive pooled OLS: b≈0.64 (men) / 0.60 (women).** The values 0.71/0.48 in the draft depend on a specific specification (deduplication to personal best? Raw equipment only? weight range?) — **document the specification and report the b+CI from it**. The 0.48 for women (<0.5) is suspect as a range artifact → diagnose before publication.
+- **H3 — structure of the strength distribution:** ⚠️ **Not a by-sex mixture.** `Dots` is pre-normalized for sex+weight (mean Dots ≈254 *identical* across the two sexes) — so labeling the components as "men/women" is factually wrong. The bimodality is **real** (Anderson-Darling ≈687–1307) but originates in **single-lift/bench-only events, beginners/youth, and bomb-outs** (the low cluster is 78% men). **Framing:** (a) run the mixture on **raw strength** (not Dots), where sex *does* produce bimodality; or (b) filter to **full SBD + TotalKg>0** and frame it as "two competition regimes." Mixture-vs-single GLRT **via parametric bootstrap / AIC-BIC — not χ²** (see caveat in section 2).
+- **H5 — allometric scaling:** `Total ~ Bodyweight^b` on full-power (Event=='SBD') results. **OLS: b≈0.72 (men) / 0.49 (women).** Men sit slightly **above** the isometric 2/3≈0.667, women well **below** — a sex difference in scaling. Report b+CI with heteroskedasticity-robust / clustered SE and a Sex×log(BW) interaction (section 2). The women's b<0.5 may be a range-restriction artifact → diagnose before publication.
 
 **🔵 Additional observations / control (compact paragraph, not a main header):**
-- **H4 — drugs/testing (demoted to control/moderator):** **Validated: 24% untested in the population / 43% in the top-1%** (the direction is correct and even *stronger* than the draft). ⚠️ confound at the federation/equipment/era level — one cannot infer "drugs" from a raw comparison. Therefore: compare **top-1% versus bottom-99% (disjoint groups)** with **equipment stratification + regression** (Tested + Federation+Equipment+Sex+Era), and frame it **descriptively** / as a moderator of the dose-response in H2.
+- **H4 — drugs/testing (control/moderator):** **24% untested in the population / 43% in the top-1%** (untested are over-represented in the elite tail). ⚠️ confound at the federation/equipment/era level — one cannot infer "drugs" from a raw comparison. Therefore: compare **top-1% versus bottom-99% (disjoint groups)** with **equipment stratification + regression** (Tested + Federation+Equipment+Sex+Era), and frame it **descriptively** / as a moderator of the dose-response in H2.
 - **EVT (supporting):** GEV on the annual block-maxima of strength, ξ<0 → ceiling. **Report the number of blocks + a CI for ξ (profile-likelihood)**, a stable sub-window, and cite Einmahl & Magnus (the method is well known — its application to OPL is new).
 - **Time trend (supporting):** mean strength and number of participants over the years; women/men ratio — compact.
 
@@ -49,11 +46,11 @@
 - (iii) **dose (dose-response)** — stronger in the elite/tested/winners, **within the same federation** (otherwise it is a federation-composition confound), and at the competitor level (dedup).
 - Bandwidth: a declared selection rule + a **sensitivity curve** + CI (not a bare number).
 
-**Stage 3 — structure of the strength distribution (H3, reframed).** Normality (Anderson-Darling + KS + QQ) → rejected → **2-component Gaussian mixture model (EM)**. ⚠️ **The mixture LRT violates Wilks** (mixing weight on the boundary + non-identifiability) → **calibrate with a parametric bootstrap or lead with AIC/BIC**, and declare this explicitly (turns a pitfall into a beyond-course advantage). Run on **raw strength / full SBD** (not Dots), and interpret as "competition regimes"/sex-in-raw-strength.
+**Stage 3 — structure of the strength distribution (H3).** Normality (Anderson-Darling + KS + QQ) → rejected → **2-component Gaussian mixture model (EM)**. ⚠️ **The mixture LRT violates Wilks** (mixing weight on the boundary + non-identifiability) → **calibrate with a parametric bootstrap or lead with AIC/BIC**, and declare this explicitly (turns a pitfall into a beyond-course advantage). Run on **raw strength / full SBD** (not Dots), and interpret as "competition regimes"/sex-in-raw-strength.
 
-**Stage 4 — control: tested versus untested (H4, demoted).** **top-1% versus bottom-99% (disjoint groups)** — two-proportions / χ² + CI for the difference + odds-ratio. **Equipment stratification (Raw vs Raw)** and **regression** with Tested+Federation+Equipment+Sex+Era (interaction term in-course). χ² test of independence **Federation×Tested** (+ Cramér's V). *Drop* the standalone equipment ANOVA and the sex×equipment χ² into a single control paragraph ("equipment inflates Total → controlled for"). Mean comparisons: **Welch *or* Mann-Whitney** (state the null of each) + a **rank-based effect size**; **no Levene as a gate**.
+**Stage 4 — control: tested versus untested (H4).** **top-1% versus bottom-99% (disjoint groups)** — two-proportions / χ² + CI for the difference + odds-ratio. **Equipment stratification (Raw vs Raw)** and **regression** with Tested+Federation+Equipment+Sex+Era (interaction term in-course). χ² test of independence **Federation×Tested** (+ Cramér's V). *Drop* the standalone equipment ANOVA and the sex×equipment χ² into a single control paragraph ("equipment inflates Total → controlled for"). Mean comparisons: **Welch *or* Mann-Whitney** (state the null of each) + a **rank-based effect size**; **no Levene as a gate**.
 
-**Stage 5 — allometry (H5).** `log(Total) ~ log(Bodyweight)` OLS with **heteroskedasticity-robust standard errors (HC3) / clustered-by-competitor**; a **Wald test against 2/3** (and also presented against 1 as an anchor); a **Sex×log(BW) interaction term** to test the sex difference *formally* (instead of a separate fit). Diagnose the b≈0.48 for women (weight-range/leverage) before interpretation. Result = **b+CI**, not p.
+**Stage 5 — allometry (H5).** `log(Total) ~ log(Bodyweight)` OLS with **heteroskedasticity-robust standard errors (HC3) / clustered-by-competitor**; a **Wald test against 2/3** (and also presented against 1 as an anchor); a **Sex×log(BW) interaction term** to test the sex difference *formally* (instead of a separate fit). Diagnose the b≈0.49 for women (weight-range/leverage) before interpretation. Result = **b+CI**, not p.
 
 **Stage 6 — extreme value theory (EVT, supporting).** GEV on the annual block-maxima; **report the number of blocks** + a CI for ξ; **POT/GPD** as an alternative; a stable sub-window (fixed federations/era) or a trend-model in location. ξ<0 = "a ceiling *in this competitive population*," not "a ceiling of the human species."
 
@@ -78,7 +75,7 @@
 ## 4. Stage A — Midterm Presentation (30%, 28.6.2026)
 - **Hebrew**, in-person, **Adir and David present**, ~9 slides (cap 10), ~5 min (hard cap 10), **rehearse in advance**.
 - Structure (like the Animal Adoption example): title+names → the data and its source → main thrust of the work+background → **research question** → methods → **real preliminary results** → conclusions → summary+questions.
-- **Real results to present (already run):** an attempts histogram with the peaks on the grid (96.2%), the bunching asymmetry below the threshold + **the negative placebo**, and a raw-output screenshot. **Lead with H1+H2** (the strong core). Don't over-invest — a checkpoint for feedback.
+- **Real results to present (already run):** an attempts histogram with the peaks on the grid (96.2%), the bunching below the threshold versus **a flat non-limit control**, and a raw-output screenshot. **Lead with H1+H2** (the strong core). Don't over-invest — a checkpoint for feedback.
 - Every result with a short **caveat**; a list of challenges (federation schemas, multi-meet competitors, lb→kg).
 
 ## 5. Stage B — The Paper (70%, deadline 15.8.2026 — hard)
@@ -96,7 +93,7 @@
 - **Locked requirements.txt** + Python version; **a single entry point**; a **README** with exact run instructions.
 - **Lock a snapshot of the data** (attach the CSV or document the date) + a CC0 citation. **Publish the federation list and the helper tables.**
 - **Combining datasets (instructor feedback):** attach as cited accompanying CSVs — (a) a **table of weight-class limits by federation/era** (feeds H2), (b) an **lb/kg plate standard** (feeds the H1 sub-grid). This satisfies "combine datasets" without breaking the story.
-- **Acceptance gate:** clean clone → `pip install -r` → an end-to-end run reproduces everything. **Commit the script even before 28.6** and verify that the numbers (96.2%, 0.855, 24%/43%, b) are reproduced.
+- **Acceptance gate:** clean clone → `pip install -r` → an end-to-end run reproduces everything. **Commit the script even before 28.6** and verify that the numbers (96.2%, +1.92, 24%/43%, b≈0.72/0.49) are reproduced.
 - **Figures:** vector/≥300DPI, numbered caption, axis titles, meaningful colors.
 
 ## 7. Differentiation and Creativity (up to 10 pts, competitive)
@@ -104,20 +101,4 @@ Unique components (with introduction citations that differentiate from the exist
 
 ## 8. Grade and Timeline
 - **Stage A 30% · Stage B (paper+repo) 70%.** Up to 10 creativity pts (competitive).
-- Milestones: *now*→direction email sent + data+EDA (done) + **commit the script**; **toward 28.6**→presentation with real H1+H2; **before 15.8**→full analysis (review corrections incorporated), IEEE paper, a clean-running repo with a locked snapshot.
-
----
-
-### Appendix — What Changed After the In-Depth Review (summary)
-| Topic | Before | After |
-|---|---|---|
-| Scope | 5 equally-weighted hypotheses | 2 leading (H1/H2) + 2 secondary (H3/H5) + supporting (H4/EVT/time) |
-| H3 | "by-sex mixture" of Dots | **not sex** (Dots is normalized) → raw-strength/competition-regimes; bootstrap not χ² |
-| H4 | leading, 17%/31%, raw Welch | control, **24%/43%**, equipment-stratification+regression, top1%-vs-bottom99% |
-| H5 | b=0.71/0.48, separate fit | **0.64/0.60** (naive OLS)→documented specification; robust SE; **Sex×log(BW) interaction** |
-| Significance | led with G/p | **effect+CI lead**; 1%/10% stability check |
-| Independence | "dedup or a note" | **declared per-hypothesis dedup** + clustered SE |
-| H2 falsification | one placebo | **two placebos** + jump-test (CJM) + lb→kg control + within-fed |
-| Originality | "not done on OPL" | **cite Peyen 2025/medRxiv 2021**; lead with H1; differentiation=the formalization |
-| Methods | "don't define known tests" | **do define in-course too** (like the chess example) |
-| Data | `latest.zip` | **lock a snapshot** + early commit |
+- Milestones: *now*→direction email sent + data+EDA (done) + **commit the script**; **toward 28.6**→presentation with real H1+H2; **before 15.8**→full analysis, IEEE paper, a clean-running repo with a locked snapshot.
