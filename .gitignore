@@ -1,0 +1,13 @@
+# raw data (download via download_data.py; do not commit the ~800MB CSV)
+data/*.csv
+data/*.zip
+*.zip
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# os
+.DS_Store

@@ -1,0 +1,6 @@
+numpy>=1.26
+pandas>=2.0
+matplotlib>=3.8
+python-pptx>=1.0
+# Optional, for exporting the .pptx to PDF from the command line:
+#   LibreOffice (soffice --headless --convert-to pdf ...)
