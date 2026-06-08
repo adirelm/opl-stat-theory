@@ -19,7 +19,8 @@ Authors: **Adir Elmakais, David Levin**.
 | `figures/` | Generated figures (PNG). |
 | `presentation/` | The generated mid-presentation deck. |
 | `requirements.txt` | Pinned Python dependencies. |
-| `docs/` | Planning docs (Hebrew): the full project spec/brainstorm + the Stage-1/Stage-2 checklist. |
+| `docs/project-spec.md` | Full project spec / brainstorm (English). |
+| `docs/checklist.md` | Stage-1 / Stage-2 checklist (English). |
 
 ## Reproduce
 ```bash
