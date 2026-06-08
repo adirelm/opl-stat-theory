@@ -21,6 +21,7 @@ Authors: **Adir Elmakais, David Levin**.
 | `requirements.txt` | Pinned Python dependencies. |
 | `docs/project-spec.md` | Full project spec / brainstorm (English). |
 | `docs/checklist.md` | Stage-1 / Stage-2 checklist (English). |
+| `reference/` | Course-provided reference material (Hebrew): the assignment instructions PDF, the example paper (Chess) & example deck (Animal Adoption), the lecture-8 transcript, and data-source screenshots. |
 
 ## Reproduce
 ```bash
