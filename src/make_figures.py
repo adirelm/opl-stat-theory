@@ -57,6 +57,7 @@ sub = att[(att >= lo) & (att < hi)]
 counts, edges, patches = ax.hist(sub, bins=bins, edgecolor="white", linewidth=0.2)
 for c_edge, p in zip(edges[:-1], patches):
     p.set_facecolor(C_GRID if abs(c_edge/2.5 - round(c_edge/2.5)) < 1e-6 else C_OFF)
+ax.set_ylim(0, counts.max()*1.18)   # headroom so the annotation box clears the tallest bar
 ax.xaxis.set_major_locator(MultipleLocator(5))
 ax.set_xlabel("Attempt weight (kg)"); ax.set_ylabel("Count")
 ax.set_title("Attempt weights pile up on the 2.5 kg plate grid")
