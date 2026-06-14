@@ -58,7 +58,7 @@
 
 **Stage 8 — reporting, multiple-testing correction, and power.**
 - **Effect-first reporting:** in every test — the **effect size + CI are the result**, p/G are secondary. **Stability check:** run on a 1%/10% subsample and show that the effect is stable while p is not — demonstrates control over "n→everything is significant."
-- A pre-declared family of tests; **Bonferroni (FWER) + Benjamini-Hochberg (FDR)**; an **a-priori power analysis** (α=0.05, target 0.90).
+- A pre-declared family of tests; apply **all four corrections the TA requires — Bonferroni, Holm-Bonferroni, Šidák (FWER family) + Benjamini-Hochberg (FDR)** (via `statsmodels.stats.multitest.multipletests`, methods `bonferroni`/`holm`/`sidak`/`fdr_bh`), reported as a #-rejected comparison table → note robustness across methods (FWER vs FDR agree because the effects are strong). An **a-priori power analysis** (α=0.05, target 0.90).
 - **Paired test (new, on-story):** attempt-1 versus attempt-3 of the same competitor (Wilcoxon signed-rank) — covers an additional item from the toolbox and reinforces H1/H2 ("the number on the bar").
 
 **Theory notes (the heart of the course):**
@@ -68,7 +68,7 @@
 - **Not directly relevant (state as a decision):** classification and learning metrics — intentionally out-of-scope (there is no prediction task that serves the story), cited against the multiple-comparisons warning.
 
 ## 3. Tool Classification: in-course versus beyond-course
-- **In-course:** t/Welch, F, ANOVA, χ² (independence + goodness-of-fit), Pearson/Spearman, GLRT/LRT, Wald, MLE, power, Bonferroni, regression, **interaction term**, **paired test**.
+- **In-course:** t/Welch, F, ANOVA, χ² (independence + goodness-of-fit), Pearson/Spearman, GLRT/LRT, Wald, MLE, power, multiple-testing corrections (Bonferroni/Holm/Šidák/BH), regression, **interaction term**, **paired test**.
 - **Beyond-course (explain the method + *what the course tool lacks*):** quantization/rounded-likelihood model, **parametric bootstrap for the mixture-LRT**, density-discontinuity (McCrary / **Cattaneo-Jansson-Ma**), GEV/EVT, Kruskal-Wallis/Dunn, Anderson-Darling.
 - **Cross-cutting principle:** for every assumption violation — (a) name the assumption, (b) what the standard approach would do, (c) the corrected tool and why.
 
