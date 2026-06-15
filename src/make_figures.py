@@ -5,11 +5,11 @@ presentation figures (PNG) into ../figures, printing numbers + CIs.
 
 Axis labels are kept in ENGLISH on purpose (matplotlib bidi); Hebrew interpretation
 lives on the slide. Method notes:
-- H1: fraction of attempt loads exactly on the 2.5 kg grid (+ Wilson-ish CI).
+- H1: fraction of attempt loads exactly on the 2.5 kg grid (+ normal-approx CI).
 - H2: bodyweight near a real class limit vs a non-limit control; the histogram and the
   reported log(below/above) are BOTH de-heaped (exact round/half-kg weigh-ins removed),
   so the figure matches the headline number; window (L-0.5, L]; + CI.
-- H5: allometry on full-power (Event=='SBD') results; OLS slope b + CI + R²; isometric 2/3 ref.
+- H3: allometry on full-power (Event=='SBD') results; OLS slope b + CI + R²; isometric 2/3 ref.
 
 Input: ../data/openpowerlifting.csv (run download_data.py first).
 """
@@ -118,7 +118,7 @@ for L in (REAL, CTRL):
     b, a, lr, ci = asym(men, L)
     print(f"   @ {L}: de-heaped below {b:,} / above {a:,} | log-ratio {lr:+.3f} ± {ci:.3f} (x{np.exp(lr):.1f})")
 
-# ---- H5: allometric scaling (full-power 'SBD' only) ----
+# ---- H3: allometric scaling (full-power 'SBD' only) ----
 al = df[(df["Event"] == "SBD") & (df["TotalKg"] > 0) & (df["BodyweightKg"] > 0)
         & df["Sex"].isin(["M", "F"])][["Sex", "BodyweightKg", "TotalKg"]].dropna()
 fig, ax = plt.subplots(figsize=(9.0, 4.6))
@@ -134,7 +134,7 @@ for sex, col, lbl in [("M", C_M, "Men"), ("F", C_W, "Women")]:
     sxx = np.sum((x-x.mean())**2); se_b = np.sqrt(ssres/(len(x)-2)/sxx); ci_b = 1.96*se_b
     stats[sex] = (b, ci_b, r2)
     idx = rng.choice(len(x), size=min(6000, len(x)), replace=False)
-    ax.scatter(x[idx], y[idx], s=3, alpha=0.05, color=col, edgecolors="none")
+    ax.scatter(x[idx], y[idx], s=4, alpha=0.15, color=col, edgecolors="none")
     xs = np.linspace(x.min(), np.percentile(x, 99.5), 50)
     ax.plot(xs, a+b*xs, color=col, lw=3.0, label=f"{lbl}: b = {b:.2f} (R²={r2:.2f})")
 xbar, ybar = allx.mean(), ally.mean()
@@ -152,4 +152,4 @@ print(f"H1: {pct_grid:.1f}% (95% CI [{100*(p-ci_h):.2f},{100*(p+ci_h):.2f}]), n=
 b83, a83, lr83, c83 = asym(men, REAL); _, _, lr91, c91 = asym(men, CTRL)
 print(f"H2 @83 de-heaped: {lr83:+.2f} ± {c83:.2f}  (x{np.exp(lr83):.1f})  |  @91 control: {lr91:+.2f} ± {c91:.2f}")
 for s, name in [("M", "men"), ("F", "women")]:
-    b, ci, r2 = stats[s]; print(f"H5 {name}: b={b:.2f} ± {ci:.2f}, R²={r2:.2f}")
+    b, ci, r2 = stats[s]; print(f"H3 {name}: b={b:.2f} ± {ci:.2f}, R²={r2:.2f}")

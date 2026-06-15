@@ -5,7 +5,7 @@ Based on the project instructions + Lecture 8. Lecturer/contact: **Dr. Oshrit Vi
 ## In Brief
 - **Pair work: Adir Elmakais + David Levin** — matches the default (pairs); no special approval needed.
 - **Selected dataset: OpenPowerlifting** (~3.94M competition results, CC0). A single question: how do competitors "game" the weight on the bar and bodyweight, and what does the data reveal about human strength. **Full specification:** `project-spec.md`.
-- **Hypothesis structure:** leading = **H1 quantization (96.2% on-grid) + H2 bunching** (empirically confirmed; non-limit control flat); secondary = H3 (*not* a sex mixture) + H5 allometry; supporting = H4/EVT/time-trend. Full details in `project-spec.md`.
+- **Hypothesis structure (canonical H1–H4):** leading = **H1 quantization (96.2% on-grid) + H2 bunching** (empirically confirmed; non-limit control flat); **H3 allometry**; **H4 prediction** (regression + Random Forest + logistic classifier — the course's learning half, built for Stage B). Supporting (paper only, *not* numbered): strength-distribution structure (*not* a sex mixture), tested/untested control, EVT, time-trend. Full details in `project-spec.md`.
 - Two stages: midterm presentation (30%) ← final project (70%).
 
 ## ⏰ Deadlines
@@ -43,7 +43,7 @@ Based on the project instructions + Lecture 8. Lecturer/contact: **Dr. Oshrit Vi
 ## Toolbox (from the instructions)
 Hypothesis testing · confidence interval · significance level · p-value · Type I/II errors and power · MP · UMP · GLRT · one-/two-sided test · one sample · two independent samples · paired samples · χ² · F · sequential Wald test · stopping times · parametric/non-parametric tests · goodness-of-fit · independence · correlations (Pearson/Spearman) · multiple-testing corrections (post-hoc) · regression · classification · interaction terms · learning evaluation metrics · and every concept from the lectures/recitations.
 
-*Actually used in the project (not name-dropping):* MLE+GLRT (H1/H3) · χ² goodness-of-fit + independence + Cramér's V · Welch/Mann-Whitney · F/ANOVA + Kruskal-Wallis · Pearson/Spearman · Wald (H5 against 2/3) · **interaction term Sex×log(BW)** · **paired test** (attempt-1 vs attempt-3) · a-priori power · Bonferroni/BH · regression. *Classification/learning-metrics — intentionally out-of-scope (no prediction task that serves the story).*
+*Actually used in the project (not name-dropping):* MLE+GLRT (H1 + the mixture) · χ² goodness-of-fit (H1 grid) + independence + Cramér's V · Welch/Mann-Whitney · Kruskal-Wallis + regression overall-F · Pearson/Spearman (+ Fisher transform) · Wald (H3 against 2/3) · **interaction term Sex×log(BW)** · **paired test** (attempt-1 vs attempt-3) · a-priori power · Bonferroni/Holm/Šidák/BH · **regression + Random Forest + logistic "made-weight" classifier, with R²/Adjusted-R²/RMSE/grouped-CV and AUC/confusion — H4, the learning + classification half.**
 
 ## Dataset
 - **Selected: OpenPowerlifting** (CC0) — verified end-to-end on the real data (downloaded and analyzed).
