@@ -11,6 +11,3 @@ venv/
 
 # os
 .DS_Store
-
-# recitation recordings/notebooks/transcripts — NOT for git
-private/
