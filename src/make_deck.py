@@ -3,24 +3,23 @@
 Build the Stage-1 (mid-presentation) deck as a native .pptx.
 
 Hebrew is right-to-left, set per paragraph via the OOXML attribute a:pPr rtl="1"
-(python-pptx has no RTL property). Figures are read from ../figures; the deck is
-written to ../presentation. Open in Google Slides / PowerPoint / LibreOffice.
-
-The Hebrew strings below are the slide content and must stay in Hebrew.
+(python-pptx has no RTL property). Figures from ../figures; deck to ../presentation.
+Open in Google Slides / PowerPoint / LibreOffice. Hebrew strings = slide content.
 """
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.text import MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
-
 from pathlib import Path
+
 ROOT = Path(__file__).resolve().parent.parent
-DIR = str(ROOT / "figures")          # figures produced by make_figures.py
+DIR = str(ROOT / "figures")
 FONT = "Arial"
-NAVY, BLUE, INK, GREY = RGBColor(0x1F,0x38,0x64), RGBColor(0x2E,0x86,0xC1), RGBColor(0x22,0x22,0x22), RGBColor(0x60,0x60,0x60)
+NAVY, BLUE, INK, GREY = RGBColor(0x1F,0x38,0x64), RGBColor(0x2E,0x86,0xC1), RGBColor(0x22,0x22,0x22), RGBColor(0x70,0x70,0x70)
+HL = RGBColor(0xC0,0x53,0x1B)
 SW, SH = 13.333, 7.5
-LEFT, BODYW = 0.6, 12.13   # align body to header/accent
+LEFT, BODYW = 0.6, 12.13
 
 prs = Presentation()
 prs.slide_width, prs.slide_height = Inches(SW), Inches(SH)
@@ -46,101 +45,110 @@ def line(tf, text, size, color=INK, bold=False, align="r", space_after=8, first=
     _set(p, align)
     return p
 
-def accent(slide, top=1.45):
-    s = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(LEFT), Inches(top), Inches(BODYW), Inches(0.045))
-    s.fill.solid(); s.fill.fore_color.rgb = BLUE; s.line.fill.background(); s.shadow.inherit = False
+def rule(slide, top, l=LEFT, w=BODYW, color=BLUE, h=0.045):
+    s = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(l), Inches(top), Inches(w), Inches(h))
+    s.fill.solid(); s.fill.fore_color.rgb = color; s.line.fill.background(); s.shadow.inherit = False
+
+def footer(slide):
+    n = len(list(prs.slides))
+    line(textbox(slide, LEFT, 7.08, BODYW, 0.3), f"תאוריה סטטיסטית · פרויקט סוף · OpenPowerlifting · {n}/9",
+         9, GREY, align="r", space_after=0, first=True)
 
 def header(slide, title):
     line(textbox(slide, LEFT, 0.45, BODYW, 0.95), title, 30, NAVY, bold=True, first=True)
-    accent(slide)
+    rule(slide, 1.45); footer(slide)
 
-def content(title, bullets, lead=None):
+def content(title, bullets, lead=None, lead_size=22):
     s = prs.slides.add_slide(BLANK); header(s, title)
-    tf = textbox(s, LEFT, 1.75, BODYW, 5.3); first = True
+    tf = textbox(s, LEFT, 1.8, BODYW, 5.0, anchor=MSO_ANCHOR.TOP); first = True
     if lead:
-        line(tf, lead, 22, BLUE, bold=True, space_after=16, first=True); first = False
+        line(tf, lead, lead_size, BLUE, bold=True, space_after=18, first=True); first = False
     for b in bullets:
         sub = b.startswith("\t")
-        line(tf, ("◦  " if sub else "•  ") + b.lstrip("\t"), 17 if sub else 19, INK, space_after=12, first=first)
+        line(tf, ("◦  " if sub else "•  ") + b.lstrip("\t"), 18 if sub else 19.5, INK, space_after=14, first=first)
         first = False
     return s
 
 def fig_slide(title, lead, img, aspect, max_w):
     s = prs.slides.add_slide(BLANK); header(s, title)
-    line(textbox(s, LEFT, 1.62, BODYW, 1.15), lead, 19, INK, space_after=0, first=True)
-    top = 2.7; avail_h = SH - top - 0.15
+    line(textbox(s, LEFT, 1.6, BODYW, 1.15), lead, 18, INK, space_after=0, first=True)
+    top = 2.78; avail_h = 6.95 - top
     w = min(max_w, avail_h*aspect); h = w/aspect
     s.shapes.add_picture(f"{DIR}/{img}", Inches((SW-w)/2), Inches(top), width=Inches(w), height=Inches(h))
     return s
 
-# ---- Slide 1: title ----
+# ---- Slide 1: title (cover identity + hook number) ----
 s = prs.slides.add_slide(BLANK)
-tf = textbox(s, 1.0, 2.0, 11.33, 3.5, anchor=MSO_ANCHOR.MIDDLE)
-line(tf, 'איך מתחרי הרמת-כוח "משחקים" עם המספרים', 40, NAVY, bold=True, align="ctr", space_after=14, first=True)
-line(tf, "ניתוח סטטיסטי של OpenPowerlifting - ומה הנתונים חושפים על גבולות הכוח באוכלוסיית המתחרים", 20, GREY, align="ctr", space_after=28)
+band = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(SW), Inches(0.55))
+band.fill.solid(); band.fill.fore_color.rgb = NAVY; band.line.fill.background(); band.shadow.inherit = False
+tf = textbox(s, 1.0, 1.9, 11.33, 4.0, anchor=MSO_ANCHOR.TOP)
+line(tf, 'איך מתחרי הרמת-כוח "משחקים" עם המספרים', 38, NAVY, bold=True, align="ctr", space_after=10, first=True)
+line(tf, "ניתוח סטטיסטי של OpenPowerlifting — מה הנתונים חושפים על גבולות הכוח", 19, GREY, align="ctr", space_after=22)
+line(tf, '96.2% מ-13.4 מיליון ניסיונות נופלים בדיוק על רשת 2.5 ק"ג', 21, HL, bold=True, align="ctr", space_after=26)
 line(tf, "אדיר אלמקייס · דוד לוין", 22, INK, bold=True, align="ctr", space_after=6)
-line(tf, "תאוריה סטטיסטית · פרויקט סוף - מצגת אמצע", 17, GREY, align="ctr")
+line(tf, "תאוריה סטטיסטית · פרויקט סוף — מצגת אמצע", 16, GREY, align="ctr")
+rule(s, 6.05, l=4.4, w=4.5)
 
 # ---- Slide 2: research data ----
 content("נתוני המחקר", [
-    "מקור: OpenPowerlifting - מאגר פתוח של תוצאות תחרויות הרמת-כוח (רישיון CC0).",
+    "מקור: OpenPowerlifting — מאגר פתוח של תוצאות תחרויות הרמת-כוח (רישיון CC0).",
     "היקף: כ-3.94 מיליון תוצאות (שורה לכל מתחרה בכל תחרות), 42 משתנים.",
-    "משתנים: רציפים - משקל-גוף, משקלי-ניסיון, Total (סכום שלוש ההרמות), Dots (ציון כוח מנורמל); קטגוריים - מין, ציוד, פדרציה, מקטע-משקל, Tested (תחרות עם בדיקות סמים).",
-    "אתגרים בדאטה: אותו מתחרה מופיע בתחרויות רבות (תלות בין שורות), הבדלי סכמות בין פדרציות, והמרות lb→kg.",
-    "הנתונים כבר הורדו ועובדו - כל המספרים בהמשך הם תוצאות אמת ראשוניות.",
+    "משתנים: רציפים — משקל-גוף, משקלי-ניסיון, Total, Dots; קטגוריים — מין, ציוד, פדרציה, מקטע-משקל, Tested.",
+    "ניקוי ושחזור: אותו מתחרה מופיע בכמה תחרויות (תלות בין שורות) → dedup לפי-מתחרה; עותק-נתונים נעול לשחזור מלא.",
 ])
 
-# ---- Slide 3: overview ----
+# ---- Slide 3: overview (two-numbers tagline + contribution) ----
 content("עיקרי העבודה", [
-    "רקע קצר: בהרמת-כוח שלוש הרמות (סקוואט, בנץ'-פרס, דדליפט), שלושה ניסיונות לכל הרמה, והתחרות נערכת בתוך מקטעי משקל-גוף.",
-    "מתחרה שולט בשני מספרים בלבד: המשקל על המוט (בחירת הניסיונות) ומשקל הגוף (בשקילה).",
-    'אנחנו בוחנים איך הוא "משחק" עם שניהם - ומה ניתן ללמוד מכך על גבולות הכוח באוכלוסיית המתחרים.',
-], lead="הרעיון: שני המספרים שהמתחרה שולט בהם - והמחיר שהוא משלם עליהם")
+    "רקע: בהרמת-כוח שלוש הרמות (סקוואט, בנץ', דדליפט), שלושה ניסיונות לכל הרמה, והתחרות בתוך מקטעי משקל-גוף.",
+    "מתחרה שולט בדיוק בשני מספרים: המשקל על המוט (בחירת ניסיונות) ומשקל הגוף (בשקילה).",
+    "התרומה: לא רק לתאר — אלא מודל-הסתברות מקורי לרשת-המשקלים, ומבחן-מניפולציה עם נקודת-בקרה ו-de-heaping.",
+], lead="הרעיון: שני המספרים שהמתחרה שולט בהם — המוט והמאזניים")
 
-# ---- Slide 4: research question ----
+# ---- Slide 4: research question + hypotheses ----
 content("שאלת החקר", [
-    'כיצד מתבטאת בנתונים ההתנהגות ה"מחושבת" של מתחרים - בבחירת המשקל על המוט ובמשקל הגוף?',
-    "ומה ניתן ללמוד מכך (וממגבלות הנתונים) על מבנה הכוח וגבולותיו באוכלוסיית המתחרים?",
-    "השערות מרכזיות:",
-    '\tH1 - משקלי הניסיון אינם רציפים אלא נופלים רק על כפולות של 2.5 ק"ג (רשת הפלטות).',
-    '\tH2 - מתחרים "חותכים משקל" כדי לנחות בדיוק מתחת לסף מקטע-המשקל.',
-    "\tמשניות: מבנה התפלגות הכוח, וקנה-המידה האלומטרי.",
-])
+    'כיצד מתבטאת בנתונים ההתנהגות ה"מחושבת" של מתחרים — בבחירת המשקל על המוט ובמשקל הגוף?',
+    "\tH1 — משקלי הניסיון אינם רציפים אלא נופלים רק על רשת 2.5 ק\"ג.",
+    "\tH2 — הצטברות משקל-גוף ממש מתחת לסף מקטע-המשקל (עקבי עם חיתוך-משקל).",
+    "\tH3 — קנה-המידה האלומטרי (כוח מול משקל-גוף) שונה בין המינים.",
+    "\tH4 — ניבוי: כמה משתני-השליטה (משקל, ציוד, מין) מנבאים את הכוח הסופי?",
+], lead="ארבע השערות, סיפור אחד — \"שני המספרים\" וגבולות הכוח")
 
-# ---- Slide 5: methods ----
+# ---- Slide 5: methods (1:1 with results + named course tools + ML) ----
 content("שיטות המחקר", [
-    "H1 (רשת המשקלים): מודל נראות עם עיגול-רשת (rounded-likelihood MLE) + מבחן יחס-נראות מוכלל (GLRT) למודלים מקוננים.",
-    'H2 (חיתוך-משקל): מבחן אי-רציפות-צפיפות (McCrary) סביב הסף + בדיקות הפרכה - פלצבו, de-heaping, ומינון-תגובה.',
-    "כלים תומכים: רגרסיה אלומטרית (מבחן Wald), מתאמים, וערכי-קיצון (EVT).",
-    'דגש: בגלל n≈3.9M כמעט הכל "מובהק" - לכן מובילים בגודל-אפקט וברווח-סמך, לא ב-p.',
-])
+    "H1: מודל נראות עם עיגול-רשת (rounded-likelihood MLE) + מבחן יחס-נראות מוכלל (GLRT, דחיית H0 לערכים גדולים).",
+    "H2: מבחן אי-רציפות-צפיפות (McCrary) + מערך-הפרכה — נקודת-בקרה, פלצבו, ו-de-heaping.",
+    "H3: רגרסיה log-log + מבחן Wald מול 2/3, עם SE חסין ואיבר-אינטראקציה Sex×log(BW).",
+    "H4: רגרסיה מרובה + Random Forest, הערכה ב-R² / Adjusted-R² / Cross-Validation.",
+    'תיקון משפחתי לבדיקות מרובות: Bonferroni/Holm/Šidák (FWER) + Benjamini-Hochberg (FDR). בגלל n≈3.9M מובילים בגודל-אפקט+CI, לא ב-p.',
+], lead_size=20)
 
-# ---- Slide 6: results (1) - 2.5 kg grid ----
+# ---- Slide 6: results H1 ----
 fig_slide('תוצאות ראשוניות (1): רשת ה-2.5 ק"ג',
-          'משקלי הניסיון אינם רציפים: 96.2% מתוך 13.4 מיליון ניסיונות יושבים בדיוק על רשת ה-2.5 ק"ג.',
-          "fig_quantization.png", 8.2/4.4, 9.5)
+          'משקלי הניסיון אינם רציפים: 96.2% מתוך 13.4 מיליון ניסיונות בדיוק על רשת ה-2.5 ק"ג (95% CI [96.19%, 96.21%]).',
+          "fig_quantization.png", 8.2/4.4, 9.4)
 
-# ---- Slide 7: results (2) - weight-cutting ----
+# ---- Slide 7: results H2 ----
 fig_slide("תוצאות ראשוניות (2): חיתוך-משקל",
-          'מתחת לסף 83 ק"ג (מחלקת IPF; גברים, IPF+USAPL) הצטברות בולטת (יחס-לוג +1.92, שורד ניקוי מספרים-עגולים); בנקודת-בקרה שאינה סף (91 ק"ג) אין עודף (≈ -0.21). אינדיקציה ראשונית לחיתוך-משקל; מבחן McCrary פורמלי בהמשך.',
-          "fig_bunching.png", 9.6/4.3, 11.0)
+          'מתחת לסף 83 ק"ג (מחלקת IPF) הצטברות חדה: יחס-לוג מנוקה-עיגול +1.92 ± 0.04 — פי ~6.8 מתחרים ממש-מתחת לעומת ממש-מעל. בבקרה שאינה סף (91 ק"ג): −0.21 ± 0.03. עקבי עם חיתוך-משקל; אישוש פורמלי (McCrary) בהמשך.',
+          "fig_bunching.png", 9.8/4.3, 11.2)
 
-# ---- Slide 8: extra results - allometry ----
-fig_slide("תוצאות נוספות: קנה-מידה אלומטרי",
-          'קנה-המידה שונה בין המינים: b≈0.72 (גברים) / 0.49 (נשים) - הנשים הרבה מתחת ל-2/3 האיזומטרי. אומדן ראשוני (OLS); מבחן פורמלי מול 2/3 בהמשך.',
-          "fig_allometry.png", 9.0/4.5, 10.0)
+# ---- Slide 8: results H3 (allometry) ----
+fig_slide("תוצאות ראשוניות (3): קנה-מידה אלומטרי",
+          'קנה-המידה שונה בין המינים: b≈0.72 (R²=0.36) גברים / 0.49 (R²=0.19) נשים, מול 2/3 האיזומטרי. ייבדק פורמלית במבחן Wald (SE חסין); b<0.5 לנשים — אומדן ראשוני, ייתכן אפקט טווח-משקל.',
+          "fig_allometry.png", 9.0/4.6, 10.0)
 
-# ---- Slide 9: conclusions & wrap-up ----
+# ---- Slide 9: conclusions + payoff close ----
 s = prs.slides.add_slide(BLANK); header(s, "מסקנות ראשוניות וסיכום")
-tf = textbox(s, LEFT, 1.75, BODYW, 5.3)
+tf = textbox(s, LEFT, 1.75, BODYW, 4.6)
 bullets = [
     'שני המספרים שהמתחרה שולט בהם נראים בבירור: רשת ה-2.5 ק"ג (המוט), והצטברות מתחת לספים (משקל גוף).',
-    "ההצטברות מתחת לסף שורדת ניקוי-עיגול ונעדרת בנקודת-בקרה - אינדיקציה ראשונית מעודדת (טרם מבוססת).",
-    "הצעדים הבאים: מבחן McCrary פורמלי + בדיקות הפרכה מלאות (פלצבו, מינון-תגובה), מבנה התפלגות הכוח, ואומדן תקרת-כוח (EVT).",
-    "כל התוצאות יוצגו עם גודל-אפקט, רווחי-סמך, ותיקון לבדיקות מרובות.",
+    "ההצטברות שורדת ניקוי-עיגול ונעדרת בנקודת-בקרה — אינדיקציה ראשונית מעודדת (טרם מבוססת).",
+    "הצעדים הבאים: McCrary פורמלי + הפרכה, אלומטריה (Wald), ומודל ניבוי-כוח (רגרסיה + Random Forest, R²/CV).",
+    "כל התוצאות יוצגו עם גודל-אפקט, רווחי-סמך, ותיקון משפחתי (FWER/FDR).",
 ]
 for i, b in enumerate(bullets):
-    line(tf, "•  " + b, 19, INK, space_after=12, first=(i==0))
+    line(tf, "•  " + b, 19, INK, space_after=13, first=(i == 0))
+line(tf, "המסקנה: אסטרטגיה משאירה טביעת-אצבע מדידה בנתונים — אנחנו עוברים מתיאור, למבחן, לניבוי.", 19, NAVY, bold=True, space_after=14)
 line(tf, "תודה! שאלות?", 24, BLUE, bold=True, align="ctr", space_after=0)
 
 out = str(ROOT / "presentation" / "mid_presentation_OpenPowerlifting.pptx")
