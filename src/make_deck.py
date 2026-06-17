@@ -148,7 +148,7 @@ bullets = [
 ]
 for i, b in enumerate(bullets):
     line(tf, "•  " + b, 19, INK, space_after=13, first=(i == 0))
-line(tf, "המסקנה: אסטרטגיה משאירה טביעת-אצבע מדידה בנתונים, ואנחנו עוברים מתיאור, למבחן, לניבוי.", 19, NAVY, bold=True, space_after=14)
+line(tf, "המסקנה: האסטרטגיה מותירה עקבות מדידים בנתונים, ואנחנו עוברים מתיאור, למבחן, לניבוי.", 19, NAVY, bold=True, space_after=14)
 line(tf, "תודה! שאלות?", 24, BLUE, bold=True, align="ctr", space_after=0)
 
 out = str(ROOT / "presentation" / "mid_presentation_OpenPowerlifting.pptx")
