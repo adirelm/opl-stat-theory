@@ -84,7 +84,7 @@ band.fill.solid(); band.fill.fore_color.rgb = NAVY; band.line.fill.background();
 tf = textbox(s, 1.0, 1.9, 11.33, 4.0, anchor=MSO_ANCHOR.TOP)
 line(tf, 'איך מתחרי הרמת-כוח "משחקים" עם המספרים', 38, NAVY, bold=True, align="ctr", space_after=10, first=True)
 line(tf, "ניתוח סטטיסטי של OpenPowerlifting: מה הנתונים חושפים על גבולות הכוח", 19, GREY, align="ctr", space_after=22)
-line(tf, '96.2% מ-13.4 מיליון ניסיונות נופלים בדיוק על רשת 2.5 ק"ג', 21, HL, bold=True, align="ctr", space_after=26)
+line(tf, 'פי כ-6.8 יותר מתחרים נשקלים ממש מתחת לסף מחלקת-המשקל מאשר ממש מעליו', 21, HL, bold=True, align="ctr", space_after=26)
 line(tf, "אדיר אלמקייס · דוד לוין", 22, INK, bold=True, align="ctr", space_after=6)
 line(tf, "תאוריה סטטיסטית · פרויקט סוף · מצגת אמצע", 16, GREY, align="ctr")
 rule(s, 6.05, l=4.4, w=4.5)
