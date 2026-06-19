@@ -121,7 +121,7 @@ for L in (REAL, CTRL):
 # ---- H3: allometric scaling (full-power 'SBD' only) ----
 al = df[(df["Event"] == "SBD") & (df["TotalKg"] > 0) & (df["BodyweightKg"] > 0)
         & df["Sex"].isin(["M", "F"])][["Sex", "BodyweightKg", "TotalKg"]].dropna()
-fig, ax = plt.subplots(figsize=(9.0, 4.6))
+fig, ax = plt.subplots(figsize=(9.8, 4.3))
 rng = np.random.default_rng(7); stats = {}
 allx = np.log(al["BodyweightKg"].to_numpy()); ally = np.log(al["TotalKg"].to_numpy())
 for sex, col, lbl in [("M", C_M, "Men"), ("F", C_W, "Women")]:
@@ -136,14 +136,14 @@ for sex, col, lbl in [("M", C_M, "Men"), ("F", C_W, "Women")]:
     idx = rng.choice(len(x), size=min(6000, len(x)), replace=False)
     ax.scatter(x[idx], y[idx], s=4, alpha=0.15, color=col, edgecolors="none")
     xs = np.linspace(x.min(), np.percentile(x, 99.5), 50)
-    ax.plot(xs, a+b*xs, color=col, lw=3.0, label=f"{lbl}: b = {b:.2f} (R²={r2:.2f})")
+    ax.plot(xs, a+b*xs, color=col, lw=4.0, label=f"{lbl}: b = {b:.2f} (R²={r2:.2f})")
 xbar, ybar = allx.mean(), ally.mean()
 xr = np.linspace(np.percentile(allx, 1), np.percentile(allx, 99), 50)
-ax.plot(xr, ybar + (2/3)*(xr-xbar), color="#222", lw=2.2, ls="--",
+ax.plot(xr, ybar + (2/3)*(xr-xbar), color="#222", lw=3.0, ls="--",
         label="isometric: b = 2/3 ≈ 0.67")
 ax.set_xlabel("log( Bodyweight )"); ax.set_ylabel("log( Total )")
 ax.set_title("Allometric scaling of strength (full-power 'SBD')")
-ax.legend(frameon=True, framealpha=0.9, loc="lower right", fontsize=11)
+ax.legend(frameon=True, framealpha=0.9, loc="lower right", fontsize=12.5)
 fig.savefig(f"{OUT}/fig_allometry.png"); plt.close(fig)
 print(f"  saved fig_allometry.png")
 

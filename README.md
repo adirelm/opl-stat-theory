@@ -39,7 +39,7 @@ Open the `.pptx` in **Google Slides** / PowerPoint / LibreOffice to view or pres
 - **Weight-cutting (H2):** a strong bodyweight pile-up just **below real IPF class limits**
   (de-heaped log(below/above) ≈ **+1.92** at 83 kg) vs a **non-limit control** (91 kg, ≈ **-0.21**).
   Restricted to **IPF + USAPL** (same class scheme 59/66/74/83/93/105/120).
-- **Allometry (H5):** strength ~ bodyweight^b, **b ≈ 0.72 (men) / 0.49 (women)** for full-power
+- **Allometry (H3):** strength ~ bodyweight^b, **b ≈ 0.72 (men) / 0.49 (women)** for full-power
   (SBD) results; isometric reference 2/3 ≈ 0.67.
 
 > Headline numbers lead with **effect sizes**, not p-values: at n ≈ 3.9M almost any departure is
