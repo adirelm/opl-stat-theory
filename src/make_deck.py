@@ -155,6 +155,22 @@ for i, b in enumerate(bullets):
 line(tf, "המסקנה: האסטרטגיה מותירה עקבות מדידות בנתונים, ואנחנו עוברים מתיאור, למבחן, לניבוי.", 19, NAVY, bold=True, space_after=14)
 line(tf, "תודה! שאלות?", 24, BLUE, bold=True, align="ctr", space_after=0)
 
+# ---- Slide 10: BACKUP (not shown in the 5-min flow; only if asked about assumptions) ----
+s = prs.slides.add_slide(BLANK)
+line(textbox(s, LEFT, 0.45, BODYW, 0.95), 'גיבוי · למה לא מבחני-נורמליות פורמליים', 28, NAVY, bold=True, first=True)
+rule(s, 1.45)
+line(textbox(s, LEFT, 7.08, BODYW, 0.3),
+     "שקף גיבוי · לא מוצג במצגת הראשית · נשלף רק לשאלה על הנחות-המודל", 9, GREY, align="r", space_after=0, first=True)
+line(textbox(s, LEFT, 1.6, BODYW, 1.35),
+     'המבחנים המרכזיים שלנו לא נשענים על נורמליות: GLRT על מודל בדיד (H1), McCrary על צפיפות (H2), '
+     'ולמידת-מכונה (H4). ברגרסיית האלומטריה (H3) השאריות אינן נורמליות לחלוטין (זנב-תחתון כבד), '
+     'אבל אמידת-השיפוע תקפה בזכות משפט-הגבול-המרכזי, ומבחן-נורמליות פורמלי דוחה ב-n ענק כל סטייה זעירה '
+     '(בדיוק כמו p): לכן מובילים בגודל-אפקט וברווח-סמך.', 16, INK, space_after=0, first=True)
+_img, _asp, _maxw = "fig_normality_backup.png", 10.0/4.3, 11.8
+_top = 3.25; _availh = 6.85 - _top
+_w = min(_maxw, _availh*_asp); _h = _w/_asp
+s.shapes.add_picture(f"{DIR}/{_img}", Inches((SW-_w)/2), Inches(_top), width=Inches(_w), height=Inches(_h))
+
 out = str(ROOT / "presentation" / "mid_presentation_OpenPowerlifting.pptx")
 prs.save(out)
 print("saved:", out, "|", len(list(prs.slides)), "slides")

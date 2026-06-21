@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
+from scipy import stats as spstats
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -146,6 +147,58 @@ ax.set_title("Allometric scaling of strength (full-power 'SBD')")
 ax.legend(frameon=True, framealpha=0.9, loc="lower right", fontsize=12.5)
 fig.savefig(f"{OUT}/fig_allometry.png"); plt.close(fig)
 print(f"  saved fig_allometry.png")
+
+# ---- BACKUP fig: why we do NOT lean on formal normality tests ----
+# Two honest messages on one figure, both about the H3 log-log regression:
+#  (A) residuals are ~normal in the bulk -> the log transform works -> log-log OLS is fine;
+#  (B) a formal normality test rejects at p->0 *only because n is huge* -> non-informative,
+#      same logic as p-values. We rely on the CLT for the slope + effect sizes.
+gM = al[al["Sex"] == "M"]
+xM, yM = np.log(gM["BodyweightKg"].to_numpy()), np.log(gM["TotalKg"].to_numpy())
+bM, aM = np.polyfit(xM, yM, 1)
+resid = yM - (aM + bM*xM)
+resid = (resid - resid.mean()) / resid.std()          # standardize
+rng2 = np.random.default_rng(11)
+
+fig, (axq, axp) = plt.subplots(1, 2, figsize=(10.0, 4.3))
+
+# Panel A: Q-Q plot (subsample for clarity; line fit on the subsample)
+samp = resid[rng2.choice(len(resid), size=min(4000, len(resid)), replace=False)]
+osm, osr = spstats.probplot(samp, dist="norm", fit=False)
+axq.scatter(osm, osr, s=7, alpha=0.45, color=C_M, edgecolors="none")
+lim = [min(osm.min(), osr.min()), max(osm.max(), osr.max())]
+axq.plot(lim, lim, color="#222", lw=2, ls="--", label="perfect normal (y = x)")
+axq.set_xlabel("Theoretical normal quantiles"); axq.set_ylabel("Residual quantiles")
+axq.set_title("Q–Q plot: residuals (men)", fontsize=13)
+axq.legend(frameon=False, fontsize=9.5, loc="upper left")
+axq.text(0.97, 0.05, "bulk ~ symmetric, but a heavy\nLOWER tail (weak / bombed totals):\nnot exactly normal — and that's OK,\nthe slope is CLT-protected (see →)",
+         transform=axq.transAxes, ha="right", va="bottom", fontsize=9.0,
+         bbox=dict(boxstyle="round", fc="#FDEBD0", ec=C_HL))
+
+# Panel B: normality-test p-value vs sample size (averaged over repeats)
+ns = np.unique(np.round(np.logspace(np.log10(30), np.log10(len(resid)), 22)).astype(int))
+pvals = []
+for n in ns:
+    ps = []
+    for _ in range(8):
+        s = resid[rng2.choice(len(resid), size=int(n), replace=False)]
+        ps.append(spstats.normaltest(s).pvalue)
+    pvals.append(max(np.median(ps), 1e-300))           # floor for log axis
+axp.plot(ns, pvals, "-o", color=C_HL, lw=2.2, ms=4)
+axp.axhline(0.05, color="#C0392B", lw=1.6, ls="--")
+axp.set_xscale("log"); axp.set_yscale("log")
+axp.set_ylim(1e-300, 5.0)
+axp.set_yticks([1e0, 1e-50, 1e-100, 1e-150, 1e-200, 1e-250, 1e-300])
+axp.text(ns[-1], 0.07, "α = 0.05", color="#C0392B", fontsize=9.5, va="bottom", ha="right")
+axp.set_xlabel("Sample size n"); axp.set_ylabel("Normality-test p-value (D'Agostino)")
+axp.set_title("p-value collapses as n grows", fontsize=13)
+axp.text(0.04, 0.06, "at n ≈ millions ANY micro-deviation\nis 'significant' (p → 0).\nso: rely on the CLT + effect sizes,\nnot on a normality test",
+         transform=axp.transAxes, ha="left", va="bottom", fontsize=9.5,
+         bbox=dict(boxstyle="round", fc="#FDEBD0", ec=C_HL))
+fig.suptitle("Why we don't lean on formal normality tests (H3 log–log regression)",
+             fontweight="bold", fontsize=12)
+fig.savefig(f"{OUT}/fig_normality_backup.png"); plt.close(fig)
+print("  saved fig_normality_backup.png")
 
 print("\n===== numbers for the slides =====")
 print(f"H1: {pct_grid:.1f}% (95% CI [{100*(p-ci_h):.2f},{100*(p+ci_h):.2f}]), n={N:,}")
