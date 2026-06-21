@@ -157,10 +157,10 @@ line(tf, "תודה! שאלות?", 24, BLUE, bold=True, align="ctr", space_after=
 
 # ---- Slide 10: BACKUP (not shown in the 5-min flow; only if asked about assumptions) ----
 s = prs.slides.add_slide(BLANK)
-line(textbox(s, LEFT, 0.45, BODYW, 0.95), 'גיבוי · למה לא מבחני-נורמליות פורמליים', 28, NAVY, bold=True, first=True)
+line(textbox(s, LEFT, 0.45, BODYW, 0.95), 'נספח · למה לא מבחני-נורמליות פורמליים', 28, NAVY, bold=True, first=True)
 rule(s, 1.45)
 line(textbox(s, LEFT, 7.08, BODYW, 0.3),
-     "שקף גיבוי · לא מוצג במצגת הראשית · נשלף רק לשאלה על הנחות-המודל", 9, GREY, align="r", space_after=0, first=True)
+     "נספח · לא מוצג במצגת הראשית · נשלף רק לשאלה על הנחות-המודל", 9, GREY, align="r", space_after=0, first=True)
 line(textbox(s, LEFT, 1.6, BODYW, 1.35),
      'המבחנים המרכזיים שלנו לא נשענים על נורמליות: GLRT על מודל בדיד (H1), McCrary על צפיפות (H2), '
      'ולמידת-מכונה (H4). ברגרסיית האלומטריה (H3) השאריות אינן נורמליות לחלוטין (זנב-תחתון כבד), '
