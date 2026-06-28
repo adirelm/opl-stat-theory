@@ -19,13 +19,18 @@ Three layers:
 """
 import json
 import numpy as np
+import pandas as pd
 
 import config, data, prep, stats_utils as su
 
 LIMITS = config.IPF_MEN_CLASSES                 # [59,66,74,83,93,105,120]
-CONTROL = config.H2_CONTROL                     # 91
-PLACEBOS = [88, 98, 110]                        # clearly-not-a-limit points (should be flat)
+CONTROL = config.H2_CONTROL                     # 91 (between kg classes 83 and 93)
+# clean placebos: BETWEEN modern kg classes AND away from historical lb-class
+# equivalents. Only valid on the pure-kg subset (see ERA_MIN).
+PLACEBOS = [70, 88, 99, 112]
 MCWIN = 15.0                                    # +/- kg window passed to rddensity (local)
+ERA_MIN = 2014                                  # USAPL adopted IPF kg classes ~2014; before that,
+                                                # US feds used lb classes -> contaminates placebos.
 
 
 def _mccrary(bw, cutoff, win=MCWIN):
@@ -56,11 +61,19 @@ def run(save=True):
     df = data.load()
     men_mask = config.is_h2_federation(df) & (df["Sex"] == "M")
     men_rows = df.loc[men_mask].copy()
+    men_rows["year"] = pd.to_datetime(men_rows["Date"], errors="coerce").dt.year
     bw_all = men_rows["BodyweightKg"].dropna().to_numpy()
 
     # one row per lifter (PR meet) -> independent sample for the formal test
-    per_lifter = prep.dedup_per_lifter(men_rows.dropna(subset=["BodyweightKg", "TotalKg"]))
+    clean = men_rows.dropna(subset=["BodyweightKg", "TotalKg"])
+    per_lifter = prep.dedup_per_lifter(clean)
     bw_pl = per_lifter["BodyweightKg"].to_numpy()
+
+    # PURE-KG subset (post-2014): only the modern kg class scheme, so placebos /
+    # control are not contaminated by historical lb classes. Formal test uses this.
+    pk_rows = clean[clean["year"] >= ERA_MIN]
+    pk_per_lifter = prep.dedup_per_lifter(pk_rows)
+    bw_pk = pk_per_lifter["BodyweightKg"].to_numpy()
 
     # ---- 1. effect sizes (all rows, de-heaped) at every limit + control ----
     effect = {}
@@ -70,11 +83,16 @@ def run(save=True):
         effect[L] = {"below": below, "above": above, "log_ratio": round(lr, 3),
                      "ci_half": round(half, 3), "ratio": round(ratio, 2),
                      "is_limit": L in LIMITS}
+    # confirm the headline (83 kg) survives on the pure-kg subset
+    pk_below, pk_above = prep.bunching_counts(bw_pk, config.H2_REAL_LIMIT)
+    pk_lr, pk_half, pk_ratio = su.log_ratio_ci(pk_below, pk_above)
+    effect["83_pure_kg"] = {"log_ratio": round(pk_lr, 3), "ci_half": round(pk_half, 3),
+                            "ratio": round(pk_ratio, 2), "n_per_lifter": int(len(pk_per_lifter))}
 
-    # ---- 2. formal McCrary (per-lifter) at limits + control + placebos ----
+    # ---- 2. formal McCrary on the PURE-KG per-lifter subset ----
     formal = {}
     for c in LIMITS + [CONTROL] + PLACEBOS:
-        formal[c] = _mccrary(bw_pl, c)
+        formal[c] = _mccrary(bw_pk, c)
         formal[c]["kind"] = ("limit" if c in LIMITS else
                              "control" if c == CONTROL else "placebo")
 
@@ -112,12 +130,15 @@ def run(save=True):
 
     # ---- report ----
     print("==== H2: bunching below class limits ====")
-    print(f"men IPF+USAPL: {len(men_rows):,} rows -> {len(per_lifter):,} unique lifters (formal-test unit)")
+    print(f"men IPF+USAPL: {len(men_rows):,} rows -> {len(per_lifter):,} unique lifters")
+    print(f"pure-kg subset (year>={ERA_MIN}): {len(pk_per_lifter):,} unique lifters (FORMAL-test unit)")
+    pk = effect["83_pure_kg"]
+    print(f"headline 83kg holds on pure-kg? log-ratio {pk['log_ratio']:+.2f} (x{pk['ratio']})")
     print("\neffect sizes (de-heaped log(below/above), all rows):")
     for L in LIMITS:
         e = effect[L]; print(f"  {L:>4} kg : {e['log_ratio']:+.2f} +/- {e['ci_half']:.2f}  (x{e['ratio']})")
     e = effect[CONTROL]; print(f"  {CONTROL:>4} kg (control): {e['log_ratio']:+.2f}  (x{e['ratio']})")
-    print("\nformal McCrary (rddensity, per-lifter):  t<0 = density drops at cutoff = excess below")
+    print("\nformal McCrary (rddensity, PURE-KG per-lifter):  t<0 = density drops at cutoff = excess below")
     for c in LIMITS + [CONTROL] + PLACEBOS:
         f = formal[c]
         tag = f["kind"]
