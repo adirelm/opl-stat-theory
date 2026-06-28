@@ -58,8 +58,18 @@ README.md            exact reproduction steps; requirements pinned; snapshot doc
 ### Phase 4 — H4 prediction (ML + classification)
 - Finalize `h4_prediction.py`: Linear + Random Forest, **grouped-by-lifter CV**, R²/Adj-R²/RMSE/MAE, permutation importance, VIF; logistic "made-weight" classifier (AUC/accuracy/confusion). Leakage guards.
 
-### Phase 5 — Supporting analyses (full)
+### Phase 5 — Supporting analyses + course-tools breadth (full)
+Core supporting analyses:
 - Strength-distribution structure (argue **not** a sex mixture; mixture-LRT via bootstrap/AIC), tested-vs-untested control, **EVT/GEV** tails (ξ sign → population ceiling; cite Einmahl & Magnus), time-trend.
+
+**Breadth coverage** — the instructions require "as many course tools as relevant." A Codex audit (28.6) flagged these as MISSING or only planned; each is given a home here, serving the story (not a heap):
+- **Sequential Wald / SPRT + stopping times** (was MISSING): a sequential probability-ratio test of the just-below-vs-just-above cut indicator (H0: p=0.5 vs H1: p>0.5) with Wald's A/B log-likelihood boundaries and the **expected stopping time** — "how few weigh-ins near a threshold to sequentially detect cutting?" Ties to H2.
+- **Power + Type I/II tradeoff** (was MISSING/planned): a-priori power analysis (α=0.05, target 0.90) and an explicit α–β tradeoff curve for one key test (bunching or allometry-Wald).
+- **MP/UMP (Neyman-Pearson)** as a real test: state the allometry test of b vs 2/3 **one-sided** so UMP holds for the one-parameter exponential family; the GLRTs are the composite generalization.
+- **Two-independent-samples** (Mann-Whitney / Welch) and **paired-samples** (Wilcoxon signed-rank, attempt-1 vs attempt-3 within lifter), with continuity correction noted.
+- **F-test / ANOVA** (Total across weight classes) + Kruskal-Wallis nonparametric omnibus → Dunn post-hoc (a-priori vs post-hoc narrative).
+- **Independence χ²** (e.g. Tested × made-weight) + **Cramér's V** + **standardized residuals** (which cell drives it).
+- **All four multiple-comparison corrections** (Bonferroni / Holm / Šidák / BH) reported as a #-rejected table wherever a family of tests is run (upgrade H2/H3 from Holm+BH).
 
 ### Phase 6 — Results notebook + publication figures
 - `notebooks/results.ipynb` + `figures.py`: every final figure (≥300 DPI, captioned) and table (every statistic with interpretation), driven by the src modules.
@@ -69,6 +79,7 @@ README.md            exact reproduction steps; requirements pinned; snapshot doc
 
 ### Phase 8 — Reproduction + polish
 - README reproduction steps, pinned `requirements.txt`, documented snapshot, **clean-env acceptance test** (clone → `pip install -r` → run → reproduces everything). Readable vector/≥300 DPI figures.
+- **Data upload** (instructions: "יש להעלות אף את הדאטה"): the ~800 MB CSV cannot go in the repo directly — provide it via a **GitHub Release / LFS / shared link** AND keep `download_data.py` with the pinned snapshot date so the exact data is recoverable.
 
 ## Rough timeline (28.6 → 15.8, ~7 weeks)
 | Week | Focus |
