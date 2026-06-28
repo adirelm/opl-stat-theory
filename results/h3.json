@@ -1,0 +1,108 @@
+{
+  "n_rows_sbd": 2627657,
+  "n_per_lifter": 770186,
+  "by_sex": {
+    "men": {
+      "descriptive_all_rows": {
+        "b": 0.722,
+        "r2": 0.359,
+        "n": 1812439
+      },
+      "formal_per_lifter": {
+        "b": 0.746,
+        "se": 0.0017,
+        "ci": [
+          0.743,
+          0.749
+        ],
+        "n": 545728
+      },
+      "wald_vs_2/3": {
+        "z": 46.84,
+        "p": 0.0
+      },
+      "wald_vs_1": {
+        "z": -149.59,
+        "p": 0.0
+      },
+      "pearson_logbw_logtot": {
+        "r": 0.602,
+        "ci": [
+          0.6,
+          0.603
+        ]
+      },
+      "spearman": 0.581,
+      "logbw_sd": 0.2326,
+      "bw_pctiles": {
+        "5": 57.8,
+        "50": 84.5,
+        "95": 125.0
+      }
+    },
+    "women": {
+      "descriptive_all_rows": {
+        "b": 0.489,
+        "r2": 0.186,
+        "n": 815218
+      },
+      "formal_per_lifter": {
+        "b": 0.507,
+        "se": 0.0025,
+        "ci": [
+          0.502,
+          0.512
+        ],
+        "n": 224458
+      },
+      "wald_vs_2/3": {
+        "z": -64.05,
+        "p": 0.0
+      },
+      "wald_vs_1": {
+        "z": -197.94,
+        "p": 0.0
+      },
+      "pearson_logbw_logtot": {
+        "r": 0.435,
+        "ci": [
+          0.431,
+          0.438
+        ]
+      },
+      "spearman": 0.426,
+      "logbw_sd": 0.2324,
+      "bw_pctiles": {
+        "5": 47.2,
+        "50": 65.6,
+        "95": 102.1
+      }
+    }
+  },
+  "sex_interaction": {
+    "coef_male_x_logbw": 0.239,
+    "se": 0.003,
+    "p": 0.0,
+    "meaning": "men's slope minus women's slope; tests the sex difference in scaling"
+  },
+  "women_b_diagnosis": {
+    "men_logbw_sd": 0.2326,
+    "women_logbw_sd": 0.2324,
+    "range_restriction_explains_low_b": false,
+    "note": "women's log-bodyweight spread is essentially the same as men's, so range restriction does NOT explain the lower b; the sex difference appears genuine in this sample (mechanism left to the discussion)"
+  },
+  "multiple_testing": {
+    "men_vs_2/3": {
+      "p_raw": 0.0,
+      "p_holm": 0.0
+    },
+    "women_vs_2/3": {
+      "p_raw": 0.0,
+      "p_holm": 0.0
+    },
+    "sex_interaction": {
+      "p_raw": 0.0,
+      "p_holm": 0.0
+    }
+  }
+}
