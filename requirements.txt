@@ -5,3 +5,5 @@ python-pptx>=1.0
 # Optional, for exporting the .pptx to PDF from the command line:
 #   LibreOffice (soffice --headless --convert-to pdf ...)
 scipy>=1.11
+statsmodels>=0.14
+scikit-learn>=1.3
