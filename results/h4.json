@@ -1,0 +1,74 @@
+{
+  "regression_total": {
+    "n_clean_rows": 2358246,
+    "n_sample": 200000,
+    "n_lifters": 155305,
+    "features": [
+      "BodyweightKg",
+      "male",
+      "Age",
+      "Age_missing",
+      "eq_Raw",
+      "eq_Single-ply",
+      "eq_Wraps"
+    ],
+    "models": {
+      "linear": {
+        "r2": 0.62,
+        "adj_r2": 0.62,
+        "rmse_kg": 103.5,
+        "mae_kg": 80.3
+      },
+      "random_forest": {
+        "r2": 0.713,
+        "adj_r2": 0.713,
+        "rmse_kg": 89.9,
+        "mae_kg": 69.1
+      }
+    },
+    "rf_permutation_importance": {
+      "BodyweightKg": 0.497,
+      "male": 0.455,
+      "Age_missing": 0.218,
+      "eq_Raw": 0.131,
+      "Age": 0.104,
+      "eq_Single-ply": 0.089,
+      "eq_Wraps": 0.035
+    },
+    "vif": {
+      "BodyweightKg": 1.2,
+      "male": 1.2,
+      "Age": 1.1,
+      "Age_missing": 1.4,
+      "eq_Raw": 12.1,
+      "eq_Single-ply": 12.0,
+      "eq_Wraps": 4.8
+    }
+  },
+  "cut_classifier": {
+    "n": 206452,
+    "n_just_below": 176957,
+    "n_just_above": 29495,
+    "features": [
+      "Age",
+      "tested",
+      "year",
+      "dots",
+      "eq_Single-ply",
+      "eq_Wraps"
+    ],
+    "auc_cv_mean": 0.611,
+    "auc_cv_sd": 0.005,
+    "accuracy_cv_mean": 0.563,
+    "confusion_holdout_[[TN,FP],[FN,TP]]": [
+      [
+        5569,
+        3478
+      ],
+      [
+        23487,
+        29491
+      ]
+    ]
+  }
+}
