@@ -86,10 +86,23 @@
     "meaning": "men's slope minus women's slope; tests the sex difference in scaling"
   },
   "women_b_diagnosis": {
+    "common_support_kg": [
+      57.8,
+      102.1
+    ],
+    "b_common_support": {
+      "men": 0.836,
+      "women": 0.384
+    },
+    "sex_gap_full": 0.239,
+    "sex_gap_common_support": 0.452,
     "men_logbw_sd": 0.2326,
     "women_logbw_sd": 0.2324,
     "range_restriction_explains_low_b": false,
-    "note": "women's log-bodyweight spread is essentially the same as men's, so range restriction does NOT explain the lower b; the sex difference appears genuine in this sample (mechanism left to the discussion)"
+    "note": "the sex gap in b PERSISTS on common bodyweight support -> it is NOT an artifact of different weight ranges; the difference appears genuine (mechanism left to the discussion)"
+  },
+  "notes": {
+    "wald_vs_1": "secondary anchor only; NOT part of the Holm-corrected family"
   },
   "multiple_testing": {
     "men_vs_2/3": {

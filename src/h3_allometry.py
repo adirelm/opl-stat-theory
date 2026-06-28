@@ -22,6 +22,11 @@ import config, data, prep, stats_utils as su
 ISO = 2.0 / 3.0                                  # isometric reference exponent
 
 
+def _fp(p):
+    """Format a p-value, flagging underflow honestly (Wald z can be huge here)."""
+    return "<1e-300" if p == 0.0 else f"{p:.2e}"
+
+
 def _fisher_ci(r, n, z=su.Z95):
     """Fisher z-transform CI for a correlation r."""
     zr = np.arctanh(r); se = 1.0 / np.sqrt(n - 3)
@@ -78,18 +83,36 @@ def run(save=True):
         "meaning": "men's slope minus women's slope; tests the sex difference in scaling"}
     wald_ps["sex_interaction"] = p_int
 
-    # ---- diagnosis of the low women's b: is it range restriction? ----
-    men_sd = res["by_sex"]["men"]["logbw_sd"]; wom_sd = res["by_sex"]["women"]["logbw_sd"]
-    explains = wom_sd < 0.8 * men_sd
+    # ---- diagnosis of the low women's b: COMMON-SUPPORT refit ----
+    # Comparing marginal logBW spread is not enough (restricting x mainly hurts
+    # precision, not the slope). The real test: refit BOTH sexes on the OVERLAPPING
+    # bodyweight range. If the sex gap in b persists on common support, it is not an
+    # artifact of the sexes covering different weight ranges.
+    bw_m = pl.loc[pl["male"] == 1, "BodyweightKg"]; bw_w = pl.loc[pl["male"] == 0, "BodyweightKg"]
+    lo = float(max(bw_m.quantile(0.05), bw_w.quantile(0.05)))
+    hi = float(min(bw_m.quantile(0.95), bw_w.quantile(0.95)))
+    cs = pl[(pl["BodyweightKg"] >= lo) & (pl["BodyweightKg"] <= hi)]
+    cs_b = {}
+    for sex, name in [("M", "men"), ("F", "women")]:
+        gg = cs[cs["Sex"] == sex]
+        cs_b[name] = round(su.ols_loglog(gg["logbw"].to_numpy(), gg["logtot"].to_numpy())["b"], 3)
+    gap_full = (res["by_sex"]["men"]["formal_per_lifter"]["b"]
+                - res["by_sex"]["women"]["formal_per_lifter"]["b"])
+    gap_cs = round(cs_b["men"] - cs_b["women"], 3)
+    persists = gap_cs > 0.5 * gap_full
     res["women_b_diagnosis"] = {
-        "men_logbw_sd": men_sd, "women_logbw_sd": wom_sd,
-        "range_restriction_explains_low_b": bool(explains),
-        "note": ("women have a much narrower log-bodyweight spread -> range restriction "
-                 "plausibly lowers the estimated slope")
-                if explains else
-                ("women's log-bodyweight spread is essentially the same as men's, so range "
-                 "restriction does NOT explain the lower b; the sex difference appears genuine "
-                 "in this sample (mechanism left to the discussion)")}
+        "common_support_kg": [round(lo, 1), round(hi, 1)],
+        "b_common_support": cs_b,
+        "sex_gap_full": round(gap_full, 3), "sex_gap_common_support": gap_cs,
+        "men_logbw_sd": res["by_sex"]["men"]["logbw_sd"],
+        "women_logbw_sd": res["by_sex"]["women"]["logbw_sd"],
+        "range_restriction_explains_low_b": (not persists),
+        "note": ("the sex gap in b PERSISTS on common bodyweight support -> it is NOT an "
+                 "artifact of different weight ranges; the difference appears genuine "
+                 "(mechanism left to the discussion)") if persists else
+                ("the sex gap SHRINKS substantially on common support -> partly a "
+                 "range/support effect")}
+    res["notes"] = {"wald_vs_1": "secondary anchor only; NOT part of the Holm-corrected family"}
 
     # ---- multiple-testing across the formal tests ----
     keys = list(wald_ps); ps = [wald_ps[k] for k in keys]
@@ -107,18 +130,19 @@ def run(save=True):
         print(f"  descriptive (all rows): b={d['b']} (R2={d['r2']}, n={d['n']:,})")
         print(f"  formal (per-lifter, HC3): b={f['b']} +/- se {f['se']}  "
               f"CI[{f['ci'][0]:.3f}, {f['ci'][1]:.3f}]  n={f['n']:,}")
-        print(f"  Wald vs 2/3: z={s['wald_vs_2/3']['z']}  p={s['wald_vs_2/3']['p']:.2e}")
+        print(f"  Wald vs 2/3: z={s['wald_vs_2/3']['z']}  p={_fp(s['wald_vs_2/3']['p'])}")
         print(f"  logBW sd={s['logbw_sd']} (range restriction), BW p5/50/95={list(s['bw_pctiles'].values())}")
     si = res["sex_interaction"]
     print(f"\nsex interaction (men slope - women slope): {si['coef_male_x_logbw']:+.3f} "
-          f"+/- {si['se']}  p={si['p']:.2e}")
-    print("\nmultiple-testing (Holm):")
+          f"+/- {si['se']}  p={_fp(si['p'])}")
+    print("\nmultiple-testing (Holm; wald_vs_1 is a secondary anchor, excluded):")
     for k, v in res["multiple_testing"].items():
-        print(f"  {k:<18} p_raw={v['p_raw']:.2e}  p_holm={v['p_holm']:.2e}  "
+        print(f"  {k:<18} p_raw={_fp(v['p_raw'])}  p_holm={_fp(v['p_holm'])}  "
               f"{'reject' if v['p_holm'] < config.ALPHA else 'ns'}")
     dg = res["women_b_diagnosis"]
-    print(f"\ndiagnosis (women's low b): men logBW sd={dg['men_logbw_sd']} vs women {dg['women_logbw_sd']} "
-          f"-> range restriction explains it? {dg['range_restriction_explains_low_b']}")
+    print(f"\ndiagnosis (common-support refit on BW {dg['common_support_kg']} kg):")
+    print(f"  b men={dg['b_common_support']['men']} vs women={dg['b_common_support']['women']}; "
+          f"sex gap full={dg['sex_gap_full']} -> common-support={dg['sex_gap_common_support']}")
     print(f"  => {dg['note']}")
     print("\nNOTE: at this n almost everything is 'significant' -> we lead with the effect "
           "size (b and its CI) and the SEX GAP, not the p-values.")
