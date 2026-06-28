@@ -34,16 +34,20 @@ ERA_MIN = 2014                                  # USAPL adopted IPF kg classes ~
 
 
 def _mccrary(bw, cutoff, win=MCWIN):
-    """CJM density-discontinuity test at `cutoff` on a local window. Returns dict."""
-    from rddensity import rddensity
+    """CJM density-discontinuity test at `cutoff` on a local window. Returns dict.
+
+    `bw` should be DE-HEAPED upstream so round/half-kg weigh-ins do not create
+    spurious density features at the cutoff.
+    """
     seg = bw[(bw > cutoff - win) & (bw < cutoff + win)]
     try:
+        from rddensity import rddensity          # pip install rddensity (pinned in requirements)
         out = rddensity(np.asarray(seg, float), c=float(cutoff))
         return {"t": float(out.test["t_jk"]), "p": float(out.test["p_jk"]),
                 "f_left": float(out.hat["left"]), "f_right": float(out.hat["right"]),
                 "f_diff": float(out.hat["diff"]), "n_window": int(len(seg))}
-    except Exception as e:                       # degenerate window etc.
-        return {"t": float("nan"), "p": float("nan"), "error": str(e)[:80],
+    except Exception as e:                        # missing package, degenerate window, etc.
+        return {"t": float("nan"), "p": float("nan"), "error": str(e)[:100],
                 "n_window": int(len(seg))}
 
 
@@ -70,10 +74,13 @@ def run(save=True):
     bw_pl = per_lifter["BodyweightKg"].to_numpy()
 
     # PURE-KG subset (post-2014): only the modern kg class scheme, so placebos /
-    # control are not contaminated by historical lb classes. Formal test uses this.
+    # control are not contaminated by historical lb classes. Formal test uses this,
+    # with a RANDOM (seeded) meet per lifter (independent of outcome) and DE-HEAPED
+    # bodyweights (round/half-kg weigh-ins removed) -- consistent with the effect sizes.
     pk_rows = clean[clean["year"] >= ERA_MIN]
-    pk_per_lifter = prep.dedup_per_lifter(pk_rows)
-    bw_pk = pk_per_lifter["BodyweightKg"].to_numpy()
+    pk_per_lifter = prep.dedup_per_lifter(pk_rows, keep="random")
+    bw_pk_raw = pk_per_lifter["BodyweightKg"].to_numpy()
+    bw_pk = prep.deheap(bw_pk_raw)               # de-heaped sample for the formal density test
 
     # ---- 1. effect sizes (all rows, de-heaped) at every limit + control ----
     effect = {}
@@ -84,7 +91,7 @@ def run(save=True):
                      "ci_half": round(half, 3), "ratio": round(ratio, 2),
                      "is_limit": L in LIMITS}
     # confirm the headline (83 kg) survives on the pure-kg subset
-    pk_below, pk_above = prep.bunching_counts(bw_pk, config.H2_REAL_LIMIT)
+    pk_below, pk_above = prep.bunching_counts(bw_pk_raw, config.H2_REAL_LIMIT)
     pk_lr, pk_half, pk_ratio = su.log_ratio_ci(pk_below, pk_above)
     effect["83_pure_kg"] = {"log_ratio": round(pk_lr, 3), "ci_half": round(pk_half, 3),
                             "ratio": round(pk_ratio, 2), "n_per_lifter": int(len(pk_per_lifter))}
@@ -96,17 +103,30 @@ def run(save=True):
         formal[c]["kind"] = ("limit" if c in LIMITS else
                              "control" if c == CONTROL else "placebo")
 
-    # multiple-testing correction across the 7 real limits
-    limit_ps = [formal[L]["p"] for L in LIMITS]
-    valid = [p for p in limit_ps if np.isfinite(p)]
-    corr = {}
-    if valid:
-        p_holm, rej_holm = su.correct_pvalues(limit_ps, method="holm")
-        p_bh, rej_bh = su.correct_pvalues(limit_ps, method="fdr_bh")
-        corr = {"limits": LIMITS,
-                "p_raw": [float(p) for p in limit_ps],
-                "p_holm": [float(p) for p in p_holm], "reject_holm": [bool(b) for b in rej_holm],
-                "p_bh": [float(p) for p in p_bh], "reject_bh": [bool(b) for b in rej_bh]}
+    # multiple-testing correction (NaN-safe: correct only finite p-values, map back).
+    # Limits and placebos corrected as SEPARATE families.
+    def _correct_block(keys):
+        ps = [formal[k]["p"] for k in keys]
+        fin = [i for i, p in enumerate(ps) if np.isfinite(p)]
+        out = {k: {"p_raw": (float(ps[i]) if np.isfinite(ps[i]) else None)} for i, k in enumerate(keys)}
+        if fin:
+            fp = [ps[i] for i in fin]
+            ph, _ = su.correct_pvalues(fp, method="holm")
+            pb, _ = su.correct_pvalues(fp, method="fdr_bh")
+            for j, i in enumerate(fin):
+                out[keys[i]]["p_holm"] = float(ph[j]); out[keys[i]]["p_bh"] = float(pb[j])
+        return out
+
+    limits_corr = _correct_block(LIMITS)
+    plac_corr = _correct_block(PLACEBOS)
+    # falsification: does ANY placebo reject in the BUNCHING direction (t<0) after BH?
+    placebo_false_pos = [c for c in PLACEBOS
+                         if np.isfinite(formal[c]["t"]) and formal[c]["t"] < 0
+                         and plac_corr[c].get("p_bh", 1.0) < config.ALPHA]
+    corr = {"limits": limits_corr, "placebos": plac_corr,
+            "all_limits_reject_holm": all(limits_corr[L].get("p_holm", 1.0) < config.ALPHA for L in LIMITS),
+            "all_limits_reject_bh": all(limits_corr[L].get("p_bh", 1.0) < config.ALPHA for L in LIMITS),
+            "placebo_false_positives_bunching_dir": placebo_false_pos}
 
     # ---- 3. spike-width + subgroup robustness at the headline limit (83) ----
     spike = {L: _spike_width(bw_all, L) for L in (config.H2_REAL_LIMIT, CONTROL)}
@@ -147,9 +167,10 @@ def run(save=True):
                   f"(f_left={f['f_left']:.4f} > f_right={f['f_right']:.4f}? diff={f['f_diff']:+.4f})")
         else:
             print(f"  {c:>4} kg [{tag:>8}]: (no estimate) {f.get('error','')}")
-    if corr:
-        print("\nmultiple-testing across 7 limits: all reject after Holm?",
-              all(corr["reject_holm"]), "| after BH?", all(corr["reject_bh"]))
+    print("\nmultiple-testing (Holm + BH, limits and placebos as separate families):")
+    print(f"  all 7 limits reject after Holm? {corr['all_limits_reject_holm']} | after BH? {corr['all_limits_reject_bh']}")
+    print(f"  placebo false-positives in bunching direction (t<0 & BH-sig)? "
+          f"{corr['placebo_false_positives_bunching_dir'] or 'NONE (falsification passed)'}")
     print("\nspike-width (share of (L-2,L] mass in innermost 0.5 kg):")
     for L, s in spike.items():
         print(f"  {L} kg: {s['share_in_innermost_0.5kg']}  (n_below2={s['n_within_2kg_below']:,})")

@@ -12,6 +12,8 @@
   "p_hat_on_grid": 0.9825,
   "glrt_2lnLambda": 39275413.502462484,
   "bootstrap_pvalue": 0.0003332222592469177,
+  "bootstrap_p_is_upper_bound": true,
+  "bootstrap_p_upper": 0.0003332222592469177,
   "bootstrap_null_mass_at_0": 0.512,
   "cutoff_naive_chi2_1_95": 3.841,
   "cutoff_mixture_theory_95": 2.706,

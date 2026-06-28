@@ -55,11 +55,23 @@ def bunching_counts(bw, limit, w=config.H2_WINDOW, do_deheap=True):
 
 
 # ---------- formal-test unit: one row per lifter ----------
-def dedup_per_lifter(df, name_col="Name", rank_col="TotalKg", keep="max"):
-    """Collapse to one row per lifter (their personal best by rank_col).
+def dedup_per_lifter(df, name_col="Name", rank_col="TotalKg", keep="random", seed=7):
+    """Collapse to one row per lifter to kill pseudo-replication for the formal tests.
 
-    Kills pseudo-replication for the formal tests. keep='max' -> PR; 'first' -> first seen.
+    OpenPowerlifting disambiguates distinct people who share a name with a '#N'
+    suffix in the Name field, so Name is a usable lifter key.
+
+    keep:
+      'random' -> a random (seeded) meet per lifter. Preferred for the bodyweight
+                  density test: meet selection is INDEPENDENT of the outcome, so it
+                  does not distort the bodyweight distribution near cutoffs.
+      'max'    -> the lifter's PR meet (max rank_col). Outcome-dependent; use only
+                  where the best meet is the intended unit.
+      'first'  -> first row seen per lifter.
     """
+    if keep == "random":
+        return (df.sample(frac=1, random_state=seed)
+                  .drop_duplicates(subset=[name_col], keep="first").reset_index(drop=True))
     if keep == "max":
         idx = df.groupby(name_col)[rank_col].idxmax()
         return df.loc[idx.dropna()].reset_index(drop=True)
