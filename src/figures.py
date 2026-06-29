@@ -106,7 +106,7 @@ def fig_allometry(al):
     xr = np.linspace(np.percentile(allx, 1), np.percentile(allx, 99), 50)
     ax.plot(xr, ybar + (2 / 3) * (xr - xbar), color="#222", lw=2.5, ls="--", label="isometric: b = 2/3")
     ax.set_xlabel("log( Bodyweight )"); ax.set_ylabel("log( Total )")
-    ax.set_title("Fig 4. Allometric scaling differs by sex (men ~ 0.72, women ~ 0.49 vs 2/3)")
+    ax.set_title("Fig 4. Allometric scaling by sex (all-row OLS fits; formal per-lifter HC3: 0.75 / 0.51)")
     ax.legend(frameon=True, framealpha=0.9, loc="lower right", fontsize=10)
     save(fig, "fig4_allometry.png")
 
@@ -153,7 +153,8 @@ def fig_breadth(men_recent_chrono):
     A = np.log((1 - beta) / alpha); B = np.log(beta / (1 - alpha))
     s1, s0 = np.log(p1 / p0), np.log((1 - p1) / (1 - p0))
     inc = np.where(obs == 1, s1, s0); llr = np.cumsum(inc)
-    stop = int(np.argmax(llr >= A)) + 1 if (llr >= A).any() else len(llr)
+    crossed = (llr >= A) | (llr <= B)               # stop at first crossing of EITHER boundary
+    stop = int(np.argmax(crossed)) + 1 if crossed.any() else len(llr)
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 4.0))
     a1.plot(np.arange(1, min(stop + 15, len(llr)) + 1), llr[:min(stop + 15, len(llr))], color=C_M, lw=1.8)
     a1.axhline(A, color=C_GRID, ls="--", lw=1.5, label=f"accept H1 (A={A:.2f})")
