@@ -11,7 +11,7 @@ Three layers:
   2. FORMAL TEST: Cattaneo-Jansson-Ma density-discontinuity test (rddensity, the
      modern McCrary) at each limit + control + placebo points. To respect
      independence (the same lifter recurs), the formal test runs on ONE ROW PER
-     LIFTER (their PR-meet bodyweight). t<0 / diff<0 = density drops at the cutoff
+     LIFTER (a random seeded meet). t<0 / diff<0 = density drops at the cutoff
      = excess just below.
   3. ROBUSTNESS: spike-width (how tightly the excess hugs the limit), placebo
      points (should be flat), subgroup persistence (tested/untested, raw/equipped),
