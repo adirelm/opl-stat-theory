@@ -12,3 +12,7 @@ venv/
 # os
 .DS_Store
 data/*.gz
+
+# course-provided materials (NOT part of the submission)
+private/
+reference/
