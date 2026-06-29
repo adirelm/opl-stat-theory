@@ -1,0 +1,247 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{../figures/}}
+
+\begin{document}
+
+\title{Gaming the Two Numbers They Control: Quantization, Weight-Cut Bunching,
+and the Limits of Strength in 3.9~Million Powerlifting Results}
+
+\author{\IEEEauthorblockN{Adir Elmakais \and David Levin}
+\IEEEauthorblockA{Statistical Theory, M.Sc.\ in Computer Science, Bar-Ilan University}}
+
+\maketitle
+
+\begin{abstract}
+A powerlifting competitor controls exactly two numbers: the weight loaded on the
+bar and their bodyweight at weigh-in. We ask whether these choices leave
+measurable statistical fingerprints, using $\sim$3.94 million competition results
+from the public-domain OpenPowerlifting database. Four findings, each answered
+with a course-appropriate test and led by effect size (at $n\!\approx\!3.9$M almost
+everything is ``significant''). (i)~\emph{Quantization}: 96.2\% of 13.4M attempt
+loads sit exactly on the 2.5~kg plate grid; a generalized likelihood-ratio test
+(GLRT) whose null parameter lies on the boundary is calibrated by a parametric
+bootstrap. (ii)~\emph{Weight-cut bunching}: bodyweight piles up just below every
+IPF class limit (de-heaped $\log(\text{below}/\text{above})=+1.92$ at 83~kg); a
+Cattaneo--Jansson--Ma density-discontinuity test rejects at all seven limits
+(surviving Holm and Benjamini--Hochberg), a non-limit control is flat, and
+placebos show no false bunching. (iii)~\emph{Allometry}: strength scales with
+bodyweight differently by sex ($b\!=\!0.75$ men, $0.51$ women vs.\ the isometric
+$2/3$; a Sex$\times\log$(BW) interaction is highly significant and persists on
+common support). (iv)~\emph{Prediction}: basic controllable variables predict the
+total ($R^2=0.70$, random forest, leakage-safe grouped CV). The strategy leaves a
+measurable fingerprint. Code and data:
+\url{https://github.com/adirelm/opl-stat-theory}.
+\end{abstract}
+
+\section{Introduction}
+Powerlifting comprises three lifts (squat, bench press, deadlift), three attempts
+each, contested within bodyweight classes. A competitor's agency reduces to two
+numbers: the load chosen for each attempt, and the bodyweight registered at
+weigh-in. We treat these as a natural laboratory for statistical signatures of
+strategic behaviour, and ask what $\sim$3.94M results reveal about the limits of
+human strength.
+
+\textbf{Related work.} Weight cutting is well documented in weight-class sports,
+and bunching/manipulation around administrative thresholds is classically tested
+with the McCrary density test~\cite{mccrary} and its modern local-polynomial
+form~\cite{cjm}. Allometric (square--cube) scaling predicts strength
+$\propto$ bodyweight$^{2/3}$. Extreme-value theory has been used to estimate
+ultimate athletic records~\cite{einmahl}. On OpenPowerlifting specifically, recent
+work studies \emph{scoring/scaling}~\cite{peyen}; to our knowledge no formal
+manipulation test of weight-cut bunching has been applied to this dataset.
+
+\textbf{Contribution.} We tell one story---``the two numbers and the limits of
+strength''---spanning classical inference and machine learning: (1)~a
+rounded-likelihood \emph{quantization} GLRT with boundary-bootstrap calibration;
+(2)~the first formal density-discontinuity test of weight-cut \emph{bunching} on
+OpenPowerlifting, with a non-limit control, placebos, de-heaping and
+multiple-testing corrections; (3)~a sex-interaction \emph{allometry} model; and
+(4)~a leakage-safe strength-\emph{prediction} model. Throughout we lead with
+effect sizes and confidence intervals rather than $p$-values.
+
+\section{Results}
+All intervals are 95\%. Headline effect sizes use all rows; formal tests use one
+row per lifter (to respect independence) and, where the class scheme matters, the
+modern kg-only era (2014$+$).
+
+\subsection{Attempt loads are quantized to the 2.5\,kg grid (H1)}
+Of 13{,}397{,}702 valid attempt loads, \textbf{96.20\%} (CI $[96.19,96.21]$) fall
+exactly on the 2.5~kg plate grid (Fig.~\ref{fig:grid}); the smallest standard
+plate is 1.25~kg, loaded on both sides. We model the within-cell position on the
+kg-native (0.5~kg) lattice as a spike-plus-uniform mixture and test the spike
+weight $\pi\!=\!0$ versus $\pi\!>\!0$ with a GLRT. Because $\pi=0$ lies on the
+boundary of the parameter space, Wilks' $\chi^2$ is invalid; the null is a
+$50{:}50$ mixture of $\chi^2_0$ and $\chi^2_1$~\cite{chernoff,selfliang}, which our
+parametric bootstrap recovers (mass at zero $=0.51$; calibrated 95\% cutoff $2.59$
+vs.\ the naive $3.84$). The observed statistic ($2\ln\Lambda=3.9\!\times\!10^7$)
+exceeds every bootstrap draw ($p<3.3\!\times\!10^{-4}$). The 2.1\% off-grid loads
+are themselves quantized: 82\% are round pound loads (e.g., $102.06$~kg $=225$~lb),
+a units artifact, not noise.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\columnwidth]{fig1_quantization.png}
+\caption{H1: attempt loads concentrate on the 2.5~kg plate grid.}
+\label{fig:grid}\end{figure}
+
+\subsection{Bodyweight bunches below class limits (H2)}
+Bodyweight piles up just below real class limits (Fig.~\ref{fig:bunch}). On
+de-heaped data (round/half-kg weigh-ins removed), the log-ratio of just-below to
+just-above counts is positive at all seven IPF men's limits and strongest at
+83~kg ($+1.92\pm0.04$, a $6.8\times$ asymmetry; Table~\ref{tab:limits},
+Fig.~\ref{fig:limits}); a non-limit control at 91~kg is flat/slightly negative
+($-0.21$). The formal Cattaneo--Jansson--Ma density-discontinuity
+test~\cite{cjm} (one random meet per lifter, 2014$+$) rejects at all seven limits
+with the density dropping at the cutoff ($t<0$), surviving both Holm and
+Benjamini--Hochberg correction; the control is flat ($p=0.56$) and no placebo
+shows the bunching pattern. The effect is robust across equipment (raw $+2.14$,
+equipped $+1.51$) and persists on the clean kg-only subset ($+1.82$).
+
+\begin{figure}[t]\centering
+\includegraphics[width=\columnwidth]{fig2_bunching.png}
+\caption{H2: bunching just below a real limit (83~kg) but not at a non-limit
+control (91~kg); round-number weigh-ins removed.}
+\label{fig:bunch}\end{figure}
+
+\begin{table}[t]\centering
+\caption{De-heaped $\log(\text{below}/\text{above})$ at each IPF men's limit
+(all rows). Grey row is a non-limit control.}
+\label{tab:limits}
+\begin{tabular}{lccc}
+\toprule
+Limit (kg) & log-ratio & $\pm$ & $\times$ asymmetry\\
+\midrule
+59 & $+0.99$ & 0.04 & 2.7\\
+66 & $+1.18$ & 0.04 & 3.2\\
+74 & $+1.00$ & 0.03 & 2.7\\
+\textbf{83} & $\mathbf{+1.92}$ & 0.04 & \textbf{6.8}\\
+93 & $+1.65$ & 0.04 & 5.2\\
+105 & $+1.17$ & 0.04 & 3.2\\
+120 & $+0.74$ & 0.06 & 2.1\\
+\midrule
+91 (control) & $-0.21$ & 0.03 & 0.8\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]\centering
+\includegraphics[width=\columnwidth]{fig3_all_limits.png}
+\caption{H2: excess just-below mass at every real limit; control near zero.}
+\label{fig:limits}\end{figure}
+
+\subsection{Allometric scaling differs by sex (H3)}
+Fitting $\log(\text{Total})=a+b\log(\text{BW})$ (Fig.~\ref{fig:allo}), the
+exponent is $b=0.75$ (CI $[0.74,0.75]$) for men and $0.51$ ($[0.50,0.51]$) for
+women, using heteroskedasticity-robust (HC3) standard errors on one row per
+lifter. A Wald test rejects the isometric $b=2/3$ for both sexes; framed
+one-sided, this is a uniformly-most-powerful test for the exponential family. A
+pooled Sex$\times\log$(BW) interaction estimates the men-minus-women slope gap at
+$+0.24$ ($p\!\ll\!10^{-3}$), and the gap \emph{grows} on the common bodyweight
+support ($0.84$ vs.\ $0.38$), so it is not an artifact of the sexes occupying
+different weight ranges. The message is not that women are weaker, but that the
+estimated scaling differs.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\columnwidth]{fig4_allometry.png}
+\caption{H3: allometric scaling by sex vs.\ the isometric $2/3$.}
+\label{fig:allo}\end{figure}
+
+\subsection{Strength is predictable from basic variables (H4)}
+Predicting the total from controllable/basic variables (bodyweight, sex,
+equipment, age), with every split grouped by lifter and fold-local preprocessing,
+a random forest reaches $R^2=0.70$ (RMSE $86$~kg) versus $0.61$ for linear
+regression (Fig.~\ref{fig:pred}); bodyweight and sex dominate the permutation
+importance. A logistic ``made-weight'' classifier built from \emph{non-bodyweight}
+features only (age, tested status, era, equipment; Dots excluded as it is a
+function of total and bodyweight) reaches AUC $=0.58$---honestly weak, since
+cutting is driven by bodyweight relative to the limit, which the label encodes and
+the features deliberately exclude.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\columnwidth]{fig5_prediction.png}
+\caption{H4: strength prediction---importance and grouped-CV $R^2$.}
+\label{fig:pred}\end{figure}
+
+\subsection{Supporting analyses}
+The apparent two-component structure of raw totals is just sex: by BIC and a
+bootstrap likelihood-ratio test, raw Total prefers two Gaussian components but the
+sex-normalized Dots score prefers one (Fig.~\ref{fig:struct}). Untested
+competitions show higher Dots than tested ones (medians $344$ vs.\ $318$,
+rank-biserial $-0.20$). An extreme-value (GEV) fit to equal-size block maxima of
+recent totals gives shape $\xi=-0.02$ with CI $[-0.20,3.77]$: a population
+strength ceiling is \emph{not} supported by the data (the CI includes zero).
+Median Dots has drifted down over 2000--2024 (Spearman $\rho=-0.54$), consistent
+with broadening participation. Finally, after deduplicating to one row per lifter,
+the association between tested status and cutting is negligible (Cram\'er's
+$V=0.005$), illustrating how pseudo-replication inflates significance.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\columnwidth]{fig6_structure.png}
+\caption{The apparent ``mixture'' in raw Total is sex; Dots removes it.}
+\label{fig:struct}\end{figure}
+
+\section{Methods}
+\textbf{Data.} A pinned snapshot of OpenPowerlifting (3{,}941{,}811 rows,
+public domain; SHA-256 recorded for reproducibility). The unit of analysis is the
+\emph{attempt} for H1 (the mechanism is within-competitor) and one \emph{row per
+lifter} for the cross-sectional formal tests; de-heaping removes round/half-kg
+weigh-ins. Because $n\!\approx\!3.9$M makes almost any departure significant, we
+report effect sizes with CIs and apply multiple-testing corrections (Bonferroni,
+Holm, \v{S}id\'ak, Benjamini--Hochberg) to pre-declared families.
+
+\textbf{Tests.} H1 uses MLE and a GLRT ($2\ln\Lambda\sim\chi^2$ under regularity);
+at the boundary we calibrate the null by parametric bootstrap~\cite{chernoff,
+selfliang} and report a $\chi^2$ goodness-of-fit. H2 uses the Cattaneo--Jansson--Ma
+local-polynomial density-discontinuity (manipulation) test~\cite{cjm}, with a
+non-limit control, placebos and de-heaping. H3 uses OLS in log-log space with HC3
+and clustered SEs, a Wald test against $2/3$, and a Sex$\times\log$(BW)
+interaction; correlations report Fisher-transform CIs. H4 uses linear and
+random-forest regression and logistic classification with grouped-by-lifter
+cross-validation ($R^2$/Adjusted-$R^2$/RMSE/MAE, permutation importance, VIF, AUC).
+Supporting analyses add a bootstrap mixture-LRT (AIC/BIC), a GEV extreme-value fit,
+a Wald sequential probability ratio test (with stopping time and expected sample
+size), one- and two-sample nonparametric tests (Wilcoxon signed-rank,
+Mann--Whitney), an $F$-test/Kruskal--Wallis with post-hoc comparisons, and a
+$\chi^2$ independence test with Cram\'er's $V$ and standardized residuals.
+
+\section{Discussion}
+\textbf{Conclusions.} The two numbers a competitor controls leave measurable,
+falsification-surviving traces: attempt loads are quantized to the plate grid, and
+bodyweight bunches specifically below class limits and nowhere else. Strength
+scaling is sex-specific, and basic controllable variables already explain $\sim$70\%
+of the variance in the total.
+
+\textbf{Limitations and null results.} This is observational: we identify
+population-level patterns consistent with weight cutting, not individual intent.
+The 120~kg class---the unbounded top class---shows the weakest bunching, exactly as
+incentives predict. The EVT analysis does \emph{not} support a strength ceiling
+(wide $\xi$ CI), and tested status is independent of cutting; we report these null
+results as findings. Lifter identity is name-based, the per-lifter meet is chosen
+at random (we report sensitivity), and the formal bunching test is restricted to
+the modern kg-only era. These are the natural next steps for the full study.
+
+\begin{thebibliography}{9}
+\bibitem{mccrary} J.~McCrary, ``Manipulation of the running variable in the
+regression discontinuity design: A density test,'' \emph{J.\ Econometrics},
+vol.~142, no.~2, pp.~698--714, 2008.
+\bibitem{cjm} M.~D.~Cattaneo, M.~Jansson, and X.~Ma, ``Simple local polynomial
+density estimators,'' \emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~115, no.~531,
+pp.~1449--1455, 2020.
+\bibitem{chernoff} H.~Chernoff, ``On the distribution of the likelihood ratio,''
+\emph{Ann.\ Math.\ Statist.}, vol.~25, no.~3, pp.~573--578, 1954.
+\bibitem{selfliang} S.~G.~Self and K.-Y.~Liang, ``Asymptotic properties of maximum
+likelihood estimators and likelihood ratio tests under nonstandard conditions,''
+\emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~82, no.~398, pp.~605--610, 1987.
+\bibitem{einmahl} J.~H.~J.~Einmahl and J.~R.~Magnus, ``Records in athletics through
+extreme-value theory,'' \emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~103, no.~484,
+pp.~1382--1391, 2008.
+\bibitem{peyen} Peyen \emph{et al.}, ``Discussing diminishing returns: A new
+scoring system for powerlifting,'' arXiv:2503.13040, 2025.
+\bibitem{opl} OpenPowerlifting, \url{https://www.openpowerlifting.org} (data
+released into the public domain).
+\end{thebibliography}
+
+\end{document}
