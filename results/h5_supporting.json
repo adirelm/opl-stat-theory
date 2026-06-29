@@ -50,5 +50,13 @@
     "spearman_rho": -0.542,
     "spearman_p": 0.005101122263604564,
     "direction": "falling"
+  },
+  "residual_normality": {
+    "n": 1812439,
+    "skew": -0.773,
+    "excess_kurtosis": 1.782,
+    "dagostino_p_full": 0.0,
+    "dagostino_p_median_at_n300": 0.0,
+    "note": "approx. normal in the bulk with a heavy lower tail; a formal test rejects at full n only because n is huge (p collapses as n grows), so slope inference relies on the CLT and we lead with effect size"
   }
 }

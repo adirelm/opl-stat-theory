@@ -12,9 +12,12 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from matplotlib.ticker import MultipleLocator
 from matplotlib.patches import Patch
 from scipy import stats as sp
+
+C_GREY = "#9aa3ad"
 
 import config, data, prep, stats_utils as su
 
@@ -77,14 +80,22 @@ def fig_bunching(men):
 
 def fig_all_limits(men):
     fig, ax = plt.subplots(figsize=(7.5, 4.0))
+    data = {L: su.log_ratio_ci(*prep.bunching_counts(men, L))
+            for L in config.IPF_MEN_CLASSES + [config.H2_CONTROL]}
+    lr_lim = {L: data[L][0] for L in config.IPF_MEN_CLASSES}
+    best = max(lr_lim, key=lr_lim.get); lo, hi = min(lr_lim.values()), max(lr_lim.values())
     xs, lrs, errs, cols = [], [], [], []
     for L in config.IPF_MEN_CLASSES + [config.H2_CONTROL]:
-        b, a = prep.bunching_counts(men, L); lr, half, _ = su.log_ratio_ci(b, a)
-        xs.append(str(L)); lrs.append(lr); errs.append(half)
-        cols.append(C_LIM if L == config.H2_CONTROL else C_HL)
+        lr, half, _ = data[L]; xs.append(str(L)); lrs.append(lr); errs.append(half)
+        if L == config.H2_CONTROL:
+            cols.append(C_GREY)                                   # non-limit control
+        elif L == best:
+            cols.append(C_M)                                      # best result in blue
+        else:
+            cols.append(cm.Oranges(0.35 + 0.5 * (lr - lo) / (hi - lo + 1e-9)))  # gradient
     ax.bar(xs, lrs, yerr=errs, color=cols, edgecolor="white", capsize=3)
     ax.axhline(0, color="#333", lw=1)
-    ax.set_xlabel("Class limit (kg); grey = non-limit control")
+    ax.set_xlabel("Class limit (kg); blue = strongest, grey = non-limit control")
     ax.set_ylabel("de-heaped log(below / above)")
     ax.set_title("Fig 3. Excess just-below mass at every real limit; control near zero")
     save(fig, "fig3_all_limits.png")
@@ -116,11 +127,12 @@ def fig_prediction():
     imp = h4["regression_total"]["rf_permutation_importance"]
     mods = h4["regression_total"]["models"]
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 4.0))
-    feats = list(imp)[::-1]
-    a1.barh(feats, [imp[f] for f in feats], color=C_M, edgecolor="white")
+    feats = list(imp)[::-1]; vals = [imp[f] for f in feats]; mx = max(vals) + 1e-9
+    a1.barh(feats, vals, color=[cm.Blues(0.4 + 0.5 * v / mx) for v in vals], edgecolor="white")
     a1.set_xlabel("permutation importance (drop in R2)"); a1.set_title("RF feature importance")
     names = [m for m in mods]; r2s = [mods[m]["cv_r2"] for m in names]
-    a2.bar(names, r2s, color=[C_OFF, C_HL], edgecolor="white")
+    bcols = [C_GREY] * len(names); bcols[int(np.argmax(r2s))] = C_M    # best model in blue
+    a2.bar(names, r2s, color=bcols, edgecolor="white")
     for i, v in enumerate(r2s): a2.text(i, v + 0.01, f"{v:.2f}", ha="center", fontsize=10)
     a2.set_ylim(0, 1); a2.set_ylabel("CV R2 (grouped by lifter)"); a2.set_title("Strength prediction (TotalKg)")
     fig.suptitle("Fig 5. Predicting strength: bodyweight + sex dominate; RF beats linear",
@@ -176,6 +188,36 @@ def fig_breadth(men_recent_chrono):
     save(fig, "fig7_breadth.png")
 
 
+def fig_normality(sbd):
+    men = sbd[sbd.Sex == "M"]
+    x, y = np.log(men.BodyweightKg.to_numpy()), np.log(men.TotalKg.to_numpy())
+    b, a = np.polyfit(x, y, 1); r = y - (a + b * x); r = (r - r.mean()) / r.std()
+    rng = np.random.default_rng(config.SEED)
+    fig, (axq, axp) = plt.subplots(1, 2, figsize=(9.8, 4.1))
+    samp = r[rng.choice(len(r), 4000, replace=False)]
+    osm, osr = sp.probplot(samp, dist="norm", fit=False)
+    axq.scatter(osm, osr, s=7, alpha=0.45, color=C_M, edgecolors="none")
+    lim = [min(osm.min(), osr.min()), max(osm.max(), osr.max())]
+    axq.plot(lim, lim, color="#222", lw=2, ls="--", label="perfect normal")
+    axq.set_xlabel("theoretical normal quantiles"); axq.set_ylabel("residual quantiles")
+    axq.set_title("Q-Q: H3 log-log residuals (men)"); axq.legend(frameon=False, fontsize=9)
+    axq.text(0.96, 0.05, "heavy lower tail\n(left-skewed)", transform=axq.transAxes,
+             ha="right", va="bottom", fontsize=9, bbox=dict(boxstyle="round", fc="#EAF2FB", ec=C_M))
+    ns = np.unique(np.round(np.logspace(np.log10(30), np.log10(len(r)), 22)).astype(int))
+    pv = [max(np.median([sp.normaltest(r[rng.choice(len(r), int(n), replace=False)]).pvalue
+                         for _ in range(6)]), 1e-300) for n in ns]
+    axp.plot(ns, pv, "-o", color=C_M, lw=2, ms=3)
+    axp.axhline(0.05, color=C_GRID, ls="--", lw=1.5); axp.text(ns[-1], 0.07, "alpha=0.05",
+              color=C_GRID, fontsize=9, ha="right", va="bottom")
+    axp.set_xscale("log"); axp.set_yscale("log"); axp.set_ylim(1e-300, 5)
+    axp.set_yticks([1e0, 1e-50, 1e-100, 1e-150, 1e-200, 1e-250, 1e-300])
+    axp.set_xlabel("sample size n"); axp.set_ylabel("normality-test p-value")
+    axp.set_title("formal test rejects beyond small n")
+    fig.suptitle("Fig 8. H3 residuals: a heavy lower tail (non-normal); the slope is CLT-robust "
+                 "at large n", fontweight="bold", fontsize=11)
+    save(fig, "fig8_normality.png")
+
+
 def run():
     print("loading data ...")
     df = data.load()
@@ -192,7 +234,7 @@ def run():
 
     print("building figures (300 DPI) ...")
     fig_quantization(att); fig_bunching(men); fig_all_limits(men); fig_allometry(al)
-    fig_prediction(); fig_structure(pl); fig_breadth(mr)
+    fig_prediction(); fig_structure(pl); fig_breadth(mr); fig_normality(sbd)
     print("done.")
 
 
