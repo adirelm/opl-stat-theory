@@ -11,3 +11,4 @@ venv/
 
 # os
 .DS_Store
+data/*.gz
