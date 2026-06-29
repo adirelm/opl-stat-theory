@@ -3,8 +3,8 @@
     "lift": "Squat",
     "n_pairs": 100000,
     "median_attempt1": 160.0,
-    "median_attempt3": 177.5,
-    "median_diff_kg": 17.5,
+    "median_attempt3": 180.0,
+    "median_diff_kg": 15.0,
     "wilcoxon_p": 0.0
   },
   "anova_equipment": {
@@ -60,26 +60,26 @@
   "independence_cut_tested": {
     "table_tested_x_cut": {
       "tested": {
-        "above": 29476,
-        "below": 176896
+        "above": 9867,
+        "below": 46750
       },
       "untested": {
-        "above": 19,
-        "below": 61
+        "above": 9,
+        "below": 21
       }
     },
-    "chi2": 5.1,
+    "chi2": 3.3,
     "dof": 1,
-    "p": 0.023852041094212427,
-    "cramers_v": 0.005,
+    "p": 0.06959827509461283,
+    "cramers_v": 0.008,
     "standardized_residuals": {
       "tested": {
         "above": -0.0,
         "below": 0.0
       },
       "untested": {
-        "above": 2.2,
-        "below": -0.9
+        "above": 1.6,
+        "below": -0.8
       }
     }
   },
@@ -90,11 +90,11 @@
     "beta": 0.1,
     "boundary_A": 2.89,
     "boundary_B": -2.251,
-    "observed_p_below": 0.857,
+    "observed_p_below": 0.826,
     "decision": "accept H1 (bunching)",
-    "stopping_time": 25,
+    "stopping_time": 27,
     "expected_n_under_H1_approx": 118.0,
-    "total_available": 206452
+    "total_available": 56647
   },
   "power_analysis": {
     "effect_p": 0.6,
@@ -155,9 +155,9 @@
     }
   },
   "ump_framing": {
-    "test": "allometry men b > 2/3 (one-sided)",
+    "test": "allometry men b > 2/3 (one-sided, asymptotic Wald)",
     "z": 46.84,
     "one_sided_p": 0.0,
-    "note": "a one-sided test of a single exponential-family parameter is UMP (Neyman-Pearson); the GLRTs (H1, mixture) are the composite generalization"
+    "note": "asymptotic one-sided Wald test; UMP is the Neyman-Pearson MOTIVATION (exact only under a one-parameter exponential-family model); the GLRTs (H1, mixture) are the composite-hypothesis generalization"
   }
 }

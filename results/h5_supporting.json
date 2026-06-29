@@ -27,15 +27,19 @@
     "mannwhitney_p": 0.0,
     "welch_t": -127.8,
     "welch_p": 0.0,
-    "rank_biserial": 0.197
+    "rank_biserial": -0.197
   },
   "evt_gev": {
     "n_blocks": 1514,
     "block_size": 250,
     "scipy_c": 0.019,
     "xi": -0.019,
-    "tail": "bounded (ceiling)",
-    "implied_upper_endpoint_kg": 4258.0,
+    "xi_ci": [
+      -0.2,
+      3.774
+    ],
+    "tail": "light / near-Gumbel (xi CI includes 0)",
+    "implied_upper_endpoint_kg": null,
     "cite": "Einmahl & Magnus (2008)"
   },
   "time_trend": {

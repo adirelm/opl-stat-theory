@@ -65,7 +65,7 @@ def run(save=True):
     untested = pl.loc[pl["Tested"] != "Yes", "Dots"].to_numpy()
     U, pU = sp.mannwhitneyu(tested, untested, alternative="two-sided")
     tstat, pt = sp.ttest_ind(tested, untested, equal_var=False)
-    rbc = 1 - 2 * U / (len(tested) * len(untested))      # rank-biserial effect size
+    rbc = 2 * U / (len(tested) * len(untested)) - 1      # rank-biserial (tested - untested)
     tested_ctrl = {"n_tested": int(len(tested)), "n_untested": int(len(untested)),
                    "median_tested": round(float(np.median(tested)), 1),
                    "median_untested": round(float(np.median(untested)), 1),
@@ -83,9 +83,20 @@ def run(save=True):
     blocks = vals[:nb * m].reshape(nb, m).max(axis=1)
     c, loc, scale = sp.genextreme.fit(blocks)
     xi = -c                                              # scipy c = -xi (EVT convention)
-    evt = {"n_blocks": int(nb), "block_size": m, "scipy_c": round(float(c), 3), "xi": round(float(xi), 3),
-           "tail": "bounded (ceiling)" if xi < 0 else "heavy/unbounded",
-           "implied_upper_endpoint_kg": (round(float(loc + scale / c), 0) if c > 0 else None),
+    # bootstrap CI for xi: a point estimate alone cannot declare a ceiling
+    bxi = []
+    for _ in range(300):
+        bs = rng.choice(blocks, size=len(blocks), replace=True)
+        try:
+            bxi.append(-sp.genextreme.fit(bs)[0])
+        except Exception:
+            pass
+    xi_lo, xi_hi = (float(np.percentile(bxi, 2.5)), float(np.percentile(bxi, 97.5))) if bxi else (np.nan, np.nan)
+    bounded = xi_hi < 0
+    evt = {"n_blocks": int(nb), "block_size": m, "scipy_c": round(float(c), 3),
+           "xi": round(float(xi), 3), "xi_ci": [round(xi_lo, 3), round(xi_hi, 3)],
+           "tail": "bounded (ceiling)" if bounded else "light / near-Gumbel (xi CI includes 0)",
+           "implied_upper_endpoint_kg": (round(float(loc + scale / c), 0) if (c > 0 and bounded) else None),
            "cite": "Einmahl & Magnus (2008)"}
 
     # 4. time-trend (median Dots per year, Spearman)
@@ -109,7 +120,8 @@ def run(save=True):
     print(f"\n2. tested vs untested Dots (Mann-Whitney): med {t['median_tested']} vs {t['median_untested']}, "
           f"U-p={t['mannwhitney_p']:.2e}, rank-biserial={t['rank_biserial']} "
           f"(n {t['n_tested']:,}/{t['n_untested']:,})")
-    print(f"\n3. EVT/GEV ({evt['n_blocks']} iid blocks of {evt['block_size']}): xi={evt['xi']} -> {evt['tail']}"
+    print(f"\n3. EVT/GEV ({evt['n_blocks']} iid blocks of {evt['block_size']}): xi={evt['xi']} "
+          f"CI{evt['xi_ci']} -> {evt['tail']}"
           + (f"; implied ceiling ~{evt['implied_upper_endpoint_kg']} kg" if evt['implied_upper_endpoint_kg'] else ""))
     print(f"\n4. time-trend (median Dots {trend['years'][0]}-{trend['years'][1]}): "
           f"Spearman rho={trend['spearman_rho']} (p={trend['spearman_p']:.2e}), {trend['direction']}")

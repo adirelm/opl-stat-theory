@@ -22,9 +22,11 @@ import config, data, prep, stats_utils as su
 
 def paired_attempts(df, lift="Squat", seed=config.SEED):
     a1, a3 = f"{lift}1Kg", f"{lift}3Kg"
-    d = df[(df[a1] > 0) & (df[a3] > 0)]               # both attempts successful
+    # attempted loads (made OR missed): failed attempts are valid chosen loads stored
+    # negative in OPL -> compare |load|, not just successful lifts
+    d = df[df[a1].notna() & df[a3].notna() & (df[a1] != 0) & (df[a3] != 0)]
     s = d.sample(min(100_000, len(d)), random_state=seed)
-    x1, x3 = s[a1].to_numpy(), s[a3].to_numpy()
+    x1, x3 = np.abs(s[a1].to_numpy()), np.abs(s[a3].to_numpy())
     W, p = sp.wilcoxon(x3, x1)                        # paired signed-rank, H0: no difference
     return {"lift": lift, "n_pairs": int(len(s)),
             "median_attempt1": round(float(np.median(x1)), 1),
@@ -61,6 +63,7 @@ def independence_cut_tested(df):
     d = df[(df.BodyweightKg > 0) & (df.Sex == "M") & config.is_h2_federation(df)].copy()
     d["year"] = pd.to_datetime(d["Date"], errors="coerce").dt.year
     d = d[d["year"] >= 2014]
+    d = prep.dedup_per_lifter(d, keep="random")        # one row per lifter (independence)
 
     def lab(bw):
         for L in config.IPF_MEN_CLASSES:
@@ -71,7 +74,7 @@ def independence_cut_tested(df):
     c = d.dropna(subset=["cut"]).copy()
     c["tested"] = np.where(c["Tested"] == "Yes", "tested", "untested")
     tab = pd.crosstab(c["tested"], c["cut"])
-    chi2, p, dof, exp = sp.chi2_contingency(tab)
+    chi2, p, dof, exp = sp.chi2_contingency(tab, correction=False)   # Pearson (matches Cramer's V)
     n = tab.values.sum(); k = min(tab.shape) - 1
     cramers_v = float(np.sqrt(chi2 / (n * k)))
     std_resid = (tab.values - exp) / np.sqrt(exp)
@@ -87,14 +90,15 @@ def sprt_cut(df, p0=0.5, p1=0.6, alpha=0.05, beta=0.10, seed=config.SEED):
     d = df[(df.BodyweightKg > 0) & (df.Sex == "M") & config.is_h2_federation(df)].copy()
     d["year"] = pd.to_datetime(d["Date"], errors="coerce").dt.year
     d = d[d["year"] >= 2014]
+    d = prep.dedup_per_lifter(d, keep="random")        # one per lifter (independence)
+    d = d.sort_values("Date")                          # a pre-specified CHRONOLOGICAL stream
 
     def lab(bw):
         for L in config.IPF_MEN_CLASSES:
             if L - 1 < bw <= L: return 1
             if L < bw <= L + 1: return 0
         return np.nan
-    obs = d["BodyweightKg"].map(lab).dropna().astype(int).to_numpy()
-    obs = np.random.default_rng(seed).permutation(obs)
+    obs = d["BodyweightKg"].map(lab).dropna().astype(int).to_numpy()   # in date order (no shuffle)
     A = np.log((1 - beta) / alpha); B = np.log(beta / (1 - alpha))     # decision boundaries
     s1, s0 = np.log(p1 / p0), np.log((1 - p1) / (1 - p0))
     llr = 0.0; decision = "no decision"; stop = len(obs)
@@ -148,10 +152,11 @@ def ump_framing():
     h3 = json.loads((config.RESULTS / "h3.json").read_text())
     z = h3["by_sex"]["men"]["wald_vs_2/3"]["z"]
     one_sided_p = float(sp.norm.sf(z))               # H1: b > 2/3
-    return {"test": "allometry men b > 2/3 (one-sided)", "z": z,
+    return {"test": "allometry men b > 2/3 (one-sided, asymptotic Wald)", "z": z,
             "one_sided_p": one_sided_p,
-            "note": ("a one-sided test of a single exponential-family parameter is UMP "
-                     "(Neyman-Pearson); the GLRTs (H1, mixture) are the composite generalization")}
+            "note": ("asymptotic one-sided Wald test; UMP is the Neyman-Pearson MOTIVATION "
+                     "(exact only under a one-parameter exponential-family model); the GLRTs "
+                     "(H1, mixture) are the composite-hypothesis generalization")}
 
 
 def run(save=True):
@@ -188,7 +193,8 @@ def run(save=True):
     print(f"6. ALL-4 corrections on H2's 7 limits: "
           + ", ".join(f"{m}={d['n_rejected']}/{d['of']}" for m, d in c4["corrections"].items()))
     uf = res["ump_framing"]
-    print(f"7. MP/UMP: one-sided allometry b>2/3 z={uf['z']} -> p={uf['one_sided_p']:.2e} (UMP for the exp. family)")
+    print(f"7. MP/UMP: one-sided allometry b>2/3 z={uf['z']} -> p={uf['one_sided_p']:.2e} "
+          f"(asymptotic Wald; UMP = the Neyman-Pearson motivation)")
 
     if save:
         config.RESULTS.mkdir(exist_ok=True)
