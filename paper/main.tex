@@ -27,7 +27,7 @@ loads sit exactly on the 2.5~kg plate grid; a generalized likelihood-ratio test
 bootstrap. (ii)~\emph{Weight-cut bunching}: bodyweight piles up just below every
 IPF class limit (de-heaped $\log(\text{below}/\text{above})=+1.92$ at 83~kg); a
 Cattaneo--Jansson--Ma density-discontinuity test rejects at all seven limits
-(surviving Holm and Benjamini--Hochberg), a non-limit control is flat, and
+(surviving Holm and Benjamini--Hochberg), a non-limit control shows no bunching, and
 placebos show no false bunching. (iii)~\emph{Allometry}: strength scales with
 bodyweight differently by sex ($b\!=\!0.75$ men, $0.51$ women vs.\ the isometric
 $2/3$; a Sex$\times\log$(BW) interaction is highly significant and persists on
@@ -78,9 +78,9 @@ boundary of the parameter space, Wilks' $\chi^2$ is invalid; the null is a
 $50{:}50$ mixture of $\chi^2_0$ and $\chi^2_1$~\cite{chernoff,selfliang}, which our
 parametric bootstrap recovers (mass at zero $=0.51$; calibrated 95\% cutoff $2.59$
 vs.\ the naive $3.84$). The observed statistic ($2\ln\Lambda=3.9\!\times\!10^7$)
-exceeds every bootstrap draw ($p<3.3\!\times\!10^{-4}$). The 2.1\% off-grid loads
-are themselves quantized: 82\% are round pound loads (e.g., $102.06$~kg $=225$~lb),
-a units artifact, not noise.
+exceeds every bootstrap draw ($p<3.3\!\times\!10^{-4}$). The 3.8\% off-grid loads
+are largely a units artifact: of the 2.1\% that fall off the 0.5~kg lattice
+entirely, 82\% are round pound loads (e.g., $102.06$~kg $=225$~lb), not noise.
 
 \begin{figure}[t]\centering
 \includegraphics[width=\columnwidth]{fig1_quantization.png}
@@ -96,9 +96,9 @@ Fig.~\ref{fig:limits}); a non-limit control at 91~kg is flat/slightly negative
 ($-0.21$). The formal Cattaneo--Jansson--Ma density-discontinuity
 test~\cite{cjm} (one random meet per lifter, 2014$+$) rejects at all seven limits
 with the density dropping at the cutoff ($t<0$), surviving both Holm and
-Benjamini--Hochberg correction; the control is flat ($p=0.56$) and no placebo
-shows the bunching pattern. The effect is robust across equipment (raw $+2.14$,
-equipped $+1.51$) and persists on the clean kg-only subset ($+1.82$).
+Benjamini--Hochberg correction; the control shows no excess below (a small
+\emph{opposite}-direction discontinuity) and no placebo shows the bunching pattern. The effect is robust across equipment (raw $+2.14$,
+equipped $+1.51$) and persists on the clean kg-only subset ($+1.75$).
 
 \begin{figure}[t]\centering
 \includegraphics[width=\columnwidth]{fig2_bunching.png}
@@ -137,7 +137,8 @@ Fitting $\log(\text{Total})=a+b\log(\text{BW})$ (Fig.~\ref{fig:allo}), the
 exponent is $b=0.75$ (CI $[0.74,0.75]$) for men and $0.51$ ($[0.50,0.51]$) for
 women, using heteroskedasticity-robust (HC3) standard errors on one row per
 lifter. A Wald test rejects the isometric $b=2/3$ for both sexes; framed
-one-sided, this is a uniformly-most-powerful test for the exponential family. A
+one-sided, the framing is motivated by Neyman--Pearson/UMP logic (exact UMP only
+under a one-parameter exponential-family model). A
 pooled Sex$\times\log$(BW) interaction estimates the men-minus-women slope gap at
 $+0.24$ ($p\!\ll\!10^{-3}$), and the gap \emph{grows} on the common bodyweight
 support ($0.84$ vs.\ $0.38$), so it is not an artifact of the sexes occupying
@@ -176,7 +177,7 @@ strength ceiling is \emph{not} supported by the data (the CI includes zero).
 Median Dots has drifted down over 2000--2024 (Spearman $\rho=-0.54$), consistent
 with broadening participation. Finally, after deduplicating to one row per lifter,
 the association between tested status and cutting is negligible (Cram\'er's
-$V=0.005$), illustrating how pseudo-replication inflates significance.
+$V=0.008$), illustrating how pseudo-replication inflates significance.
 
 \begin{figure}[t]\centering
 \includegraphics[width=\columnwidth]{fig6_structure.png}
@@ -210,15 +211,17 @@ $\chi^2$ independence test with Cram\'er's $V$ and standardized residuals.
 \section{Discussion}
 \textbf{Conclusions.} The two numbers a competitor controls leave measurable,
 falsification-surviving traces: attempt loads are quantized to the plate grid, and
-bodyweight bunches specifically below class limits and nowhere else. Strength
+bodyweight bunches specifically below class limits, and not at controls or
+placebos in the bunching direction. Strength
 scaling is sex-specific, and basic controllable variables already explain $\sim$70\%
 of the variance in the total.
 
 \textbf{Limitations and null results.} This is observational: we identify
 population-level patterns consistent with weight cutting, not individual intent.
-The 120~kg class---the unbounded top class---shows the weakest bunching, exactly as
-incentives predict. The EVT analysis does \emph{not} support a strength ceiling
-(wide $\xi$ CI), and tested status is independent of cutting; we report these null
+The 120~kg cutoff---adjacent to the unbounded 120+ class---shows the weakest
+bunching, consistent with weaker incentives. The EVT analysis does \emph{not} support a strength ceiling
+(wide $\xi$ CI), and we find no material association between tested status and
+cutting; we report these null
 results as findings. Lifter identity is name-based, the per-lifter meet is chosen
 at random (we report sensitivity), and the formal bunching test is restricted to
 the modern kg-only era. These are the natural next steps for the full study.
