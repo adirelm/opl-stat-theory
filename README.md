@@ -16,7 +16,7 @@ narrative walk-through is in [`notebooks/results.ipynb`](notebooks/results.ipynb
 - **H2 weight-cut bunching.** Bodyweight piles up just below every IPF men's class
   limit (de-heaped log(below/above) = +1.92 at 83 kg). A Cattaneo-Jansson-Ma
   density-discontinuity test rejects at all seven limits (Holm and BH corrected); a
-  non-limit control (91 kg) is flat and placebos show no bunching-direction effect.
+  non-limit control (91 kg) shows no bunching-direction excess, and placebos show none.
 - **H3 allometry.** Strength scales as bodyweight^b with b = 0.75 (men) / 0.51 (women)
   vs the isometric 2/3; a Sex x log(BW) interaction is significant and survives a
   common-support refit.
@@ -53,8 +53,11 @@ confidence intervals, not p-values.
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python download_data.py     # ~160 MB zip -> data/openpowerlifting.csv (~800 MB)
-./run_all.sh                # analyses + acceptance check + figures + paper
+# exact data snapshot used for the paper (reproduces the reported numbers):
+gh release download data-snapshot-2026-06 -R adirelm/opl-stat-theory -p openpowerlifting.csv.gz
+gunzip -c openpowerlifting.csv.gz > data/openpowerlifting.csv
+# (or refresh to the current weekly data instead: python download_data.py)
+./run_all.sh                # verifies the snapshot SHA, then analyses + acceptance check + figures + paper
 ```
 `run_all.sh` runs each `src/*.py` analysis (writing `results/*.json`), the acceptance
 check, `src/figures.py`, and builds `paper/main.pdf` (if `latexmk` is installed).
