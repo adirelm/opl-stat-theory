@@ -1,0 +1,163 @@
+{
+  "paired_attempts": {
+    "lift": "Squat",
+    "n_pairs": 100000,
+    "median_attempt1": 160.0,
+    "median_attempt3": 177.5,
+    "median_diff_kg": 17.5,
+    "wilcoxon_p": 0.0
+  },
+  "anova_equipment": {
+    "groups": [
+      "Raw",
+      "Single-ply",
+      "Multi-ply",
+      "Wraps"
+    ],
+    "n_per_group": {
+      "Raw": 363636,
+      "Single-ply": 263833,
+      "Multi-ply": 13069,
+      "Wraps": 75076
+    },
+    "median_dots": {
+      "Raw": 328.2,
+      "Single-ply": 318.6,
+      "Multi-ply": 400.9,
+      "Wraps": 341.7
+    },
+    "anova_F": 5272.3,
+    "anova_p": 0.0,
+    "kruskal_H": 11942.5,
+    "kruskal_p": 0.0,
+    "posthoc_bonferroni": {
+      "Raw vs Single-ply": {
+        "p_raw": 2.893405372523047e-121,
+        "p_bonf": 1.736043223513828e-120
+      },
+      "Raw vs Multi-ply": {
+        "p_raw": 0.0,
+        "p_bonf": 0.0
+      },
+      "Raw vs Wraps": {
+        "p_raw": 0.0,
+        "p_bonf": 0.0
+      },
+      "Single-ply vs Multi-ply": {
+        "p_raw": 0.0,
+        "p_bonf": 0.0
+      },
+      "Single-ply vs Wraps": {
+        "p_raw": 0.0,
+        "p_bonf": 0.0
+      },
+      "Multi-ply vs Wraps": {
+        "p_raw": 0.0,
+        "p_bonf": 0.0
+      }
+    }
+  },
+  "independence_cut_tested": {
+    "table_tested_x_cut": {
+      "tested": {
+        "above": 29476,
+        "below": 176896
+      },
+      "untested": {
+        "above": 19,
+        "below": 61
+      }
+    },
+    "chi2": 5.1,
+    "dof": 1,
+    "p": 0.023852041094212427,
+    "cramers_v": 0.005,
+    "standardized_residuals": {
+      "tested": {
+        "above": -0.0,
+        "below": 0.0
+      },
+      "untested": {
+        "above": 2.2,
+        "below": -0.9
+      }
+    }
+  },
+  "sprt_cut": {
+    "p0": 0.5,
+    "p1": 0.6,
+    "alpha": 0.05,
+    "beta": 0.1,
+    "boundary_A": 2.89,
+    "boundary_B": -2.251,
+    "observed_p_below": 0.857,
+    "decision": "accept H1 (bunching)",
+    "stopping_time": 25,
+    "expected_n_under_H1_approx": 118.0,
+    "total_available": 206452
+  },
+  "power_analysis": {
+    "effect_p": 0.6,
+    "power_vs_n": {
+      "20": 0.222,
+      "50": 0.407,
+      "100": 0.641,
+      "200": 0.886,
+      "500": 0.998
+    },
+    "n_for_power_0.90": 211,
+    "alpha_beta_tradeoff_at_n100": {
+      "0.01": {
+        "type_I_alpha": 0.01,
+        "power_1_minus_beta": 0.37,
+        "type_II_beta": 0.63
+      },
+      "0.05": {
+        "type_I_alpha": 0.05,
+        "power_1_minus_beta": 0.641,
+        "type_II_beta": 0.359
+      },
+      "0.1": {
+        "type_I_alpha": 0.1,
+        "power_1_minus_beta": 0.768,
+        "type_II_beta": 0.232
+      }
+    }
+  },
+  "all_four_corrections": {
+    "family": "H2 seven class limits",
+    "raw_p": [
+      3.9324099532223045e-13,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.1532996779806126e-12,
+      5.0704881527918744e-05
+    ],
+    "corrections": {
+      "bonferroni": {
+        "n_rejected": 7,
+        "of": 7
+      },
+      "holm": {
+        "n_rejected": 7,
+        "of": 7
+      },
+      "sidak": {
+        "n_rejected": 7,
+        "of": 7
+      },
+      "fdr_bh": {
+        "n_rejected": 7,
+        "of": 7
+      }
+    }
+  },
+  "ump_framing": {
+    "test": "allometry men b > 2/3 (one-sided)",
+    "z": 46.84,
+    "one_sided_p": 0.0,
+    "note": "a one-sided test of a single exponential-family parameter is UMP (Neyman-Pearson); the GLRTs (H1, mixture) are the composite generalization"
+  }
+}
