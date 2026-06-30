@@ -26,13 +26,14 @@ loads sit exactly on the 2.5~kg plate grid; a generalized likelihood-ratio test
 (GLRT) whose null parameter lies on the boundary is calibrated by a parametric
 bootstrap. (ii)~\emph{Weight-cut bunching}: bodyweight piles up just below every
 IPF class limit (de-heaped $\log(\text{below}/\text{above})=+1.92$ at 83~kg); a
-Cattaneo--Jansson--Ma density-discontinuity test rejects at all seven limits
-(surviving Holm and Benjamini--Hochberg), a non-limit control shows no bunching,
-and placebos show no bunching-direction false positives. (iii)~\emph{Allometry}: strength scales with
+Cattaneo--Jansson--Ma density-discontinuity test rejects at six of the seven
+limits (surviving Holm and Benjamini--Hochberg); the lone exception is the
+unbounded 120~kg boundary, where the incentive to cut is weakest. A non-limit
+control shows no bunching, and placebos show no bunching-direction false positives. (iii)~\emph{Allometry}: strength scales with
 bodyweight differently by sex ($b\!=\!0.75$ men, $0.51$ women vs.\ the isometric
 $2/3$; a Sex$\times\log$(BW) interaction is highly significant and persists on
 common support). (iv)~\emph{Prediction}: bodyweight, sex, equipment, and age predict the
-total ($R^2=0.70$, random forest, leakage-safe grouped CV). These choices leave measurable patterns in the data. Code and data:
+total ($R^2=0.70$, random forest, leakage-safe grouped CV). Code and data:
 \url{https://github.com/adirelm/opl-stat-theory}.
 \end{abstract}
 
@@ -101,7 +102,7 @@ $2\ln\Lambda$ is the $50{:}50$ mixture $\tfrac12\chi^2_0+\tfrac12\chi^2_1$ of
 Chernoff and Self--Liang~\cite{chernoff,selfliang}. Our parametric bootstrap
 closely matches this (point mass $0.51$ at zero; calibrated 95\% cutoff $2.59$
 versus the naive $3.84$). The observed statistic, $2\ln\Lambda=3.9\times10^7$,
-exceeds every bootstrap draw ($p<3.3\times10^{-4}$), and a $\chi^2$ goodness-of-fit
+exceeds every bootstrap draw ($p<3.4\times10^{-4}$), and a $\chi^2$ goodness-of-fit
 against a uniform within-cell distribution strongly rejects it ($5.0\times10^7$,
 $\mathrm{df}=4$). The 3.8\% off-grid loads are largely a units artifact: of the
 2.1\% that fall off the 0.5~kg lattice entirely, 82\% are round pound loads
@@ -119,14 +120,15 @@ digit preference), the log-ratio of just-below to just-above counts is positive 
 all seven IPF men's limits and strongest at 83~kg ($+1.92\pm0.04$, a $6.8\times$
 asymmetry; Table~\ref{tab:limits}, Fig.~\ref{fig:limits}); a non-limit control at
 91~kg is flat-to-slightly-negative ($-0.21$). The formal Cattaneo--Jansson--Ma
-density-discontinuity test~\cite{cjm} (one random meet per lifter, 2014$+$) rejects
-at all seven limits with the density dropping at the cutoff ($t<0$), surviving both
-Holm and Benjamini--Hochberg correction; the control shows no excess below (a small
+density-discontinuity test~\cite{cjm} (one random meet per lifter, de-heaped,
+2014$+$) rejects at six of the seven limits with the density dropping at the cutoff
+($t<0$), surviving both Holm and Benjamini--Hochberg correction; the lone exception
+is the 120~kg cutoff ($t=-1.6$, $p=0.11$), adjacent to the unbounded $120{+}$ class
+where the incentive to cut is weakest. The control shows no excess below (a small
 \emph{opposite}-direction discontinuity), and no placebo shows the bunching
 pattern. The effect is robust across equipment (raw $+2.14$, equipped $+1.51$) and
 tested status (tested $+1.93$), and persists on the clean kg-only subset
-($+1.75$). The weakest bunching is at the 120~kg cutoff, which is adjacent to the
-unbounded $120{+}$ class where the incentive to cut is weakest.
+($+1.80$).
 
 \textbf{Robustness and falsification.} The result survives four checks. (i)~\emph{De-heaping}: removing exact round/half-kg weigh-ins leaves the
 asymmetry intact, so the signal is not digit preference and is consistent with
@@ -134,8 +136,8 @@ weight-cut manipulation. (ii)~\emph{Control}:
 the non-limit point at 91~kg shows no excess below. (iii)~\emph{Placebos}: cutoffs
 placed between real limits show no bunching-direction discontinuity after
 correction. (iv)~\emph{Subgroups and correction}: the effect holds within raw,
-equipped, and tested subsets, and the formal density test rejects at all seven
-limits even under the strictest (Bonferroni) correction.
+equipped, and tested subsets, and the formal density test rejects at six of the
+seven limits even under the strictest (Bonferroni) correction.
 
 \begin{figure*}[t]\centering
 \includegraphics[width=0.86\textwidth]{fig2_bunching.png}
@@ -152,7 +154,7 @@ control (91~kg); round-number weigh-ins removed.}
 Limit (kg) & log-ratio & $\pm$ & $\times$ asymmetry\\
 \midrule
 59 & $+0.99$ & 0.04 & 2.7\\
-66 & $+1.18$ & 0.04 & 3.2\\
+66 & $+1.18$ & 0.03 & 3.2\\
 74 & $+1.00$ & 0.03 & 2.7\\
 \textbf{83} & $\mathbf{+1.92}$ & 0.04 & \textbf{6.8}\\
 93 & $+1.65$ & 0.04 & 5.2\\
@@ -172,20 +174,20 @@ Limit (kg) & log-ratio & $\pm$ & $\times$ asymmetry\\
 \subsection{Allometric scaling differs by sex (H3)}
 Fitting $\log(\text{Total})=a+b\log(\text{BW})$ (Fig.~\ref{fig:allo}), the exponent
 is $b=0.75$ (CI $[0.74,0.75]$) for men and $0.51$ ($[0.50,0.51]$) for women, with
-heteroskedasticity-robust (HC3) standard errors on one row per lifter. A Wald test
-rejects the isometric $b=2/3$ for both sexes (men $z=+46.8$, women $z=-64.1$); the
-one-sided framing is motivated by Neyman--Pearson/UMP logic, exact only under a
-one-parameter exponential-family model. A pooled Sex$\times\log$(BW) interaction
+heteroskedasticity-robust (HC3) standard errors on one row per lifter. A two-sided
+Wald test rejects the isometric $b=2/3$ for both sexes, and in \emph{opposite}
+directions (men $z=+46.8$, i.e.\ $b>2/3$; women $z=-64.1$, i.e.\ $b<2/3$). A pooled Sex$\times\log$(BW) interaction
 estimates the men-minus-women slope gap at $+0.24$ ($p\!\ll\!10^{-3}$). The gap also \emph{grows} on the common bodyweight support ($0.84$ men vs.\ $0.38$
 women), so it is not an artifact of the sexes occupying different weight ranges.
 For men, the Pearson correlation of $\log\text{BW}$ and $\log\text{Total}$ is
-$0.60$ (Fisher-transform CI $[0.60,0.60]$; Spearman $0.58$); it is lower for women. The message is not that women
+$0.60$ (Fisher-transform CI $[0.60,0.603]$; Spearman $0.58$); it is lower for women. The message is not that women
 are weaker, but that the \emph{estimated scaling} differs; we leave the mechanism to future
 work.
 
 \begin{figure}[t]\centering
 \includegraphics[width=\columnwidth]{fig4_allometry.png}
-\caption{H3: allometric scaling by sex vs.\ the isometric $2/3$.}
+\caption{H3: allometric scaling by sex vs.\ the isometric $2/3$. Plotted lines are
+all-row OLS fits; the headline per-lifter HC3 exponents are $0.75$ (men) / $0.51$ (women).}
 \label{fig:allo}\end{figure}
 
 \subsection{Strength is predictable from basic variables (H4)}
@@ -197,7 +199,7 @@ is dominated by sex and bodyweight, and continuous-feature VIFs are $\approx1$
 (no collinearity concern). A logistic ``made-weight'' classifier built from
 \emph{non-bodyweight} features (age, tested status, era, equipment; the Dots
 score is excluded because it is a function of total and bodyweight) reaches
-$\mathrm{AUC}=0.58$ (PR-AUC $0.88$, balanced accuracy $0.54$). The signal is weak,
+$\mathrm{AUC}=0.56$ (PR-AUC $0.84$, balanced accuracy $0.53$). The signal is weak,
 as expected: cutting is driven by bodyweight relative to the limit, which defines
 the label and which these features omit.
 
@@ -213,8 +215,9 @@ Gaussian components ($\Delta\mathrm{BIC}=1.4\times10^3$) but the sex-normalized
 Dots score prefers one (Fig.~\ref{fig:struct}); the two-component shape largely
 disappears after Dots normalization. \textbf{Tested vs.\ untested.} Untested competitions show
 higher Dots than tested ones (medians $344$ vs.\ $318$, Mann--Whitney $p\!\to\!0$,
-rank-biserial $-0.20$), consistent with the expected effect of performance-enhancing
-drugs. \textbf{Extreme values.} A GEV fit to equal-size block maxima of recent
+rank-biserial $-0.20$), consistent with---though not proof of---an effect of
+performance-enhancing drugs, since tested and untested federations also differ in
+era, equipment, and selection. \textbf{Extreme values.} A GEV fit to equal-size block maxima of recent
 totals gives shape $\xi=-0.02$ with bootstrap CI $[-0.20,3.77]$: a population
 strength \emph{ceiling is not supported}, since the CI includes zero. \textbf{Time
 trend.} Median Dots drifted down over 2000--2024 (Spearman $\rho=-0.54$),
@@ -229,9 +232,9 @@ inflates significance. \textbf{Residual normality.} The H3 (all-row fit) residua
 with a heavy lower tail (skew $-0.77$; Fig.~\ref{fig:norm}), so they are not exactly
 normal. This does not undermine the slope: at this $n$ its sampling distribution is
 asymptotically normal under standard conditions, and we report HC3-robust
-standard errors. A
-formal normality test rejects beyond the smallest samples, as expected at this
-scale, so we treat it as a diagnostic and lead with effect sizes.
+standard errors. A formal normality test rejects even in modest subsamples
+($n\!\approx\!300$), as expected for genuinely non-normal residuals, so we treat it
+as a diagnostic and lead with effect sizes.
 
 \begin{figure*}[t]\centering
 \includegraphics[width=0.86\textwidth]{fig6_structure.png}
@@ -239,15 +242,15 @@ scale, so we treat it as a diagnostic and lead with effect sizes.
 \label{fig:struct}\end{figure*}
 
 \begin{figure*}[t]\centering
-\includegraphics[width=0.86\textwidth]{fig8_normality.png}
-\caption{H3 residuals: heavy lower tail; the slope is CLT-robust at large $n$.}
-\label{fig:norm}\end{figure*}
-
-\begin{figure*}[t]\centering
 \includegraphics[width=0.86\textwidth]{fig7_breadth.png}
 \caption{Sequential test (stopping time $N=27$) and a-priori power
 ($n=211$ for power $0.90$).}
 \label{fig:breadth}\end{figure*}
+
+\begin{figure*}[t]\centering
+\includegraphics[width=0.86\textwidth]{fig8_normality.png}
+\caption{H3 residuals: heavy lower tail; the slope is CLT-robust at large $n$.}
+\label{fig:norm}\end{figure*}
 
 \section{Methods}
 \textbf{Data and preprocessing.} We use a pinned snapshot of OpenPowerlifting
@@ -352,11 +355,11 @@ analyses.
 \textbf{Limitations and null results.} This is an observational study: we identify
 population-level patterns consistent with weight cutting, not the intent of any
 individual. We report three null results as genuine findings. The unbounded
-$120{+}$ class shows the weakest bunching, consistent with weaker pressure at
-that unbounded boundary; the
-extreme-value analysis does \emph{not} support a strength ceiling (the $\xi$
-confidence interval includes zero); and we find no material association between
-tested status and cutting once pseudo-replication is removed. On the methods side,
+$120{+}$ class does \emph{not} show significant bunching after correction
+($t=-1.6$, $p=0.11$), consistent with weaker cutting pressure at that open-ended
+boundary; the extreme-value analysis does \emph{not} support a strength ceiling
+(the $\xi$ confidence interval includes zero); and we find no material association
+between tested status and cutting once pseudo-replication is removed. On the methods side,
 lifter identity is name-based, the per-lifter meet is sampled at random, and the
 formal bunching test is restricted to the modern kg-only era. The 83~kg signal is
 robust to the federation set: the de-heaped log-ratio is $+1.92$ across the

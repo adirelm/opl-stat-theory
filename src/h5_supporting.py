@@ -40,8 +40,11 @@ def mixture_lrt(x, B=150, seed=config.SEED):
     for _ in range(B):
         xb = rng.normal(mu, sd, n).reshape(-1, 1)
         null.append(max(0.0, 2 * (_gmm(xb, 2, seed).score(xb) - _gmm(xb, 1, seed).score(xb)) * n))
-    p = (np.sum(np.array(null) >= T) + 1) / (B + 1)
+    n_ge = int(np.sum(np.array(null) >= T))
+    p = (n_ge + 1) / (B + 1)
     return {"lrt": round(float(T), 1), "boot_p": round(float(p), 4),
+            "boot_p_is_upper_bound": (n_ge == 0),       # hit the (0+1)/(B+1) Monte-Carlo floor
+            "boot_B": B,
             "aic_1comp": round(float(aic[1]), 1), "aic_2comp": round(float(aic[2]), 1),
             "bic_1comp": round(float(bic[1]), 1), "bic_2comp": round(float(bic[2]), 1),
             "best_k_by_bic": 2 if bic[2] < bic[1] else 1}
@@ -114,7 +117,7 @@ def run(save=True):
     bounded = xi_hi < 0
     evt = {"n_blocks": int(nb), "block_size": m, "scipy_c": round(float(c), 3),
            "xi": round(float(xi), 3), "xi_ci": [round(xi_lo, 3), round(xi_hi, 3)],
-           "tail": "bounded (ceiling)" if bounded else "light / near-Gumbel (xi CI includes 0)",
+           "tail": "bounded (ceiling)" if bounded else "ceiling unsupported (xi CI spans 0 and positive values)",
            "implied_upper_endpoint_kg": (round(float(loc + scale / c), 0) if (c > 0 and bounded) else None),
            "cite": "Einmahl & Magnus (2008)"}
 

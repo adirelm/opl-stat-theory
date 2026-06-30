@@ -37,9 +37,9 @@
     "vif_note": "equipment is categorical; dummy-level VIF is not interpreted as continuous collinearity"
   },
   "cut_classifier": {
-    "n": 206452,
-    "n_just_below": 176957,
-    "n_just_above": 29495,
+    "n": 89882,
+    "n_just_below": 74082,
+    "n_just_above": 15800,
     "features": [
       "Age_num",
       "tested",
@@ -47,17 +47,17 @@
       "Equipment"
     ],
     "dots_excluded": true,
-    "auc": 0.579,
-    "pr_auc": 0.876,
-    "balanced_accuracy": 0.542,
+    "auc": 0.563,
+    "pr_auc": 0.842,
+    "balanced_accuracy": 0.531,
     "confusion_[[TN,FP],[FN,TP]]": [
       [
-        19955,
-        9540
+        10754,
+        5046
       ],
       [
-        104777,
-        72180
+        45807,
+        28275
       ]
     ]
   }

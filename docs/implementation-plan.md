@@ -62,7 +62,7 @@ README.md            exact reproduction steps; requirements pinned; snapshot doc
 Core supporting analyses:
 - Strength-distribution structure (argue **not** a sex mixture; mixture-LRT via bootstrap/AIC), tested-vs-untested control, **EVT/GEV** tails (ξ sign → population ceiling; cite Einmahl & Magnus), time-trend.
 
-**Breadth coverage** — the instructions require "as many course tools as relevant." A Codex audit (28.6) flagged these as MISSING or only planned; each is given a home here, serving the story (not a heap):
+**Breadth coverage** — the instructions require "as many course tools as relevant." An audit (28.6) flagged these as MISSING or only planned; each is given a home here, serving the story (not a heap):
 - **Sequential Wald / SPRT + stopping times** (was MISSING): a sequential probability-ratio test of the just-below-vs-just-above cut indicator (H0: p=0.5 vs H1: p>0.5) with Wald's A/B log-likelihood boundaries and the **expected stopping time** — "how few weigh-ins near a threshold to sequentially detect cutting?" Ties to H2.
 - **Power + Type I/II tradeoff** (was MISSING/planned): a-priori power analysis (α=0.05, target 0.90) and an explicit α–β tradeoff curve for one key test (bunching or allometry-Wald).
 - **MP/UMP (Neyman-Pearson)** as a real test: state the allometry test of b vs 2/3 **one-sided** so UMP holds for the one-parameter exponential family; the GLRTs are the composite generalization.

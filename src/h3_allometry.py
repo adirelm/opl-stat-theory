@@ -84,31 +84,39 @@ def run(save=True):
     wald_ps["sex_interaction"] = p_int
 
     # ---- diagnosis of the low women's b: COMMON-SUPPORT refit ----
-    # Comparing marginal logBW spread is not enough (restricting x mainly hurts
-    # precision, not the slope). The real test: refit BOTH sexes on the OVERLAPPING
-    # bodyweight range. If the sex gap in b persists on common support, it is not an
-    # artifact of the sexes covering different weight ranges.
+    # Restrict BOTH sexes to their OVERLAPPING bodyweight range and re-estimate the
+    # sex gap with the SAME estimator used for the headline: a pooled Sex x log(BW)
+    # interaction (HC3), whose coefficient IS the men-minus-women slope. Reporting the
+    # gap from one consistent model (rather than differencing two separately fit OLS
+    # slopes) makes "full" vs "common support" an apples-to-apples comparison. Per-sex
+    # HC3 slopes are also reported for the figure.
     bw_m = pl.loc[pl["male"] == 1, "BodyweightKg"]; bw_w = pl.loc[pl["male"] == 0, "BodyweightKg"]
     lo = float(max(bw_m.quantile(0.05), bw_w.quantile(0.05)))
     hi = float(min(bw_m.quantile(0.95), bw_w.quantile(0.95)))
     cs = pl[(pl["BodyweightKg"] >= lo) & (pl["BodyweightKg"] <= hi)]
+    Xc = sm.add_constant(cs[["male", "logbw"]].copy())
+    Xc["male_x_logbw"] = cs["male"].to_numpy() * cs["logbw"].to_numpy()
+    fit_cs = sm.OLS(cs["logtot"].to_numpy(), Xc).fit(cov_type="HC3")
     cs_b = {}
     for sex, name in [("M", "men"), ("F", "women")]:
         gg = cs[cs["Sex"] == sex]
-        cs_b[name] = round(su.ols_loglog(gg["logbw"].to_numpy(), gg["logtot"].to_numpy())["b"], 3)
-    gap_full = (res["by_sex"]["men"]["formal_per_lifter"]["b"]
-                - res["by_sex"]["women"]["formal_per_lifter"]["b"])
-    gap_cs = round(cs_b["men"] - cs_b["women"], 3)
-    persists = gap_cs > 0.5 * gap_full
+        cs_b[name] = round(su.ols_robust(gg["logbw"].to_numpy(), gg["logtot"].to_numpy())["b"], 3)
+    gap_full = round(b_int, 3)                              # full-sample interaction coef
+    gap_cs = round(float(fit_cs.params["male_x_logbw"]), 3)
+    p_cs = float(fit_cs.pvalues["male_x_logbw"])
+    persists = (gap_cs > 0.5 * gap_full) and (p_cs < config.ALPHA)
     res["women_b_diagnosis"] = {
-        "common_support_kg": [round(lo, 1), round(hi, 1)],
+        "common_support_kg": [round(lo, 1), round(hi, 1)], "n_common_support": int(len(cs)),
         "b_common_support": cs_b,
-        "sex_gap_full": round(gap_full, 3), "sex_gap_common_support": gap_cs,
+        "sex_gap_full": gap_full, "sex_gap_common_support": gap_cs,
+        "sex_gap_cs_p": p_cs,
+        "estimator": "pooled Sex x log(BW) interaction, HC3 (same model for full and common support)",
         "men_logbw_sd": res["by_sex"]["men"]["logbw_sd"],
         "women_logbw_sd": res["by_sex"]["women"]["logbw_sd"],
         "range_restriction_explains_low_b": (not persists),
-        "note": ("the sex gap in b PERSISTS on common bodyweight support -> it is NOT an "
-                 "artifact of different weight ranges; the difference appears genuine "
+        "note": ("the sex gap in b PERSISTS on common bodyweight support (same HC3 interaction "
+                 "model, still significant) -> it is NOT an artifact of the sexes occupying "
+                 "different weight ranges; the difference appears genuine "
                  "(mechanism left to the discussion)") if persists else
                 ("the sex gap SHRINKS substantially on common support -> partly a "
                  "range/support effect")}

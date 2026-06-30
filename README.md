@@ -15,7 +15,8 @@ narrative walk-through is in [`notebooks/results.ipynb`](notebooks/results.ipynb
   on the boundary), rejects overwhelmingly.
 - **H2 weight-cut bunching.** Bodyweight piles up just below every IPF men's class
   limit (de-heaped log(below/above) = +1.92 at 83 kg). A Cattaneo-Jansson-Ma
-  density-discontinuity test rejects at all seven limits (Holm and BH corrected); a
+  density-discontinuity test rejects at six of the seven limits (Holm and BH corrected;
+  the lone exception is the unbounded 120+ class, where the cutting incentive is weakest); a
   non-limit control (91 kg) shows no bunching-direction excess, and placebos show no below-limit bunching.
 - **H3 allometry.** Strength scales as bodyweight^b with b = 0.75 (men) / 0.51 (women)
   vs the isometric 2/3; a Sex x log(BW) interaction is significant and survives a
@@ -47,7 +48,6 @@ confidence intervals, not p-values.
 | `paper/` | IEEE paper (`main.tex`, built `main.pdf`). |
 | `presentation/` | Stage-1 mid-presentation deck (`.pptx`). |
 | `docs/` | Project spec, checklist, course-alignment, implementation plan. |
-| `reference/` | Course-provided material (instructions, examples, lecture transcript). |
 
 ## Reproduce
 ```bash
@@ -71,7 +71,8 @@ in the **public domain (CC0-style waiver)**; this project's code is separately l
 
 `openpowerlifting-latest.zip` updates ~weekly, so re-downloading later gives slightly
 different numbers. The exact snapshot behind the reported results is pinned by its
-**SHA-256 in `src/config.py`** (`660209e8...`; verified by `src/data.py`) and is
+**SHA-256 in `src/config.py`** (`660209e8...`); the row count is checked on every load
+by `src/data.py`, and the full SHA-256 is verified by `run_all.sh`. The snapshot is
 published as a GitHub Release asset for exact reproduction:
 ```bash
 gh release download data-snapshot-2026-06 -R adirelm/opl-stat-theory -p openpowerlifting.csv.gz

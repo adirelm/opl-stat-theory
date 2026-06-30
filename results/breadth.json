@@ -74,12 +74,12 @@
     "cramers_v": 0.008,
     "standardized_residuals": {
       "tested": {
-        "above": -0.0,
-        "below": 0.0
+        "above": -1.8,
+        "below": 1.8
       },
       "untested": {
-        "above": 1.6,
-        "below": -0.8
+        "above": 1.8,
+        "below": -1.8
       }
     }
   },
@@ -127,29 +127,29 @@
   "all_four_corrections": {
     "family": "H2 seven class limits",
     "raw_p": [
-      3.9324099532223045e-13,
+      4.440448009290776e-12,
       0.0,
       0.0,
       0.0,
       0.0,
-      1.1532996779806126e-12,
-      5.0704881527918744e-05
+      4.440892098500626e-16,
+      0.10521389533398562
     ],
     "corrections": {
       "bonferroni": {
-        "n_rejected": 7,
+        "n_rejected": 6,
         "of": 7
       },
       "holm": {
-        "n_rejected": 7,
+        "n_rejected": 6,
         "of": 7
       },
       "sidak": {
-        "n_rejected": 7,
+        "n_rejected": 6,
         "of": 7
       },
       "fdr_bh": {
-        "n_rejected": 7,
+        "n_rejected": 6,
         "of": 7
       }
     }

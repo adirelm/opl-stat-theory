@@ -73,8 +73,10 @@ def dedup_per_lifter(df, name_col="Name", rank_col="TotalKg", keep="random", see
         return (df.sample(frac=1, random_state=seed)
                   .drop_duplicates(subset=[name_col], keep="first").reset_index(drop=True))
     if keep == "max":
-        idx = df.groupby(name_col)[rank_col].idxmax()
-        return df.loc[idx.dropna()].reset_index(drop=True)
+        # drop all-NaN rank rows first: on pandas >=2.1 idxmax() raises on an all-NA group
+        d = df.dropna(subset=[rank_col])
+        idx = d.groupby(name_col)[rank_col].idxmax()
+        return d.loc[idx].reset_index(drop=True)
     if keep == "first":
         return df.drop_duplicates(subset=[name_col], keep="first").reset_index(drop=True)
     raise ValueError(f"unknown keep={keep!r}")

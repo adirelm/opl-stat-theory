@@ -97,7 +97,7 @@ def fig_all_limits(men):
     ax.axhline(0, color="#333", lw=1)
     ax.set_xlabel("Class limit (kg); blue = strongest, grey = non-limit control")
     ax.set_ylabel("de-heaped log(below / above)")
-    ax.set_title("Fig 3. Excess just-below mass at every real limit; control near zero")
+    ax.set_title("Fig 3. Excess just-below mass at every real limit; control runs opposite")
     save(fig, "fig3_all_limits.png")
 
 
@@ -142,13 +142,13 @@ def fig_prediction():
 
 def fig_structure(pl):
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 4.0))
-    for ax, col, title in [(a1, "TotalKg", "Raw Total (pooled): two components = sex"),
-                           (a2, "Dots", "Dots (sex-normalized): one component")]:
+    for ax, col, title in [(a1, "TotalKg", "Raw Total: two components track sex"),
+                           (a2, "Dots", "Dots (sex/BW-normalized): one component")]:
         for sex, c in [("M", C_M), ("F", C_W)]:
             v = pl.loc[pl.Sex == sex, col].to_numpy()
             ax.hist(v, bins=80, density=True, alpha=0.5, color=c, label=sex)
         ax.set_xlabel(col); ax.set_ylabel("density"); ax.set_title(title); ax.legend(frameon=False)
-    fig.suptitle("Fig 6. The apparent 'mixture' in raw Total is just sex; Dots removes it",
+    fig.suptitle("Fig 6. The two-component shape of raw Total tracks sex; Dots normalization removes it",
                  fontweight="bold", fontsize=11.5)
     save(fig, "fig6_structure.png")
 
@@ -212,7 +212,7 @@ def fig_normality(sbd):
     axp.set_xscale("log"); axp.set_yscale("log"); axp.set_ylim(1e-300, 5)
     axp.set_yticks([1e0, 1e-50, 1e-100, 1e-150, 1e-200, 1e-250, 1e-300])
     axp.set_xlabel("sample size n"); axp.set_ylabel("normality-test p-value")
-    axp.set_title("formal test rejects beyond small n")
+    axp.set_title("formal test rejects even at modest n")
     fig.suptitle("Fig 8. H3 residuals: a heavy lower tail (non-normal); the slope is CLT-robust "
                  "at large n", fontweight="bold", fontsize=11)
     save(fig, "fig8_normality.png")

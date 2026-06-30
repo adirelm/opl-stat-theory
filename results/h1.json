@@ -24,5 +24,6 @@
     "off_lattice_frac": 0.020832080008944816,
     "off_lattice_n": 279102,
     "round_lb_share_of_off": 0.8249349700109637
-  }
+  },
+  "inference_unit_note": "inference is deliberately ATTEMPT-LEVEL: snapping to the 2.5 kg grid is a within-attempt mechanism, so the attempt (not the lifter) is the natural unit. Attempts cluster within lifters, so the CI and test magnitudes are NOT cluster-adjusted and overstate precision; this does not affect the conclusion, which rests on the effect size (0.96 on-grid vs the 0.20 no-preference null)."
 }

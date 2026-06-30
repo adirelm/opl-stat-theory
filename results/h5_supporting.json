@@ -3,6 +3,8 @@
     "dots_normalized": {
       "lrt": 0.0,
       "boot_p": 1.0,
+      "boot_p_is_upper_bound": false,
+      "boot_B": 150,
       "aic_1comp": 342841.7,
       "aic_2comp": 342936.2,
       "bic_1comp": 342858.3,
@@ -12,6 +14,8 @@
     "raw_total": {
       "lrt": 1448.7,
       "boot_p": 0.0066,
+      "boot_p_is_upper_bound": true,
+      "boot_B": 150,
       "aic_1comp": 388378.7,
       "aic_2comp": 386936.0,
       "bic_1comp": 388395.3,
@@ -38,7 +42,7 @@
       -0.2,
       3.774
     ],
-    "tail": "light / near-Gumbel (xi CI includes 0)",
+    "tail": "ceiling unsupported (xi CI spans 0 and positive values)",
     "implied_upper_endpoint_kg": null,
     "cite": "Einmahl & Magnus (2008)"
   },
@@ -57,6 +61,6 @@
     "excess_kurtosis": 1.782,
     "dagostino_p_full": 0.0,
     "dagostino_p_median_at_n300": 0.0,
-    "note": "approx. normal in the bulk with a heavy lower tail; a formal test rejects at full n only because n is huge (p collapses as n grows), so slope inference relies on the CLT and we lead with effect size"
+    "note": "residuals are left-skewed with a heavy lower tail, so they are not normal even at moderate n; this does not threaten the slope, whose sampling distribution is normal by the CLT at this n, and we report HC3-robust SEs and lead with effect size"
   }
 }

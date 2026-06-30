@@ -77,7 +77,11 @@ def independence_cut_tested(df):
     chi2, p, dof, exp = sp.chi2_contingency(tab, correction=False)   # Pearson (matches Cramer's V)
     n = tab.values.sum(); k = min(tab.shape) - 1
     cramers_v = float(np.sqrt(chi2 / (n * k)))
-    std_resid = (tab.values - exp) / np.sqrt(exp)
+    # adjusted standardized residuals: (O-E)/sqrt(E*(1-row%)*(1-col%)) -- ~N(0,1) under
+    # independence, unlike the plain Pearson residual (O-E)/sqrt(E).
+    row_p = tab.values.sum(axis=1, keepdims=True) / n
+    col_p = tab.values.sum(axis=0, keepdims=True) / n
+    std_resid = (tab.values - exp) / np.sqrt(exp * (1 - row_p) * (1 - col_p))
     return {"table_tested_x_cut": {r: tab.loc[r].to_dict() for r in tab.index},
             "chi2": round(float(chi2), 1), "dof": int(dof), "p": float(p),
             "cramers_v": round(cramers_v, 3),

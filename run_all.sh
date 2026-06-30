@@ -19,7 +19,11 @@ if [ ! -f data/openpowerlifting.csv ]; then
   fi
 fi
 EXPECT=660209e8624ddb22bc135d54d915b094bc0b9b5a2f30002542f7af879777cb37
-GOT=$(shasum -a 256 data/openpowerlifting.csv | awk '{print $1}')
+if command -v shasum >/dev/null 2>&1; then        # macOS/BSD
+  GOT=$(shasum -a 256 data/openpowerlifting.csv | awk '{print $1}')
+else                                              # Linux
+  GOT=$(sha256sum data/openpowerlifting.csv | awk '{print $1}')
+fi
 if [ "$GOT" = "$EXPECT" ]; then echo "snapshot SHA-256 verified (exact reproduction)"
 else echo "WARNING: snapshot SHA-256 differs from the pinned one; numbers may differ from the paper"; fi
 

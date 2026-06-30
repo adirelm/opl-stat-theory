@@ -131,6 +131,12 @@ def run(save=True):
         "cutoff_bootstrap_95": round(boot_cut, 3),
         "gof_chi2": gof_chi2, "gof_df": gof_df,
         "lb_robustness": lb,
+        "inference_unit_note": ("inference is deliberately ATTEMPT-LEVEL: snapping to the 2.5 kg "
+                                "grid is a within-attempt mechanism, so the attempt (not the "
+                                "lifter) is the natural unit. Attempts cluster within lifters, so "
+                                "the CI and test magnitudes are NOT cluster-adjusted and overstate "
+                                "precision; this does not affect the conclusion, which rests on the "
+                                "effect size (0.96 on-grid vs the 0.20 no-preference null)."),
     }
     print("==== H1: quantization to the 2.5 kg grid ====")
     print(f"effect size: {res['effect_size_on_grid_pct']}% on grid  "

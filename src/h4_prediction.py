@@ -120,6 +120,7 @@ def cut_classifier(df, seed=config.SEED):
         return np.nan
     d["label"] = d["BodyweightKg"].map(lab)
     c = d.dropna(subset=["label"]).copy()
+    c = prep.dedup_per_lifter(c, keep="random", seed=seed)   # one row per lifter (match the regression unit)
     c["Age_num"] = pd.to_numeric(c["Age"], errors="coerce")
     c["tested"] = (c["Tested"] == "Yes").astype(float)
     # NOTE: Dots is deliberately EXCLUDED -- it is f(TotalKg, bodyweight): circular + post-outcome.

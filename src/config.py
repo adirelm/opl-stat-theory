@@ -23,7 +23,6 @@ KG_PER_LB = 0.45359237              # for the pounds<->kg units check (off-grid 
 
 # IPF modern weight classes (kg). H2 uses the men's scheme.
 IPF_MEN_CLASSES = [59, 66, 74, 83, 93, 105, 120]
-IPF_WOMEN_CLASSES = [43, 47, 52, 57, 63, 69, 76, 84]
 
 # H2 headline limit + the non-limit control (a point that should be "flat")
 H2_REAL_LIMIT = 83

@@ -69,19 +69,20 @@ def run(save=True):
     men_rows["year"] = pd.to_datetime(men_rows["Date"], errors="coerce").dt.year
     bw_all = men_rows["BodyweightKg"].dropna().to_numpy()
 
-    # one row per lifter (PR meet) -> independent sample for the formal test
-    clean = men_rows.dropna(subset=["BodyweightKg", "TotalKg"])
-    per_lifter = prep.dedup_per_lifter(clean)
-    bw_pl = per_lifter["BodyweightKg"].to_numpy()
+    # one row per lifter -> independent sample (descriptive lifter count)
+    per_lifter = prep.dedup_per_lifter(men_rows.dropna(subset=["BodyweightKg"]))
 
     # PURE-KG subset (post-2014): only the modern kg class scheme, so placebos /
-    # control are not contaminated by historical lb classes. Formal test uses this,
-    # with a RANDOM (seeded) meet per lifter (independent of outcome) and DE-HEAPED
-    # bodyweights (round/half-kg weigh-ins removed) -- consistent with the effect sizes.
-    pk_rows = clean[clean["year"] >= ERA_MIN]
-    pk_per_lifter = prep.dedup_per_lifter(pk_rows, keep="random")
-    bw_pk_raw = pk_per_lifter["BodyweightKg"].to_numpy()
-    bw_pk = prep.deheap(bw_pk_raw)               # de-heaped sample for the formal density test
+    # control are not contaminated by historical lb classes. The formal density test
+    # is on BODYWEIGHT, so we filter only on BodyweightKg (NOT the outcome TotalKg),
+    # and DE-HEAP BEFORE collapsing to one random meet per lifter -- otherwise a lifter
+    # is dropped merely because the meet sampled for them happened to have a round/
+    # half-kg weigh-in, even though their other meets are usable.
+    pk_rows = men_rows[(men_rows["year"] >= ERA_MIN) & men_rows["BodyweightKg"].notna()].copy()
+    bw2 = pk_rows["BodyweightKg"].to_numpy() * 2
+    pk_dh = pk_rows[np.abs(bw2 - np.round(bw2)) > 1e-6]          # de-heap at the ROW level
+    pk_per_lifter = prep.dedup_per_lifter(pk_dh, keep="random")
+    bw_pk = pk_per_lifter["BodyweightKg"].to_numpy()            # already de-heaped, one per lifter
 
     # ---- 1. effect sizes (all rows, de-heaped) at every limit + control ----
     effect = {}
@@ -91,11 +92,19 @@ def run(save=True):
         effect[L] = {"below": below, "above": above, "log_ratio": round(lr, 3),
                      "ci_half": round(half, 3), "ratio": round(ratio, 2),
                      "is_limit": L in LIMITS}
-    # confirm the headline (83 kg) survives on the pure-kg subset
-    pk_below, pk_above = prep.bunching_counts(bw_pk_raw, config.H2_REAL_LIMIT)
+    # confirm the headline (83 kg) survives on the pure-kg per-lifter subset (already de-heaped)
+    pk_below, pk_above = prep.bunching_counts(bw_pk, config.H2_REAL_LIMIT, do_deheap=False)
     pk_lr, pk_half, pk_ratio = su.log_ratio_ci(pk_below, pk_above)
     effect["83_pure_kg"] = {"log_ratio": round(pk_lr, 3), "ci_half": round(pk_half, 3),
                             "ratio": round(pk_ratio, 2), "n_per_lifter": int(len(pk_per_lifter))}
+    # federation-robustness: STRICT IPF + USAPL only (all rows, de-heaped). Keeps the
+    # paper's federation-set sensitivity figure traceable to a saved result.
+    bw_iu = df.loc[df["Federation"].isin(["IPF", "USAPL"]) & (df["Sex"] == "M"),
+                   "BodyweightKg"].dropna().to_numpy()
+    iu_below, iu_above = prep.bunching_counts(bw_iu, config.H2_REAL_LIMIT)
+    iu_lr, iu_half, iu_ratio = su.log_ratio_ci(iu_below, iu_above)
+    effect["83_ipf_usapl_only"] = {"log_ratio": round(iu_lr, 3), "ci_half": round(iu_half, 3),
+                                   "ratio": round(iu_ratio, 2), "n_rows": int(len(bw_iu))}
 
     # ---- 2. formal McCrary on the PURE-KG per-lifter subset ----
     formal = {}
@@ -155,6 +164,8 @@ def run(save=True):
     print(f"pure-kg subset (year>={ERA_MIN}): {len(pk_per_lifter):,} unique lifters (FORMAL-test unit)")
     pk = effect["83_pure_kg"]
     print(f"headline 83kg holds on pure-kg? log-ratio {pk['log_ratio']:+.2f} (x{pk['ratio']})")
+    iu = effect["83_ipf_usapl_only"]
+    print(f"83kg, strict IPF+USAPL only: log-ratio {iu['log_ratio']:+.2f} (x{iu['ratio']}, n={iu['n_rows']:,})")
     print("\neffect sizes (de-heaped log(below/above), all rows):")
     for L in LIMITS:
         e = effect[L]; print(f"  {L:>4} kg : {e['log_ratio']:+.2f} +/- {e['ci_half']:.2f}  (x{e['ratio']})")
