@@ -2,7 +2,8 @@
 """
 H2 -- bodyweight bunches just below real class limits (weight-cutting), formally.
 
-Population: IPF + USAPL men (one modern class scheme), bodyweight de-heaped
+Population: men in IPF-affiliated federations (parent federation IPF, plus USAPL),
+which share the modern kg class scheme; bodyweight de-heaped
 (round/half-kg weigh-ins removed) so the signal is not just digit preference.
 
 Three layers:
@@ -150,7 +151,7 @@ def run(save=True):
 
     # ---- report ----
     print("==== H2: bunching below class limits ====")
-    print(f"men IPF+USAPL: {len(men_rows):,} rows -> {len(per_lifter):,} unique lifters")
+    print(f"men (IPF-scheme): {len(men_rows):,} rows -> {len(per_lifter):,} unique lifters")
     print(f"pure-kg subset (year>={ERA_MIN}): {len(pk_per_lifter):,} unique lifters (FORMAL-test unit)")
     pk = effect["83_pure_kg"]
     print(f"headline 83kg holds on pure-kg? log-ratio {pk['log_ratio']:+.2f} (x{pk['ratio']})")

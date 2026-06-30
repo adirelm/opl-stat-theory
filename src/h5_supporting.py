@@ -149,7 +149,7 @@ def run(save=True):
     nm = normality
     print(f"\n5. residual normality (H3 men): skew={nm['skew']}, excess-kurtosis={nm['excess_kurtosis']}; "
           f"D'Agostino p at n=300 ~{nm['dagostino_p_median_at_n300']} vs full ~{nm['dagostino_p_full']:.1e} "
-          f"(rejects only because n is huge)")
+          f"(genuinely non-normal; slope relies on the CLT + HC3-robust SE)")
 
     if save:
         config.RESULTS.mkdir(exist_ok=True)

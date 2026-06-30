@@ -15,7 +15,7 @@ preprocessing (imputation/encoding fit INSIDE each training fold via a Pipeline)
      model, as an in-sample OLS diagnostic (it is not meaningful for RF or for CV).
 
   B) Logistic 'made-weight just below a class limit' classifier on the pure-kg
-     (post-2014) IPF+USAPL men. Label = just-below(1) vs just-above(0). Features
+     (post-2014) IPF-scheme men (parent federation IPF). Label = just-below(1) vs just-above(0). Features
      are genuinely exogenous and NON-bodyweight (age, tested, era, equipment).
      Dots is EXCLUDED: it is a function of TotalKg and bodyweight (circular /
      post-outcome). Grouped-CV pooled-OOF AUC + PR-AUC + balanced accuracy + confusion.
