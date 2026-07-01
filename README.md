@@ -47,7 +47,7 @@ confidence intervals, not p-values.
 | `notebooks/results.ipynb` | Narrative report. |
 | `paper/` | IEEE paper (`main.tex`, built `main.pdf`). |
 | `presentation/` | Stage-1 mid-presentation deck (`.pptx`). |
-| `docs/` | Project spec, checklist, course-alignment, implementation plan. |
+| `docs/` | Project spec, checklist, implementation plan. |
 
 ## Reproduce
 ```bash
