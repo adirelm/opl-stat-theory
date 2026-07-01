@@ -1,5 +1,7 @@
 # Course-alignment analysis — does our project + mid-presentation fit the course?
 
+> **Status: pre-implementation planning snapshot (mid-June 2026), superseded by [`checklist.md`](checklist.md) and the final paper.** The ✅/⚠️/❌/"planned" markers below reflect the *plan* at that date, not the shipped project. Every tool marked ⚠️/❌/planned here was subsequently implemented (standardized residuals, Fisher-transform CIs, VIF/Adjusted-R², continuity correction, the full H4 learning component); the shipped normality diagnostic is D'Agostino's omnibus test (`scipy.stats.normaltest`) plus a Q-Q plot, not the Anderson-Darling/KS originally sketched below. Kept for design-history transparency.
+
 Cross-reference of **what the course actually teaches** (lectures 3/8/9/10 slides + recitations + Neyman-Pearson/GLRT theory) against our **project plan** (`project-spec.md`) and the **mid-presentation deck**.
 
 > Built from the lecture slides (authoritative) + recitation/lecture transcripts. The instructor's name appears as **Oshrit Shtossel (אושרית שטוסל)** on the lecture slides and instructions, while the Zoom room / contact email is **Viganesky (ויגננסקי)** — likely the same person; use "Shtossel" in any formal acknowledgment to match the official materials.
@@ -22,7 +24,7 @@ Cross-reference of **what the course actually teaches** (lectures 3/8/9/10 slide
 | **MP / UMP / Neyman-Pearson** | ✅ | anchored on the Wald-vs-2/3 / one-sample test |
 | **GLRT (λ)** | ✅ | H1 core (rounded-likelihood MLE + nested GLRT) |
 | **Mann-Whitney / Wilcoxon** | ✅ | tested/untested control (MWU), paired Wilcoxon (attempt-1 vs attempt-3) |
-| **Normality tests** | ✅ | Anderson-Darling + KS + QQ (strength-distribution structure, supporting) |
+| **Normality tests** | ✅ | *(shipped: D'Agostino omnibus + Q-Q; AD/KS was the original sketch)* — H3 residual diagnostic (Fig 8) |
 | Normal-approx **continuity correction** | ⚠️ partial | mention it when reporting the rank-test z |
 | **Bonferroni / Šidák / BH** | ✅✅ | all four (+ Holm) per the TA — exceeds the course |
 | **ANOVA / Kruskal-Wallis + post-hoc (Dunn)** | ✅ | equipment / group comparisons |
