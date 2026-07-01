@@ -180,7 +180,10 @@ def run(save=True):
         else:
             print(f"  {c:>4} kg [{tag:>8}]: (no estimate) {f.get('error','')}")
     print("\nmultiple-testing (Holm + BH, limits and placebos as separate families):")
-    print(f"  all 7 limits reject after Holm? {corr['all_limits_reject_holm']} | after BH? {corr['all_limits_reject_bh']}")
+    n_holm = sum(1 for L in LIMITS if limits_corr[L].get("p_holm", 1.0) < config.ALPHA)
+    n_bh = sum(1 for L in LIMITS if limits_corr[L].get("p_bh", 1.0) < config.ALPHA)
+    print(f"  limits rejecting after Holm: {n_holm}/{len(LIMITS)} | after BH: {n_bh}/{len(LIMITS)} "
+          f"(all_limits_reject_holm={corr['all_limits_reject_holm']}, all_limits_reject_bh={corr['all_limits_reject_bh']})")
     print(f"  placebo false-positives in bunching direction (t<0 & BH-sig)? "
           f"{corr['placebo_false_positives_bunching_dir'] or 'NONE (falsification passed)'}")
     print("\nspike-width (share of (L-2,L] mass in innermost 0.5 kg):")

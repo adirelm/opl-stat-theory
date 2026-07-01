@@ -28,6 +28,7 @@ null. The effect is so large (~0.96 vs 0.20) that the conclusion is robust to th
 exact baseline; a richer baseline (e.g. whole-kg preference) is a Stage-2 refinement.
 """
 import json
+import math
 import numpy as np
 from scipy.special import xlogy                # endpoint-safe x*log(y): xlogy(0,0)=0
 
@@ -71,6 +72,20 @@ def bootstrap_null(n, p0=P0, B=3000, seed=config.SEED):
     return T
 
 
+def _upper_bound_str(p, sig=2):
+    """Format p as a ROUNDED-UP display string, so 'p < this string' is always true.
+
+    Naive nearest-rounding (e.g. f"{p:.1e}") can round DOWN, making a strict '<' claim
+    on the displayed value false (e.g. 1/3001=3.3322e-4 rounds to '3.3e-04', which is
+    smaller than the true value -- a false upper bound)."""
+    if p <= 0:
+        return f"{p:.{sig - 1}e}"
+    exp = math.floor(math.log10(p))
+    factor = 10 ** (exp - sig + 1)
+    p_up = math.ceil(p / factor) * factor
+    return f"{p_up:.{sig - 1}e}"
+
+
 def lb_robustness(att):
     """The off-0.5-lattice attempts are pound loads: report the share explained by round-lb."""
     ticks = att / RES
@@ -99,6 +114,7 @@ def run(save=True):
     p_boot = su.bootstrap_pvalue(T, null)
     exceeds_all = bool(T > np.max(null))            # T_obs beyond every null draw?
     p_upper = 1.0 / (len(null) + 1)                 # Monte-Carlo floor for the p-value
+    p_upper_display = _upper_bound_str(p_upper)      # rounded UP, so "p < this" is always true
 
     # cutoffs: naive chi^2_1 vs calibrated (bootstrap) vs theoretical 50:50 mixture
     from scipy import stats as sp
@@ -125,6 +141,7 @@ def run(save=True):
         "bootstrap_pvalue": float(p_boot),
         "bootstrap_p_is_upper_bound": exceeds_all,
         "bootstrap_p_upper": float(p_upper),
+        "bootstrap_p_upper_display": p_upper_display,
         "bootstrap_null_mass_at_0": round(mass0, 3),
         "cutoff_naive_chi2_1_95": round(naive_cut, 3),
         "cutoff_mixture_theory_95": round(mix_cut, 3),
@@ -147,7 +164,7 @@ def run(save=True):
     print(f"  bootstrap null: mass@0={mass0:.2f} (boundary mixture), 95% cutoff={boot_cut:.2f}")
     print(f"  vs naive chi2_1 95%={naive_cut:.2f}, theoretical mixture 95%={mix_cut:.2f}")
     if exceeds_all:
-        print(f"  bootstrap p < {p_upper:.1e} (T_obs exceeds ALL {len(null)} null draws)  ->  REJECT H0 (grid is real)")
+        print(f"  bootstrap p < {p_upper_display} (T_obs exceeds ALL {len(null)} null draws)  ->  REJECT H0 (grid is real)")
     else:
         print(f"  bootstrap p-value = {p_boot:.2e}  ->  {'REJECT H0 (grid is real)' if p_boot < config.ALPHA else 'fail to reject'}")
     print(f"chi^2 GoF vs uniform-5: chi2={gof_chi2:,.0f} (df={gof_df}) -> overwhelming")

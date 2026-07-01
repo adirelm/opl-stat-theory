@@ -158,7 +158,7 @@ Limit (kg) & log-ratio & $\pm$ & $\times$ asymmetry\\
 74 & $+1.00$ & 0.03 & 2.7\\
 \textbf{83} & $\mathbf{+1.92}$ & 0.04 & \textbf{6.8}\\
 93 & $+1.65$ & 0.04 & 5.2\\
-105 & $+1.17$ & 0.04 & 3.2\\
+105 & $+1.17$ & 0.05 & 3.2\\
 120 & $+0.74$ & 0.06 & 2.1\\
 \midrule
 91 (control) & $-0.21$ & 0.03 & 0.8\\
@@ -168,7 +168,7 @@ Limit (kg) & log-ratio & $\pm$ & $\times$ asymmetry\\
 
 \begin{figure}[t]\centering
 \includegraphics[width=\columnwidth]{fig3_all_limits.png}
-\caption{H2: excess just-below mass at every real limit; control near zero.}
+\caption{H2: excess just-below mass at every real limit; the control runs opposite.}
 \label{fig:limits}\end{figure}
 
 \subsection{Allometric scaling differs by sex (H3)}
@@ -253,7 +253,7 @@ as a diagnostic and lead with effect sizes.
 \label{fig:norm}\end{figure*}
 
 \section{Methods}
-\textbf{Data and preprocessing.} We use a pinned snapshot of OpenPowerlifting
+\textbf{Data and preprocessing.} We use a pinned snapshot of OpenPowerlifting~\cite{opl}
 (3{,}941{,}811 rows, public domain; the SHA-256 is recorded for exact
 reproducibility). The unit of analysis is the \emph{attempt} for H1 (the mechanism
 is within-competitor, so the grid is robust to clustering) and one \emph{row per
@@ -327,6 +327,7 @@ Density discontinuity (McCrary/CJM) & H2 bunching\\
 Multiple testing (Bonf./Holm/\v{S}id\'ak/BH) & H2 limits, H3\\
 OLS, $R^2$, Wald, interaction term & H3 allometry\\
 One-/two-sided, one-sample tests & H1, H3\\
+Neyman--Pearson MP/UMP framing & toolbox demo\\
 Pearson/Spearman, Fisher CI & H3\\
 Regression, random forest, logistic & H4 prediction\\
 Learning metrics, grouped CV, VIF & H4\\
