@@ -100,8 +100,9 @@ uniform background. The GLRT of $\pi=0$ versus $\pi>0$ has its null parameter on
 the boundary of $[0,1]$, so Wilks' theorem fails: the null distribution of
 $2\ln\Lambda$ is the $50{:}50$ mixture $\tfrac12\chi^2_0+\tfrac12\chi^2_1$ of
 Chernoff and Self--Liang~\cite{chernoff,selfliang}. Our parametric bootstrap
-closely matches this (point mass $0.51$ at zero; calibrated 95\% cutoff $2.59$
-versus the naive $3.84$). The observed statistic, $2\ln\Lambda=3.9\times10^7$,
+closely matches this theory (point mass $0.51$ vs.\ the theoretical $0.50$;
+calibrated 95\% cutoff $2.59$ vs.\ the theoretical $2.71$, both well below the
+naive $\chi^2_1$ value of $3.84$). The observed statistic, $2\ln\Lambda=3.9\times10^7$,
 exceeds every bootstrap draw ($p<3.4\times10^{-4}$), and a $\chi^2$ goodness-of-fit
 against a uniform within-cell distribution strongly rejects it ($5.0\times10^7$,
 $\mathrm{df}=4$). The 3.8\% off-grid loads are largely a units artifact: of the
@@ -127,8 +128,10 @@ is the 120~kg cutoff ($t=-1.6$, $p=0.11$), adjacent to the unbounded $120{+}$ cl
 where the incentive to cut is weakest. The control shows no excess below (a small
 \emph{opposite}-direction discontinuity), and no placebo shows the bunching
 pattern. The effect is robust across equipment (raw $+2.14$, equipped $+1.51$) and
-tested status (tested $+1.93$), and persists on the clean kg-only subset
-($+1.80$).
+concentrated in the tested majority ($+1.93$; the smaller untested subset reverses
+to $-0.30$, consistent with weight-cutting being driven by the tested IPF-scheme
+federations that dominate this population), and it persists on the clean kg-only
+subset ($+1.80$).
 
 \textbf{Robustness and falsification.} The result survives four checks. (i)~\emph{De-heaping}: removing exact round/half-kg weigh-ins leaves the
 asymmetry intact, so the signal is not digit preference and is consistent with
@@ -199,7 +202,8 @@ is dominated by sex and bodyweight, and continuous-feature VIFs are $\approx1$
 (no collinearity concern). A logistic ``made-weight'' classifier built from
 \emph{non-bodyweight} features (age, tested status, era, equipment; the Dots
 score is excluded because it is a function of total and bodyweight) reaches
-$\mathrm{AUC}=0.56$ (PR-AUC $0.84$, balanced accuracy $0.53$). The signal is weak,
+$\mathrm{AUC}=0.56$ (PR-AUC $0.84$ against a $0.82$ no-skill baseline, balanced
+accuracy $0.53$). The signal is weak,
 as expected: cutting is driven by bodyweight relative to the limit, which defines
 the label and which these features omit.
 
@@ -220,8 +224,8 @@ performance-enhancing drugs, since tested and untested federations also differ i
 era, equipment, and selection. \textbf{Extreme values.} A GEV fit to equal-size block maxima of recent
 totals gives shape $\xi=-0.02$ with bootstrap CI $[-0.20,3.77]$: a population
 strength \emph{ceiling is not supported}, since the CI includes zero. \textbf{Time
-trend.} Median Dots drifted down over 2000--2024 (Spearman $\rho=-0.54$),
-one possible explanation is broadening participation; the trend is not by itself
+trend.} Median Dots drifted down over 2000--2024 (Spearman $\rho=-0.54$); one
+possible explanation is broadening participation, but the trend is not by itself
 evidence of declining strength.
 \textbf{Sequential detection.} A Wald sequential probability ratio test on the
 chronological stream of just-below/above indicators accepts the bunching hypothesis

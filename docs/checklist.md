@@ -50,8 +50,8 @@ Hypothesis testing · confidence interval · significance level · p-value · Ty
 - ⚠️ **Lock a snapshot:** `openpowerlifting-latest.zip` changes weekly → attach the CSV or document the download date, otherwise the assessor's numbers won't match.
 - *(The sources the lecturer suggested — SurvSet, USA COVID, Kaggle, ML — were considered; OPL was chosen because it is original, surprising, and review-resilient.)*
 
-## Supporting Materials (in the repo)
+## Supporting Materials
 - `docs/project-spec.md` — **the full specification** ✅
-- `reference/הוראות פרויקט סוף תאוריה סטטיסטית.pdf` — the official instructions
-- `reference/דוגמאות/` — sample final project (Chess) + sample midterm presentation (Animal Adoption)
-- `reference/תמלול הרצאה 8 ...txt` · `reference/מקורות דאטה - *.png`
+- Course materials (official instructions PDF, sample projects, lecture transcript,
+  data-source references) are provided separately by the course and are intentionally
+  **not committed** to this repo (they are gitignored and were purged from history).
