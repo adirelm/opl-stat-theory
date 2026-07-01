@@ -83,7 +83,8 @@ primary evidence, use $p$-values only as a secondary screen, and apply multiple-
 every pre-declared family: all four (Bonferroni, Holm, \v{S}id\'ak,
 Benjamini--Hochberg) for the H2 limits, and Holm for H3. Because the same lifter appears in many rows, naive standard errors
 understate uncertainty (pseudo-replication); the formal tests therefore use one row
-per lifter or cluster-robust standard errors, declared per hypothesis.
+per lifter (with heteroskedasticity-robust HC3 errors), the deduplication unit
+declared per hypothesis.
 
 \section{Results}
 All intervals are 95\%. H1 uses attempt loads; the cross-sectional tests use one
@@ -219,7 +220,7 @@ Gaussian components ($\Delta\mathrm{BIC}=1.4\times10^3$) but the sex-normalized
 Dots score prefers one (Fig.~\ref{fig:struct}); the two-component shape largely
 disappears after Dots normalization. \textbf{Tested vs.\ untested.} Untested competitions show
 higher Dots than tested ones (medians $344$ vs.\ $318$, Mann--Whitney $p\!\to\!0$,
-rank-biserial $-0.20$), consistent with---though not proof of---an effect of
+rank-biserial $-0.20$), consistent with (though not proof of) an effect of
 performance-enhancing drugs, since tested and untested federations also differ in
 era, equipment, and selection. \textbf{Extreme values.} A GEV fit to equal-size block maxima of recent
 totals gives shape $\xi=-0.02$ with bootstrap CI $[-0.20,3.77]$: a population
