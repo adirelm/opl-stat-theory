@@ -207,8 +207,8 @@ def fig_normality(sbd):
     pv = [max(np.median([sp.normaltest(r[rng.choice(len(r), int(n), replace=False)]).pvalue
                          for _ in range(6)]), 1e-300) for n in ns]
     axp.plot(ns, pv, "-o", color=C_M, lw=2, ms=3)
-    axp.axhline(0.05, color=C_GRID, ls="--", lw=1.5); axp.text(ns[-1], 0.07, "alpha=0.05",
-              color=C_GRID, fontsize=9, ha="right", va="bottom")
+    axp.axhline(0.05, color=C_GRID, ls="--", lw=1.5); axp.text(ns[-1], 0.03, "alpha=0.05",
+              color=C_GRID, fontsize=9, ha="right", va="top")
     axp.set_xscale("log"); axp.set_yscale("log"); axp.set_ylim(1e-300, 5)
     axp.set_yticks([1e0, 1e-50, 1e-100, 1e-150, 1e-200, 1e-250, 1e-300])
     axp.set_xlabel("sample size n"); axp.set_ylabel("normality-test p-value")

@@ -15,24 +15,24 @@ Based on the project instructions + Lecture 8. Lecturer/contact: **Dr. Oshrit Vi
 | In-class presentations | Lectures 11 and 12 |
 | Final project submission (Stage B) | **15.8.2026 — no extensions** |
 
-## Stage A — Midterm Presentation (30%)
-- [ ] ~5 minutes (maximum 10), **up to 10 slides**, **in Hebrew**.
-- [ ] Content: research question · investigation methods · preliminary results · preliminary conclusions.
-- [x] Register in the Google Sheet (names + date) — **registered for 28.6** (verify David's name appears in the registration).
-- [ ] Sit and listen to the other presenters' talks.
+## Stage A — Midterm Presentation (30%) — ✅ delivered 28.6
+- [x] ~5 minutes (maximum 10), **up to 10 slides**, **in Hebrew** — presented 28.6.
+- [x] Content: research question · investigation methods · preliminary results · preliminary conclusions.
+- [x] Register in the Google Sheet (names + date) — **registered for 28.6**.
+- [x] Sit and listen to the other presenters' talks.
 - This is a **very preliminary** stage — meant to get feedback from the lecturer and adjust direction before the final. No pressure.
 - 💡 **Direction approval from the lecturer:** direction email about OpenPowerlifting **sent**.
 
 ## Stage B — The Final Project (70%)
-- [ ] **PDF in English, up to 8 pages** (two-column IEEE template), structured as — **note: Results before Methods**:
+- [x] **PDF in English, up to 8 pages** (two-column IEEE template, 6 pages), structured as — **note: Results before Methods**:
   - **Abstract** — background, main results and conclusion (+ GitHub/Colab link below).
   - **Introduction** — literature review + differentiation (an original question, not a replication).
   - **Results** — the hypotheses and how they are answered using the course tools; tables/figures; every statistic with interpretation.
   - **Methods** — how the tools were applied; give a short formal description of the in-course tests too (as the sample paper does), with full formulas reserved for the beyond-course/creative tools.
   - **Discussion** — conclusions and limitations (including null results as valid findings).
-- [ ] **GitHub/Colab** with organized code + **README** + precise reproduction instructions + the data/download script + source citation (CC0).
-- [ ] **Acceptance gate:** clone into a clean environment → `pip install -r` → end-to-end run reproduces everything.
-- [ ] Readable figures: axis titles, meaningful colors, figure captions, vector/≥300DPI export (not screenshots).
+- [x] **GitHub/Colab** with organized code + **README** + precise reproduction instructions + the data/download script + source citation (CC0) — public repo + pinned data release.
+- [x] **Acceptance gate:** clone into a clean environment → `pip install -r` → end-to-end run reproduces everything — no-login curl path verified; SHA-256 checked by `run_all.sh`.
+- [x] Readable figures: axis titles, meaningful colors, figure captions, ≥300 DPI export (not screenshots).
 
 ## ⚠️ What Is Actually Being Assessed
 - **Choosing the correct test** according to the nature/constraints of the data — the heart of the course (categorical discrete→χ²; continuous-vs-ordinal→Spearman; independent categories).

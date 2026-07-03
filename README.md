@@ -18,7 +18,7 @@ Bar-Ilan University, M.Sc. *Statistical Theory*. Authors: **Adir Elmakais, David
 - **H2 weight-cut bunching.** Bodyweight piles up just below every IPF men's class
   limit (de-heaped log(below/above) = +1.92 at 83 kg). A Cattaneo-Jansson-Ma
   density-discontinuity test rejects at six of the seven limits (Holm and BH corrected;
-  the lone exception is the unbounded 120+ class, where the cutting incentive is weakest); a
+  the lone exception is the 120 kg boundary of the open-ended 120+ class, where the cutting incentive is weakest); a
   non-limit control (91 kg) shows no bunching-direction excess, and placebos show no below-limit bunching.
 - **H3 allometry.** Strength scales as bodyweight^b with b = 0.75 (men) / 0.51 (women)
   vs the isometric 2/3; a Sex x log(BW) interaction is significant and survives a

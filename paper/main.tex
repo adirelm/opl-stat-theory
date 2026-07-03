@@ -31,7 +31,8 @@ bootstrap. (ii)~\emph{Weight-cut bunching}: bodyweight piles up just below every
 IPF class limit (de-heaped $\log(\text{below}/\text{above})=+1.92$ at 83~kg); a
 Cattaneo--Jansson--Ma density-discontinuity test rejects at six of the seven
 limits (surviving Holm and Benjamini--Hochberg); the lone exception is the
-unbounded 120~kg boundary, where the incentive to cut is weakest. A non-limit
+120~kg boundary of the open-ended $120{+}$ class, where the incentive to cut is
+weakest. A non-limit
 control shows no bunching, and placebos show no bunching-direction false positives. (iii)~\emph{Allometry}: strength scales with
 bodyweight differently by sex ($b\!=\!0.75$ men, $0.51$ women vs.\ the isometric
 $2/3$; a Sex$\times\log$(BW) interaction is highly significant and persists on
@@ -157,7 +158,8 @@ control (91~kg); round-number weigh-ins removed.}
 
 \begin{table}[t]\centering
 \caption{De-heaped $\log(\text{below}/\text{above})$ at each IPF men's limit
-(all rows). Last row is a non-limit control.}
+(all rows; counts over the 0.5~kg windows just below/above each limit). Last row
+is a non-limit control.}
 \label{tab:limits}
 \begin{tabular}{lccc}
 \toprule
@@ -301,7 +303,8 @@ constrained MLE $\hat\pi\ge0$.
 contrasts the one-sided densities, $\theta=\ln \hat f^{+}(c)-\ln \hat f^{-}(c)$,
 estimated by local polynomials without pre-binning~\cite{mccrary,cjm}; $\theta<0$
 ($t<0$) indicates excess mass just below $c$. We complement the formal test with a
-de-heaped log count-ratio as the interpretable effect size.
+de-heaped log count-ratio as the interpretable effect size, counting weigh-ins over
+the windows $(c-0.5,c]$ and $(c,c+0.5]$~kg.
 
 \textbf{Allometry (H3).} OLS on $\log$--$\log$ data gives the scaling exponent
 $b$; we report HC3-robust standard errors (one row per lifter), a Wald statistic
@@ -379,10 +382,10 @@ analyses.
 
 \textbf{Limitations and null results.} This is an observational study: we identify
 population-level patterns consistent with weight cutting, not the intent of any
-individual. We report three null results as genuine findings. The unbounded
-$120{+}$ class does \emph{not} show significant bunching after correction
-($t=-1.6$, $p=0.11$), consistent with weaker cutting pressure at that open-ended
-boundary; the extreme-value analysis does \emph{not} support a strength ceiling
+individual. We report three null results as genuine findings. The 120~kg boundary
+(the entry to the unbounded $120{+}$ class) does \emph{not} show significant
+bunching after correction ($t=-1.6$, $p=0.11$), consistent with weaker cutting
+pressure at that open-ended boundary; the extreme-value analysis does \emph{not} support a strength ceiling
 (the $\xi$ confidence interval includes zero); and we find no material association
 between tested status and cutting once pseudo-replication is removed. On the methods side,
 lifter identity is name-based, the per-lifter meet is sampled at random, and the
@@ -393,6 +396,7 @@ Several extensions remain for future work: more federations and eras, a
 structural bunching model that recovers the share of manipulators, and a
 multiverse robustness check.
 
+\IEEEtriggeratref{5}
 \begin{thebibliography}{9}
 \bibitem{kleven} H.~J.~Kleven, ``Bunching,'' \emph{Annual Review of Economics},
 vol.~8, pp.~435--464, 2016.
@@ -410,8 +414,9 @@ likelihood estimators and likelihood ratio tests under nonstandard conditions,''
 \bibitem{einmahl} J.~H.~J.~Einmahl and J.~R.~Magnus, ``Records in athletics through
 extreme-value theory,'' \emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~103, no.~484,
 pp.~1382--1391, 2008.
-\bibitem{peyen} Peyen \emph{et al.}, ``Discussing diminishing returns: A new
-scoring system for powerlifting,'' arXiv:2503.13040, 2025.
+\bibitem{peyen} J.~C.~Peyen, R.~Nuermaimaiti, and J.~Cunningham, ``Discussing
+diminishing returns: A new scoring system for powerlifting,'' arXiv:2503.13040,
+2025.
 \bibitem{opl} OpenPowerlifting, \url{https://www.openpowerlifting.org} (data
 released into the public domain).
 \end{thebibliography}
