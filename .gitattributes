@@ -1,0 +1,3 @@
+# The notebook embeds rendered figures (~2 MB), which would dominate GitHub's
+# language statistics; mark it as documentation so the Python pipeline leads.
+notebooks/*.ipynb linguist-documentation=true

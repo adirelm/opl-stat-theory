@@ -192,7 +192,7 @@ directions (men $z=+46.8$, i.e.\ $b>2/3$; women $z=-64.1$, i.e.\ $b<2/3$). A poo
 estimates the men-minus-women slope gap at $+0.24$ ($p\!\ll\!10^{-3}$). The gap also \emph{grows} on the common bodyweight support ($0.84$ men vs.\ $0.38$
 women), so it is not an artifact of the sexes occupying different weight ranges.
 For men, the Pearson correlation of $\log\text{BW}$ and $\log\text{Total}$ is
-$0.60$ (Fisher-transform CI $[0.60,0.603]$; Spearman $0.58$); it is lower for women. The message is not that women
+$0.60$ (Fisher-transform CI $[0.600,0.603]$; Spearman $0.58$); it is lower for women. The message is not that women
 are weaker, but that the \emph{estimated scaling} differs; we leave the mechanism to future
 work.
 
@@ -280,8 +280,10 @@ as a diagnostic and lead with effect sizes.
 \textbf{Data and preprocessing.} We use a pinned snapshot of OpenPowerlifting~\cite{opl}
 (3{,}941{,}811 rows, public domain; the SHA-256 is recorded for exact
 reproducibility). The unit of analysis is the \emph{attempt} for H1 (the mechanism
-is within-competitor, so the grid is robust to clustering) and one \emph{row per
-lifter} for the cross-sectional tests; \emph{de-heaping} drops exact round/half-kg
+is within-competitor, so the grid is robust to clustering; attempts do cluster
+within lifters, so the attempt-level CI is optimistic in width and the conclusion
+rests on the effect size, 96\% on-grid vs.\ the 20\% no-preference baseline) and
+one \emph{row per lifter} for the cross-sectional tests; \emph{de-heaping} drops exact round/half-kg
 weigh-ins so the bunching signal is not digit preference. For prediction, all cross-%
 validation is grouped by lifter so the same athlete never appears in both train and
 test.
