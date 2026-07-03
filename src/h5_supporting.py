@@ -9,9 +9,9 @@ side of the story and exercises additional course tools.
      Run on Dots (already sex/bodyweight-normalized) vs raw Total.
   2. Tested vs untested: a two-independent-samples comparison of Dots
      (Mann-Whitney U, nonparametric + Welch t), with a rank-biserial effect size.
-  3. EVT / GEV: fit a Generalized Extreme Value distribution to annual maxima of
-     Total; the shape xi<0 implies a BOUNDED upper tail (a population strength
-     ceiling). Cite Einmahl & Magnus. (scipy genextreme uses c = -xi.)
+  3. EVT / GEV: fit a Generalized Extreme Value distribution to equal-size block
+     maxima of recent per-lifter totals; the shape xi<0 implies a BOUNDED upper tail
+     (a population strength ceiling). Cite Einmahl & Magnus. (scipy genextreme uses c = -xi.)
   4. Time-trend: median Dots per year, Spearman trend.
 """
 import json
