@@ -22,9 +22,9 @@ and the Limits of Strength in 3.9~Million Powerlifting Results}
 A powerlifting competitor controls exactly two numbers: the weight loaded on the
 bar and their bodyweight at weigh-in. We ask whether these choices leave
 measurable statistical patterns, using $\sim$3.94 million competition results
-from the public-domain OpenPowerlifting database. Four findings, each answered with
-a course-appropriate test and led by effect size (at $n\!\approx\!3.9$M almost
-everything is ``significant''). (i)~\emph{Quantization}: 96.2\% of 13.4M attempt
+from the public-domain OpenPowerlifting database. We report four findings, each
+answered with a course-appropriate test and led by effect size (at $n\!\approx\!3.9$M
+almost everything is ``significant''). (i)~\emph{Quantization}: 96.2\% of 13.4M attempt
 loads sit exactly on the 2.5~kg plate grid; a generalized likelihood-ratio test
 (GLRT) whose null parameter lies on the boundary is calibrated by a parametric
 bootstrap. (ii)~\emph{Weight-cut bunching}: bodyweight piles up just below every
@@ -62,7 +62,7 @@ administrative threshold produces \emph{bunching}, a standard tool in public
 economics~\cite{kleven} that is classically tested with the McCrary density-%
 discontinuity test~\cite{mccrary} and its modern, bias-corrected local-polynomial
 form due to Cattaneo, Jansson, and Ma~\cite{cjm}. Rapid pre-weigh-in weight cutting
-is well documented in weight-class sports. On the physiological side, the
+is well documented in weight-class sports~\cite{franchini}. On the physiological side, the
 square--cube law predicts that strength, governed by muscle cross-sectional area,
 scales with bodyweight as $\propto\text{BW}^{2/3}$. Extreme-value theory has been
 used to estimate the ultimate limits of athletic performance from record
@@ -227,8 +227,8 @@ just sex: by BIC and a bootstrap likelihood-ratio test, raw Total prefers two
 Gaussian components ($\Delta\mathrm{BIC}=1.4\times10^3$) but the sex-normalized
 Dots score prefers one (Fig.~\ref{fig:struct}); the two-component shape largely
 disappears after Dots normalization. \textbf{Tested vs.\ untested.} Untested competitions show
-higher Dots than tested ones (medians $344$ vs.\ $318$, Mann--Whitney $p\!\to\!0$,
-rank-biserial $-0.20$), consistent with (though not proof of) an effect of
+higher Dots than tested ones (medians $344$ vs.\ $318$, Mann--Whitney $p\!\to\!0$;
+a parametric Welch test agrees, $|t|=128$; rank-biserial $-0.20$), consistent with (though not proof of) an effect of
 performance-enhancing drugs, since tested and untested federations also differ in
 era, equipment, and selection. \textbf{Paired attempts.} Within a meet, the third
 squat attempt exceeds the opener by a median $15$~kg (medians $160\to180$;
@@ -294,7 +294,7 @@ the null distribution directly by simulating data under the fitted null model
 quantiles. Concretely, for within-cell position $u\in\{0,\dots,4\}$ on the 0.5~kg
 lattice the model is
 \begin{equation}
-P(u)=\pi\,\mathbb{1}[u=0]+(1-\pi)\tfrac15,\qquad \pi\in[0,1],
+P(u)=\pi\,\mathbf{1}[u=0]+(1-\pi)\tfrac15,\qquad \pi\in[0,1],
 \end{equation}
 and the GLRT contrasts $\pi=0$ (no grid preference, on the boundary) with the
 constrained MLE $\hat\pi\ge0$.
@@ -339,7 +339,9 @@ Table~\ref{tab:tools} maps the course toolbox onto the study.
 \textbf{Reproducibility.} Every result is produced by a small set of scripts from
 the pinned snapshot; numbers are written to machine-readable files, figures are
 exported at 300~DPI, and an independent re-derivation from the raw data reproduced
-every headline value reported here.
+every headline value reported here. All analyses use Python~3.12 with
+numpy/scipy/statsmodels/scikit-learn and the \texttt{rddensity} implementation of
+the CJM test; exact versions are pinned in the repository.
 
 \begin{table}[t]\centering
 \caption{Coverage of the course toolbox.}
@@ -359,7 +361,7 @@ Pearson/Spearman, Fisher CI & H3\\
 Regression, random forest, logistic & H4 prediction\\
 Learning metrics, grouped CV, VIF & H4\\
 Mixture LRT, AIC/BIC & structure\\
-Mann--Whitney (two-sample) & tested vs.\ untested\\
+Welch $t$ / Mann--Whitney (two-sample) & tested vs.\ untested\\
 Wilcoxon signed-rank (paired) & attempt 1 vs.\ 3\\
 $F$/ANOVA, Kruskal--Wallis, post-hoc & equipment\\
 $\chi^2$ independence, Cram\'er's $V$ & tested $\times$ cut\\
@@ -406,17 +408,20 @@ vol.~142, no.~2, pp.~698--714, 2008.
 \bibitem{cjm} M.~D.~Cattaneo, M.~Jansson, and X.~Ma, ``Simple local polynomial
 density estimators,'' \emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~115, no.~531,
 pp.~1449--1455, 2020.
-\bibitem{chernoff} H.~Chernoff, ``On the distribution of the likelihood ratio,''
-\emph{Ann.\ Math.\ Statist.}, vol.~25, no.~3, pp.~573--578, 1954.
-\bibitem{selfliang} S.~G.~Self and K.-Y.~Liang, ``Asymptotic properties of maximum
-likelihood estimators and likelihood ratio tests under nonstandard conditions,''
-\emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~82, no.~398, pp.~605--610, 1987.
+\bibitem{franchini} E.~Franchini, C.~J.~Brito, and G.~G.~Artioli, ``Weight loss in
+combat sports: physiological, psychological and performance effects,'' \emph{J.\ Int.\
+Soc.\ Sports Nutrition}, vol.~9, art.~52, 2012.
 \bibitem{einmahl} J.~H.~J.~Einmahl and J.~R.~Magnus, ``Records in athletics through
 extreme-value theory,'' \emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~103, no.~484,
 pp.~1382--1391, 2008.
 \bibitem{peyen} J.~C.~Peyen, R.~Nuermaimaiti, and J.~Cunningham, ``Discussing
 diminishing returns: A new scoring system for powerlifting,'' arXiv:2503.13040,
 2025.
+\bibitem{chernoff} H.~Chernoff, ``On the distribution of the likelihood ratio,''
+\emph{Ann.\ Math.\ Statist.}, vol.~25, no.~3, pp.~573--578, 1954.
+\bibitem{selfliang} S.~G.~Self and K.-Y.~Liang, ``Asymptotic properties of maximum
+likelihood estimators and likelihood ratio tests under nonstandard conditions,''
+\emph{J.\ Amer.\ Statist.\ Assoc.}, vol.~82, no.~398, pp.~605--610, 1987.
 \bibitem{opl} OpenPowerlifting, \url{https://www.openpowerlifting.org} (data
 released into the public domain).
 \end{thebibliography}

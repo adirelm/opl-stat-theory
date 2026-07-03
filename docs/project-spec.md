@@ -1,6 +1,8 @@
 # Final Project Spec — Statistical Theory
 ## "How Powerlifters 'Game' the Two Numbers They Control — and What the Data Reveals About Human Strength" (OpenPowerlifting)
 
+> **Status: pre-analysis planning spec (June 2026), kept as the pre-registration of the hypotheses and test families.** The paper ([`paper/main.tex`](../paper/main.tex)) is the authoritative final record. Notable scope changes since this spec: the formal per-lifter deduplication rule became **one random (seeded) meet per lifter** (outcome-independent; the "personal Total-best" rule below was dropped as outcome-dependent), the formal H3 headline is the per-lifter HC3 fit (b=0.75/0.51; the 0.72/0.49 below is the all-row descriptive layer), and some planned extensions (dedup-rule sensitivity table, bandwidth-sensitivity curve, top-1% comparison, POT/GPD) were scoped down and appear in the paper as future work.
+
 > All numbers below are **reproducible results** computed on the real data (3,941,811 rows, CC0). The core is robust: **H1** (96.2% of attempts on the 2.5 kg grid) and **H2** (bodyweight bunching just below class thresholds; a non-limit control is flat — the effect is specific to the thresholds). **H3** = allometric scaling b≈0.72 (men) / 0.49 (women) on full-power (SBD) results. **H4** = a strength-prediction model (regression + Random Forest) covering the course's learning half. Supporting analyses: tested/untested control (24%/43% untested, population / top-1%); strength-distribution structure (**not** a by-sex mixture — Dots is already normalized for sex/weight; see below); EVT; time-trend. Wherever a specification must be locked, this is marked explicitly.
 >
 > **🔢 Canonical hypothesis numbering (one scheme for the deck, the prep-guide, this spec, and the code).** The mid-presentation presents exactly these four; the paper keeps the same numbers:
@@ -19,7 +21,7 @@
 ## 0. Team, Logistics, and Language
 - **Working in a pair: Adir Elmakais + David Levin** — consistent with the default in the instructions (pairs), so **no special approval is needed**. The preliminary email concerns only approval of the research direction.
 - Register in the Google Sheet on Moodle (**both members' names** + dataset + date). We registered for **28.6.2026** (first-come-first-served; if crowded — 21.6 as an alternative). **Verify that David's name appears in the registration.**
-- **Instructor's name:** the metadata of the official PDF reads "Oshrit Shtossel"; our contact is **Oshrit Viganesky (oshritvig@gmail.com)** — the email was sent to Viganesky. Verify before submission.
+- **Instructor's name:** the metadata of the official PDF reads "Oshrit Shtossel"; our course contact is **Dr. Oshrit Viganesky** (the direction-approval email was sent).
 - **Language:** the presentation (stage A) is **in Hebrew**; the paper (stage B) is **in English**. Test/code names in English.
 - **Code:** GitHub *or* Google Colab. The real bar: **the grader clones, runs clean** and obtains all the numbers/figures.
 
