@@ -6,8 +6,10 @@ limits of strength.
 
 Bar-Ilan University, M.Sc. *Statistical Theory*. Authors: **Adir Elmakais, David Levin**.
 
-The paper is in [`paper/main.tex`](paper/main.tex) (built PDF: `paper/main.pdf`); a
-narrative walk-through is in [`notebooks/results.ipynb`](notebooks/results.ipynb).
+**[Read the paper (PDF)](paper/main.pdf)** · narrative walk-through:
+[`notebooks/results.ipynb`](notebooks/results.ipynb) · source: [`paper/main.tex`](paper/main.tex)
+
+![Bodyweight bunches just below the real 83 kg class limit but not at a non-limit control (91 kg)](figures/fig2_bunching.png)
 
 ## Findings (verified on the real data)
 - **H1 quantization.** 96.20% of 13.4M attempt loads sit exactly on the 2.5 kg plate
@@ -53,10 +55,13 @@ confidence intervals, not p-values.
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-# exact data snapshot used for the paper (reproduces the reported numbers):
-gh release download data-snapshot-2026-06 -R adirelm/opl-stat-theory -p openpowerlifting.csv.gz
-gunzip -c openpowerlifting.csv.gz > data/openpowerlifting.csv
-# (or refresh to the current weekly data instead: python download_data.py)
+# exact data snapshot used for the paper (reproduces the reported numbers; no login needed):
+mkdir -p data
+curl -L -o data/openpowerlifting.csv.gz \
+  https://github.com/adirelm/opl-stat-theory/releases/download/data-snapshot-2026-06/openpowerlifting.csv.gz
+gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
+# (with an authenticated GitHub CLI, `gh release download data-snapshot-2026-06 -R adirelm/opl-stat-theory`
+#  works too; or refresh to the current weekly data instead: python download_data.py)
 ./run_all.sh                # verifies the snapshot SHA, then analyses + acceptance check + figures + paper
 ```
 `run_all.sh` runs each `src/*.py` analysis (writing `results/*.json`), the acceptance
@@ -67,16 +72,19 @@ Building the paper needs a LaTeX distribution; the deck (`src/make_deck.py`) nee
 ## Data
 **OpenPowerlifting** (https://www.openpowerlifting.org; data dictionary:
 https://openpowerlifting.gitlab.io/opl-csv/bulk-csv-docs.html). The competition data is
-in the **public domain (CC0-style waiver)**; this project's code is separately licensed.
+in the **public domain (CC0-style waiver)**; the analysis code in this repository is
+the authors' own coursework.
 
 `openpowerlifting-latest.zip` updates ~weekly, so re-downloading later gives slightly
 different numbers. The exact snapshot behind the reported results is pinned by its
 **SHA-256 in `src/config.py`** (`660209e8...`); the row count is checked on every load
 by `src/data.py`, and the full SHA-256 is verified by `run_all.sh`. The snapshot is
-published as a GitHub Release asset for exact reproduction:
+published as a GitHub Release asset for exact reproduction (no login needed):
 ```bash
-gh release download data-snapshot-2026-06 -R adirelm/opl-stat-theory -p openpowerlifting.csv.gz
-gunzip -c openpowerlifting.csv.gz > data/openpowerlifting.csv
+mkdir -p data
+curl -L -o data/openpowerlifting.csv.gz \
+  https://github.com/adirelm/opl-stat-theory/releases/download/data-snapshot-2026-06/openpowerlifting.csv.gz
+gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
 ```
 
 ## Notes

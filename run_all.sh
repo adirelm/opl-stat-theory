@@ -8,14 +8,19 @@ PY="${PYTHON:-python}"
 
 # 1. data: pinned snapshot (exact reproduction), then verify its SHA-256
 if [ ! -f data/openpowerlifting.csv ]; then
-  echo "== fetching data =="
+  echo "== fetching data (pinned snapshot) =="
+  mkdir -p data
   if [ -f data/openpowerlifting.csv.gz ]; then
     gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
   elif command -v gh >/dev/null 2>&1 && \
        gh release download data-snapshot-2026-06 -R adirelm/opl-stat-theory -p openpowerlifting.csv.gz -D data 2>/dev/null; then
     gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
+  elif command -v curl >/dev/null 2>&1 && \
+       curl -fL -o data/openpowerlifting.csv.gz \
+         https://github.com/adirelm/opl-stat-theory/releases/download/data-snapshot-2026-06/openpowerlifting.csv.gz; then
+    gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv   # no-auth path: exact snapshot
   else
-    "$PY" download_data.py     # fallback: current weekly data (numbers will differ slightly)
+    "$PY" download_data.py     # last resort: CURRENT weekly data (numbers will differ from the paper)
   fi
 fi
 EXPECT=660209e8624ddb22bc135d54d915b094bc0b9b5a2f30002542f7af879777cb37

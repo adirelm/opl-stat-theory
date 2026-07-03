@@ -3,6 +3,9 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Gaming the Two Numbers They Control: Quantization, Weight-Cut
+Bunching, and the Limits of Strength in 3.9 Million Powerlifting Results},
+pdfauthor={Adir Elmakais, David Levin}}
 \graphicspath{{../figures/}}
 
 \begin{document}
@@ -33,7 +36,10 @@ control shows no bunching, and placebos show no bunching-direction false positiv
 bodyweight differently by sex ($b\!=\!0.75$ men, $0.51$ women vs.\ the isometric
 $2/3$; a Sex$\times\log$(BW) interaction is highly significant and persists on
 common support). (iv)~\emph{Prediction}: bodyweight, sex, equipment, and age predict the
-total ($R^2=0.70$, random forest, leakage-safe grouped CV). Code and data:
+total ($R^2=0.70$, random forest, leakage-safe grouped CV). Together, the two
+numbers competitors control leave clear statistical fingerprints, discreteness on
+the bar and strategic mass below the limit, while the scaling and extreme-value
+analyses find no evidence of a population strength ceiling. Code and data:
 \url{https://github.com/adirelm/opl-stat-theory}.
 \end{abstract}
 
@@ -222,15 +228,25 @@ disappears after Dots normalization. \textbf{Tested vs.\ untested.} Untested com
 higher Dots than tested ones (medians $344$ vs.\ $318$, Mann--Whitney $p\!\to\!0$,
 rank-biserial $-0.20$), consistent with (though not proof of) an effect of
 performance-enhancing drugs, since tested and untested federations also differ in
-era, equipment, and selection. \textbf{Extreme values.} A GEV fit to equal-size block maxima of recent
+era, equipment, and selection. \textbf{Paired attempts.} Within a meet, the third
+squat attempt exceeds the opener by a median $15$~kg (medians $160\to180$;
+$n=10^5$ pairs; Wilcoxon signed-rank $p\!\to\!0$), the paired-sample counterpart
+of the two-sample comparison above. \textbf{Equipment.} Dots differs across
+equipment categories (ANOVA $F=5.3\times10^3$; Kruskal--Wallis agrees,
+$H=1.2\times10^4$; all six Bonferroni post-hoc pairs reject), with multi-ply
+highest (median Dots $401$ vs.\ $328$ raw). \textbf{Extreme values.} A GEV fit to equal-size block maxima of recent
 totals gives shape $\xi=-0.02$ with bootstrap CI $[-0.20,3.77]$: a population
 strength \emph{ceiling is not supported}, since the CI includes zero. \textbf{Time
 trend.} Median Dots drifted down over 2000--2024 (Spearman $\rho=-0.54$); one
 possible explanation is broadening participation, but the trend is not by itself
 evidence of declining strength.
-\textbf{Sequential detection.} A Wald sequential probability ratio test on the
+\textbf{Sequential detection and power.} A Wald sequential probability ratio test on the
 chronological stream of just-below/above indicators accepts the bunching hypothesis
-after a stopping time of only $N=27$ (Fig.~\ref{fig:breadth}). \textbf{Independence.}
+after a stopping time of only $N=27$ (Fig.~\ref{fig:breadth}). An a-priori
+calculation for the same design ($p=0.6$ vs.\ $0.5$) requires $n=211$ for $0.90$
+power at $\alpha=0.05$, and makes the Type~I/II tradeoff concrete: at fixed
+$n=100$, tightening $\alpha$ from $0.10$ to $0.01$ raises $\beta$ from $0.23$ to
+$0.63$. \textbf{Independence.}
 After deduplicating to one row per lifter, the association between tested status and
 cutting is negligible (Cram\'er's $V=0.008$), illustrating how pseudo-replication
 inflates significance. \textbf{Residual normality.} The H3 (all-row fit) residuals are left-skewed
@@ -303,7 +319,10 @@ boundaries $A=\ln\frac{1-\beta}{\alpha}$, $B=\ln\frac{\beta}{1-\alpha}$, a stopp
 time, and an expected-sample-size approximation), one- and two-sample nonparametric
 tests (Wilcoxon signed-rank; Mann--Whitney), an $F$-test/Kruskal--Wallis omnibus
 with post-hoc comparisons, and a $\chi^2$ independence test with Cram\'er's $V$ and
-standardized residuals. The extreme-value fit uses the GEV distribution
+standardized residuals. The one-sided test of $b>2/3$ for men ($z=46.8$) is our
+Neyman--Pearson example: uniformly most powerful in the one-parameter
+exponential-family idealization, with the GLRT as its composite-hypothesis
+generalization. The extreme-value fit uses the GEV distribution
 \begin{equation}
 G(x)=\exp\!\Big\{-\big(1+\xi\tfrac{x-\mu}{\sigma}\big)^{-1/\xi}\Big\},
 \end{equation}
@@ -332,7 +351,7 @@ Density discontinuity (McCrary/CJM) & H2 bunching\\
 Multiple testing (Bonf./Holm/\v{S}id\'ak/BH) & H2 limits, H3\\
 OLS, $R^2$, Wald, interaction term & H3 allometry\\
 One-/two-sided, one-sample tests & H1, H3\\
-Neyman--Pearson MP/UMP framing & toolbox demo\\
+Neyman--Pearson MP/UMP framing & H3 one-sided test\\
 Pearson/Spearman, Fisher CI & H3\\
 Regression, random forest, logistic & H4 prediction\\
 Learning metrics, grouped CV, VIF & H4\\
