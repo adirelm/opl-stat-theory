@@ -66,6 +66,8 @@ gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
 ```
 `run_all.sh` runs each `src/*.py` analysis (writing `results/*.json`), the acceptance
 check, `src/figures.py`, and builds `paper/main.pdf` (if `latexmk` is installed).
+A full end-to-end run takes **~7.5 minutes** and peaks at **~2.3 GB RAM** (measured
+on an Apple-Silicon laptop); the data download is ~158 MB compressed, ~770 MB unpacked.
 Building the paper needs a LaTeX distribution; the deck (`src/make_deck.py`) needs
 `python-pptx`, and exporting it to PDF needs LibreOffice.
 

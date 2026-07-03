@@ -20,8 +20,8 @@
 
 ## 0. Team, Logistics, and Language
 - **Working in a pair: Adir Elmakais + David Levin** — consistent with the default in the instructions (pairs), so **no special approval is needed**. The preliminary email concerns only approval of the research direction.
-- Register in the Google Sheet on Moodle (**both members' names** + dataset + date). We registered for **28.6.2026** (first-come-first-served; if crowded — 21.6 as an alternative). **Verify that David's name appears in the registration.**
-- **Instructor's name:** the metadata of the official PDF reads "Oshrit Shtossel"; our course contact is **Dr. Oshrit Viganesky** (the direction-approval email was sent).
+- Registered in the Google Sheet on Moodle (both members' names + dataset); the mid-presentation was delivered on **28.6.2026**.
+- The research-direction approval email was sent and the direction approved.
 - **Language:** the presentation (stage A) is **in Hebrew**; the paper (stage B) is **in English**. Test/code names in English.
 - **Code:** GitHub *or* Google Colab. The real bar: **the grader clones, runs clean** and obtains all the numbers/figures.
 

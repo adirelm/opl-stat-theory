@@ -1,6 +1,6 @@
 # Final Project — Statistical Theory · Summary and Checklist
 
-Based on the project instructions + Lecture 8. Lecturer/contact: **Dr. Oshrit Viganesky** (the instructions list "Shtossel") · Teaching assistant: Itamar Zarnitsky.
+Based on the project instructions + Lecture 8.
 
 ## In Brief
 - **Pair work: Adir Elmakais + David Levin** — matches the default (pairs); no special approval needed.
@@ -34,7 +34,7 @@ Based on the project instructions + Lecture 8. Lecturer/contact: **Dr. Oshrit Vi
 - [x] **Acceptance gate:** clone into a clean environment → `pip install -r` → end-to-end run reproduces everything — no-login curl path verified; SHA-256 checked by `run_all.sh`.
 - [x] Readable figures: axis titles, meaningful colors, figure captions, ≥300 DPI export (not screenshots).
 
-## ⚠️ What Is Actually Being Assessed
+## Assessment criteria (from the instructions)
 - **Choosing the correct test** according to the nature/constraints of the data — the heart of the course (categorical discrete→χ²; continuous-vs-ordinal→Spearman; independent categories).
 - **Telling a single story** — not a heap of tests. As many relevant tools/concepts as possible.
 - Up to **10 points for creativity and general impression** (competitive).
@@ -48,7 +48,7 @@ Hypothesis testing · confidence interval · significance level · p-value · Ty
 ## Dataset
 - **Selected: OpenPowerlifting** (CC0) — verified end-to-end on the real data (downloaded and analyzed).
 - ⚠️ **Lock a snapshot:** `openpowerlifting-latest.zip` changes weekly → attach the CSV or document the download date, otherwise the assessor's numbers won't match.
-- *(The sources the lecturer suggested — SurvSet, USA COVID, Kaggle, ML — were considered; OPL was chosen because it is original, surprising, and review-resilient.)*
+- *(The suggested sources — SurvSet, USA COVID, Kaggle, ML — were considered; OpenPowerlifting was chosen as an original question on a large, public-domain dataset.)*
 
 ## Supporting Materials
 - `docs/project-spec.md` — **the full specification** ✅
