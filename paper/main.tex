@@ -28,7 +28,8 @@ almost everything is ``significant''). (i)~\emph{Quantization}: 96.2\% of 13.4M 
 loads sit exactly on the 2.5~kg plate grid; a generalized likelihood-ratio test
 (GLRT) whose null parameter lies on the boundary is calibrated by a parametric
 bootstrap. (ii)~\emph{Weight-cut bunching}: bodyweight piles up just below every
-IPF men's class limit (de-heaped $\log(\text{below}/\text{above})=+1.92$ at 83~kg); a
+IPF (International Powerlifting Federation) men's class limit (de-heaped
+$\log(\text{below}/\text{above})=+1.92$ at 83~kg); a
 Cattaneo--Jansson--Ma density-discontinuity test rejects at six of the seven
 limits (surviving Holm and Benjamini--Hochberg); the lone exception is the
 120~kg boundary of the open-ended $120{+}$ class, where the incentive to cut is
@@ -213,7 +214,8 @@ each training fold, a random forest reaches $R^2=0.70$ (RMSE $86$~kg) versus $0.
 is dominated by sex and bodyweight, and continuous-feature VIFs are $\approx1$
 (no collinearity concern). A logistic ``made-weight'' classifier built from
 \emph{non-bodyweight} features (age, tested status, era, equipment; the Dots
-score is excluded because it is a function of total and bodyweight) reaches
+score, a bodyweight- and sex-adjusted strength index, is excluded because it is a
+function of total and bodyweight) reaches
 $\mathrm{AUC}=0.56$ on $n=89{,}882$ lifters (PR-AUC $0.84$ against a $0.82$
 no-skill baseline, i.e.\ the below-limit share; balanced accuracy $0.53$). The signal is weak,
 as expected: cutting is driven by bodyweight relative to the limit, which defines
