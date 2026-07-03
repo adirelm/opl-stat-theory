@@ -72,6 +72,16 @@
     "dof": 1,
     "p": 0.06959827509461283,
     "cramers_v": 0.008,
+    "fisher_exact_p": 0.088,
+    "min_expected_cell": 5.2,
+    "pseudo_replication": {
+      "n_all_rows": 206452,
+      "chi2_all_rows": 5.9,
+      "p_all_rows": 0.015551121137736044,
+      "cramers_v_all_rows": 0.005,
+      "n_dedup": 56647,
+      "note": "Cramer's V stays negligible either way; removing pseudo-replication flips the nominal significance (all-rows p<0.05 -> per-lifter p>0.05)"
+    },
     "standardized_residuals": {
       "tested": {
         "above": -1.8,

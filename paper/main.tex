@@ -90,8 +90,8 @@ primary evidence, use $p$-values only as a secondary screen, and apply multiple-
 every pre-declared family: all four (Bonferroni, Holm, \v{S}id\'ak,
 Benjamini--Hochberg) for the H2 limits, and Holm for H3. Because the same lifter appears in many rows, naive standard errors
 understate uncertainty (pseudo-replication); the formal tests therefore use one row
-per lifter (with heteroskedasticity-robust HC3 errors), the deduplication unit
-declared per hypothesis.
+per lifter (with HC3-robust standard errors where the test is regression-based),
+the deduplication unit declared per hypothesis.
 
 \section{Results}
 All intervals are 95\%. H1 uses attempt loads; the cross-sectional tests use one
@@ -252,9 +252,11 @@ calculation for the same design ($p=0.6$ vs.\ $0.5$) requires $n=211$ for $0.90$
 power at $\alpha=0.05$, and makes the Type~I/II tradeoff concrete: at fixed
 $n=100$, tightening $\alpha$ from $0.10$ to $0.01$ raises $\beta$ from $0.23$ to
 $0.63$. \textbf{Independence.}
-After deduplicating to one row per lifter, the association between tested status and
-cutting is negligible (Cram\'er's $V=0.008$), illustrating how pseudo-replication
-inflates significance. \textbf{Residual normality.} The H3 (all-row fit) residuals are left-skewed
+The association between tested status and cutting is negligible either way
+(Cram\'er's $V\!<\!0.01$); removing pseudo-replication flips the nominal
+significance (all rows $p=0.02$; one row per lifter $\chi^2=3.3$, $p=0.07$, matched
+by Fisher's exact $p=0.09$), a reminder that at scale significance tracks repeated
+measurements, not effect size. \textbf{Residual normality.} The H3 (all-row fit) residuals are left-skewed
 with a heavy lower tail (skew $-0.77$; Fig.~\ref{fig:norm}), so they are not exactly
 normal. This does not undermine the slope: at this $n$ its sampling distribution is
 asymptotically normal under standard conditions, and we report HC3-robust
@@ -403,7 +405,6 @@ Several extensions remain for future work: more federations and eras, a
 structural bunching model that recovers the share of manipulators, and a
 multiverse robustness check.
 
-\IEEEtriggeratref{5}
 \begin{thebibliography}{9}
 \bibitem{kleven} H.~J.~Kleven, ``Bunching,'' \emph{Annual Review of Economics},
 vol.~8, pp.~435--464, 2016.

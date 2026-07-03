@@ -60,23 +60,34 @@ def anova_equipment(df, seed=config.SEED):
 
 
 def independence_cut_tested(df):
-    d = df[(df.BodyweightKg > 0) & (df.Sex == "M") & config.is_h2_federation(df)].copy()
-    d["year"] = pd.to_datetime(d["Date"], errors="coerce").dt.year
-    d = d[d["year"] >= 2014]
-    d = prep.dedup_per_lifter(d, keep="random")        # one row per lifter (independence)
+    base = df[(df.BodyweightKg > 0) & (df.Sex == "M") & config.is_h2_federation(df)].copy()
+    base["year"] = pd.to_datetime(base["Date"], errors="coerce").dt.year
+    base = base[base["year"] >= 2014]
 
     def lab(bw):
         for L in config.IPF_MEN_CLASSES:
             if L - 1 < bw <= L: return "below"
             if L < bw <= L + 1: return "above"
         return None
-    d["cut"] = d["BodyweightKg"].map(lab)
-    c = d.dropna(subset=["cut"]).copy()
-    c["tested"] = np.where(c["Tested"] == "Yes", "tested", "untested")
-    tab = pd.crosstab(c["tested"], c["cut"])
-    chi2, p, dof, exp = sp.chi2_contingency(tab, correction=False)   # Pearson (matches Cramer's V)
-    n = tab.values.sum(); k = min(tab.shape) - 1
-    cramers_v = float(np.sqrt(chi2 / (n * k)))
+
+    def _tab_stats(frame):
+        f = frame.copy()
+        f["cut"] = f["BodyweightKg"].map(lab)
+        f = f.dropna(subset=["cut"])
+        f["tested"] = np.where(f["Tested"] == "Yes", "tested", "untested")
+        tab = pd.crosstab(f["tested"], f["cut"])
+        chi2, p, dof, exp = sp.chi2_contingency(tab, correction=False)   # Pearson (matches Cramer's V)
+        n = tab.values.sum(); k = min(tab.shape) - 1
+        return tab, float(chi2), float(p), int(dof), exp, int(n), float(np.sqrt(chi2 / (n * k)))
+
+    # ALL rows (pseudo-replicated: the same lifter recurs across meets) -> inflated significance
+    _, chi2_all, p_all, _, _, n_all, v_all = _tab_stats(base)
+    # ONE ROW PER LIFTER (independent) -> the honest test
+    tab, chi2, p, dof, exp, n, cramers_v = _tab_stats(prep.dedup_per_lifter(base, keep="random"))
+
+    # a small expected cell (the untested/above group is tiny) -> back the asymptotic
+    # chi-square with Fisher's exact test on the 2x2.
+    fisher_p = float(sp.fisher_exact(tab.values)[1]) if tab.shape == (2, 2) else None
     # adjusted standardized residuals: (O-E)/sqrt(E*(1-row%)*(1-col%)) -- ~N(0,1) under
     # independence, unlike the plain Pearson residual (O-E)/sqrt(E).
     row_p = tab.values.sum(axis=1, keepdims=True) / n
@@ -85,6 +96,14 @@ def independence_cut_tested(df):
     return {"table_tested_x_cut": {r: tab.loc[r].to_dict() for r in tab.index},
             "chi2": round(float(chi2), 1), "dof": int(dof), "p": float(p),
             "cramers_v": round(cramers_v, 3),
+            "fisher_exact_p": (round(fisher_p, 3) if fisher_p is not None else None),
+            "min_expected_cell": round(float(exp.min()), 1),
+            "pseudo_replication": {"n_all_rows": n_all, "chi2_all_rows": round(chi2_all, 1),
+                                   "p_all_rows": p_all, "cramers_v_all_rows": round(v_all, 3),
+                                   "n_dedup": n,
+                                   "note": "Cramer's V stays negligible either way; removing "
+                                           "pseudo-replication flips the nominal significance "
+                                           "(all-rows p<0.05 -> per-lifter p>0.05)"},
             "standardized_residuals": {tab.index[i]: {tab.columns[j]: round(float(std_resid[i, j]), 1)
                                        for j in range(tab.shape[1])} for i in range(tab.shape[0])}}
 
@@ -182,9 +201,11 @@ def run(save=True):
     av = res["anova_equipment"]
     print(f"2. ANOVA across equipment: F={av['anova_F']} (p={av['anova_p']:.2e}); "
           f"Kruskal-Wallis H={av['kruskal_H']} (p={av['kruskal_p']:.2e}); medians {av['median_dots']}")
-    ind = res["independence_cut_tested"]
-    print(f"3. INDEPENDENCE chi2 (tested x cut): chi2={ind['chi2']} (dof={ind['dof']}, p={ind['p']:.2e}), "
-          f"Cramer's V={ind['cramers_v']}; std-resid={ind['standardized_residuals']}")
+    ind = res["independence_cut_tested"]; pr = ind["pseudo_replication"]
+    print(f"3. INDEPENDENCE chi2 (tested x cut): chi2={ind['chi2']} (dof={ind['dof']}, p={ind['p']:.3f}), "
+          f"Cramer's V={ind['cramers_v']}, Fisher exact p={ind['fisher_exact_p']} (min exp cell {ind['min_expected_cell']})")
+    print(f"   pseudo-replication: all rows (n={pr['n_all_rows']:,}) p={pr['p_all_rows']:.1e} V={pr['cramers_v_all_rows']} "
+          f"-> per-lifter (n={pr['n_dedup']:,}) p={ind['p']:.3f} V={ind['cramers_v']}")
     sp_ = res["sprt_cut"]
     print(f"4. SPRT (cut p0={sp_['p0']} vs p1={sp_['p1']}): decision='{sp_['decision']}' at "
           f"stopping time N={sp_['stopping_time']} (boundaries A={sp_['boundary_A']}, B={sp_['boundary_B']}; "
