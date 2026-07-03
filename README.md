@@ -53,7 +53,7 @@ confidence intervals, not p-values.
 
 ## Reproduce
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python3.12 -m venv .venv && source .venv/bin/activate   # tested on Python 3.12.12
 pip install -r requirements.txt
 # exact data snapshot used for the paper (reproduces the reported numbers; no login needed):
 mkdir -p data

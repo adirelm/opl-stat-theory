@@ -204,15 +204,16 @@ all-row OLS fits; the headline per-lifter HC3 exponents are $0.75$ (men) / $0.51
 
 \subsection{Strength is predictable from basic variables (H4)}
 Predicting the total from controllable/basic variables (bodyweight, sex, equipment,
-age), with every split grouped by lifter and all preprocessing fit inside each
-training fold, a random forest reaches $R^2=0.70$ (RMSE $86$~kg) versus $0.61$
+age), on one random meet per lifter subsampled to a seeded $200{,}000$ lifters for
+tractability, with every split grouped by lifter and all preprocessing fit inside
+each training fold, a random forest reaches $R^2=0.70$ (RMSE $86$~kg) versus $0.61$
 (RMSE $98$~kg) for linear regression (Fig.~\ref{fig:pred}); permutation importance
 is dominated by sex and bodyweight, and continuous-feature VIFs are $\approx1$
 (no collinearity concern). A logistic ``made-weight'' classifier built from
 \emph{non-bodyweight} features (age, tested status, era, equipment; the Dots
 score is excluded because it is a function of total and bodyweight) reaches
-$\mathrm{AUC}=0.56$ (PR-AUC $0.84$ against a $0.82$ no-skill baseline, balanced
-accuracy $0.53$). The signal is weak,
+$\mathrm{AUC}=0.56$ on $n=89{,}882$ lifters (PR-AUC $0.84$ against a $0.82$
+no-skill baseline, i.e.\ the below-limit share; balanced accuracy $0.53$). The signal is weak,
 as expected: cutting is driven by bodyweight relative to the limit, which defines
 the label and which these features omit.
 

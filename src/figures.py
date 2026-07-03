@@ -47,7 +47,7 @@ def fig_quantization(att):
         p.set_facecolor(C_GRID if abs(e / 2.5 - round(e / 2.5)) < 1e-6 else C_OFF)
     ax.set_ylim(0, counts.max() * 1.18); ax.xaxis.set_major_locator(MultipleLocator(5))
     ax.set_xlabel("Attempt weight (kg)"); ax.set_ylabel("Count")
-    ax.set_title("Fig 1. Attempt loads concentrate on the 2.5 kg plate grid")
+    ax.set_title("Attempt loads concentrate on the 2.5 kg plate grid")
     ax.legend(handles=[Patch(color=C_GRID, label="on 2.5 kg grid"),
                        Patch(color=C_OFF, label="off grid")], frameon=False)
     ax.text(0.98, 0.95, f"{pct:.1f}% of {len(att)/1e6:.1f}M attempts on the grid",
@@ -73,7 +73,7 @@ def fig_bunching(men):
         ax.text(0.04, 0.96, f"de-heaped\nlog(below/above)\n= {lr:+.2f} +/- {half:.2f}",
                 transform=ax.transAxes, ha="left", va="top", fontsize=9.5,
                 bbox=dict(boxstyle="round", fc="#FDEBD0" if real else "#EBF5FB", ec=C_HL if real else C_OFF))
-    fig.suptitle("Fig 2. Bodyweight bunches just below a real class limit, not at a non-limit control",
+    fig.suptitle("Bodyweight bunches just below a real class limit, not at a non-limit control",
                  fontweight="bold", fontsize=11.5)
     save(fig, "fig2_bunching.png")
 
@@ -97,7 +97,7 @@ def fig_all_limits(men):
     ax.axhline(0, color="#333", lw=1)
     ax.set_xlabel("Class limit (kg); blue = strongest, grey = non-limit control")
     ax.set_ylabel("de-heaped log(below / above)")
-    ax.set_title("Fig 3. Excess just-below mass at every real limit; control runs opposite")
+    ax.set_title("Excess just-below mass at every real limit; control runs opposite")
     save(fig, "fig3_all_limits.png")
 
 
@@ -117,7 +117,7 @@ def fig_allometry(al):
     xr = np.linspace(np.percentile(allx, 1), np.percentile(allx, 99), 50)
     ax.plot(xr, ybar + (2 / 3) * (xr - xbar), color="#222", lw=2.5, ls="--", label="isometric: b = 2/3")
     ax.set_xlabel("log( Bodyweight )"); ax.set_ylabel("log( Total )")
-    ax.set_title("Fig 4. Allometric scaling by sex (all-row OLS fits; formal per-lifter HC3: 0.75 / 0.51)")
+    ax.set_title("Allometric scaling by sex (all-row OLS fits; formal per-lifter HC3: 0.75 / 0.51)")
     ax.legend(frameon=True, framealpha=0.9, loc="lower right", fontsize=10)
     save(fig, "fig4_allometry.png")
 
@@ -135,7 +135,7 @@ def fig_prediction():
     a2.bar(names, r2s, color=bcols, edgecolor="white")
     for i, v in enumerate(r2s): a2.text(i, v + 0.01, f"{v:.2f}", ha="center", fontsize=10)
     a2.set_ylim(0, 1); a2.set_ylabel("CV R2 (grouped by lifter)"); a2.set_title("Strength prediction (TotalKg)")
-    fig.suptitle("Fig 5. Predicting strength: bodyweight + sex dominate; RF beats linear",
+    fig.suptitle("Predicting strength: bodyweight + sex dominate; RF beats linear",
                  fontweight="bold", fontsize=11.5)
     save(fig, "fig5_prediction.png")
 
@@ -148,7 +148,7 @@ def fig_structure(pl):
             v = pl.loc[pl.Sex == sex, col].to_numpy()
             ax.hist(v, bins=80, density=True, alpha=0.5, color=c, label=sex)
         ax.set_xlabel(col); ax.set_ylabel("density"); ax.set_title(title); ax.legend(frameon=False)
-    fig.suptitle("Fig 6. The two-component shape of raw Total tracks sex; Dots normalization removes it",
+    fig.suptitle("The two-component shape of raw Total tracks sex; Dots normalization removes it",
                  fontweight="bold", fontsize=11.5)
     save(fig, "fig6_structure.png")
 
@@ -183,7 +183,7 @@ def fig_breadth(men_recent_chrono):
     a2.axvline(n90, color="#333", ls=":", lw=1); a2.text(n90 + 8, 0.5, f"n={n90} for power 0.90", fontsize=9)
     a2.set_xlabel("sample size n"); a2.set_ylabel("power (1 - beta)")
     a2.set_title("A-priori power (detect p=0.6 vs 0.5, alpha=0.05)")
-    fig.suptitle("Fig 7. Sequential test (stopping time) and a-priori power",
+    fig.suptitle("Sequential test (stopping time) and a-priori power",
                  fontweight="bold", fontsize=11.5)
     save(fig, "fig7_breadth.png")
 
@@ -213,7 +213,7 @@ def fig_normality(sbd):
     axp.set_yticks([1e0, 1e-50, 1e-100, 1e-150, 1e-200, 1e-250, 1e-300])
     axp.set_xlabel("sample size n"); axp.set_ylabel("normality-test p-value")
     axp.set_title("formal test rejects even at modest n")
-    fig.suptitle("Fig 8. H3 residuals: a heavy lower tail (non-normal); the slope is CLT-robust "
+    fig.suptitle("H3 residuals: a heavy lower tail (non-normal); the slope is CLT-robust "
                  "at large n", fontweight="bold", fontsize=11)
     save(fig, "fig8_normality.png")
 
