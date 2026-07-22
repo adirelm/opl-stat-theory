@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Phase-0 acceptance check: reproduce the headline descriptive numbers THROUGH the
+Acceptance check: reproduce the headline descriptive numbers THROUGH the
 new infrastructure modules (config/data/prep/stats_utils). If these match the
 known values, the foundation is wired correctly and the hypotheses can build on it.
 
@@ -66,7 +66,7 @@ def main():
     for name, passed in checks:
         print(f"  {'PASS' if passed else 'FAIL'}  {name}")
         ok &= passed
-    print(f"\n{'ALL PASS - Phase 0 foundation verified' if ok else 'SOME FAILED - check above'}")
+    print(f"\n{'ALL PASS - acceptance check' if ok else 'SOME FAILED - check above'}")
     return 0 if ok else 1
 
 

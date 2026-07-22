@@ -24,7 +24,7 @@ import pandas as pd
 
 import config, data, prep, stats_utils as su
 
-LIMITS = config.IPF_MEN_CLASSES                 # [59,66,74,83,93,105,120]
+LIMITS = config.IPF_MEN_CLASSES
 CONTROL = config.H2_CONTROL                     # 91 (between kg classes 83 and 93)
 # clean placebos: BETWEEN modern kg classes AND away from historical lb-class
 # equivalents. Only valid on the pure-kg subset (see ERA_MIN).

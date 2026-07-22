@@ -63,12 +63,12 @@ def fig_bunching(men):
             (config.H2_REAL_LIMIT, 79, 87, "Real class limit (83 kg)", True),
             (config.H2_CONTROL, 87, 95, "Non-limit control (91 kg)", False)]):
         seg = prep.deheap(men[(men >= lo) & (men < hi)])
-        counts, edges, patches = ax.hist(seg, bins=np.arange(lo, hi + binw, binw),
+        _, edges, patches = ax.hist(seg, bins=np.arange(lo, hi + binw, binw),
                                          edgecolor="white", linewidth=0.15)
         for e, p in zip(edges[:-1], patches):
             p.set_facecolor(C_HL if (L - 0.5 <= e < L) else C_OFF)
         ax.axvline(L, color=C_LIM, lw=2, ls="--")
-        b, a = prep.bunching_counts(men, L); lr, half, ratio = su.log_ratio_ci(b, a)
+        b, a = prep.bunching_counts(men, L); lr, half, _ = su.log_ratio_ci(b, a)
         ax.set_title(title); ax.set_xlabel("Bodyweight (kg)"); ax.set_ylabel("Count")
         ax.text(0.04, 0.96, f"de-heaped\nlog(below/above)\n= {lr:+.2f} +/- {half:.2f}",
                 transform=ax.transAxes, ha="left", va="top", fontsize=9.5,

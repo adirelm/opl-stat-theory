@@ -47,7 +47,11 @@ no evidence of a population strength ceiling. Code and data:
 
 \section{Introduction}
 Powerlifting comprises three lifts (squat, bench press, deadlift), each with
-three attempts, contested within bodyweight classes. Two features make it
+three attempts, contested within bodyweight classes. A competitor's
+\emph{total} is the sum of their best successful attempt in each lift, and is the
+response variable throughout. Meets differ in permitted supportive gear, from
+\emph{raw} (belt only) through \emph{single-} and \emph{multi-ply} suits, and in
+whether the federation is drug-\emph{tested}. Two features make the sport
 useful for studying strategic behavior. First, the implements are
 \emph{discrete}: plates come in fixed denominations, so the load a competitor can
 place on the bar is not a continuous choice. Second, eligibility is governed by a
@@ -68,8 +72,7 @@ square--cube law predicts that strength, governed by muscle cross-sectional area
 scales with bodyweight as $\propto\text{BW}^{2/3}$. Extreme-value theory has been
 used to estimate the ultimate limits of athletic performance from record
 data~\cite{einmahl}. On OpenPowerlifting specifically, recent work studies
-\emph{scoring and scaling} systems~\cite{peyen}; to our knowledge, no formal
-manipulation test of weight-cut bunching has been applied to this dataset.
+\emph{scoring and scaling} systems~\cite{peyen}.
 
 \textbf{Contribution.} We organize the paper around the two recorded choices,
 load and weigh-in bodyweight, and use both halves of the course, classical
@@ -80,16 +83,18 @@ first formal density-discontinuity test of weight-cut \emph{bunching} on
 OpenPowerlifting, checked using a non-limit control, placebo cutoffs, de-heaping,
 and multiple-testing corrections; (3)~a sex-interaction \emph{allometry} model that
 tests the scaling exponent against the isometric $2/3$; and (4)~a leakage-safe
-strength-\emph{prediction} model. Throughout we lead with effect sizes and
-confidence intervals rather than $p$-values, as explained next.
+strength-\emph{prediction} model.
 
 \textbf{Methodological stance.} At $n\!\approx\!3.9$M the power to detect any
 non-zero effect is effectively one, so a $p$-value answers a question we do not
 care about (``is the effect exactly zero?'') rather than the one we do (``is it
 large?''). We therefore report effect sizes with 95\% confidence intervals as the
-primary evidence, use $p$-values only as a secondary screen, and apply multiple-testing corrections to
-every pre-declared family: all four (Bonferroni, Holm, \v{S}id\'ak,
-Benjamini--Hochberg) for the H2 limits, and Holm for H3. Because the same lifter appears in many rows, naive standard errors
+primary evidence, and use $p$-values only as a secondary screen. H1--H4 are
+\emph{a-priori} hypotheses, each declared before analysis and tested once; the
+comparisons that follow an omnibus rejection are \emph{post-hoc} and are the ones
+that carry a correction. We report all four corrections (Bonferroni, Holm,
+\v{S}id\'ak, Benjamini--Hochberg) for the H2 family of seven limits, Holm for H3,
+and Bonferroni for the equipment post-hoc pairs. Because the same lifter appears in many rows, naive standard errors
 understate uncertainty (pseudo-replication); the formal tests therefore use one row
 per lifter (with HC3-robust standard errors where the test is regression-based),
 the deduplication unit declared per hypothesis.
@@ -97,7 +102,10 @@ the deduplication unit declared per hypothesis.
 \section{Results}
 All intervals are 95\%. H1 uses attempt loads; the cross-sectional tests use one
 row per lifter (to respect independence), and where the class scheme matters the
-modern kg-only era (2014$+$). Headline effect sizes use all rows.
+modern kg-only era (2014$+$). Headline effect sizes for H1 and H2 use all rows;
+H3's headline exponents are the per-lifter HC3 fits. Throughout, H1--H4 index the
+four research hypotheses, while $H_0$ and $H_a$ denote the null and alternative
+within a given test.
 
 \subsection{Attempt loads are quantized to the 2.5~kg grid (H1)}
 Of 13{,}397{,}702 valid attempt loads, \textbf{96.20\%} (CI $[96.19,96.21]$) fall
@@ -112,9 +120,9 @@ Chernoff and Self--Liang~\cite{chernoff,selfliang}. Our parametric bootstrap
 closely matches this theory (point mass $0.51$ vs.\ the theoretical $0.50$;
 calibrated 95\% cutoff $2.59$ vs.\ the theoretical $2.71$, both well below the
 naive $\chi^2_1$ value of $3.84$). The observed statistic, $2\ln\Lambda=3.9\times10^7$,
-exceeds every bootstrap draw ($p<3.4\times10^{-4}$), and a $\chi^2$ goodness-of-fit
-against a uniform within-cell distribution strongly rejects it ($5.0\times10^7$,
-$\mathrm{df}=4$). The 3.8\% off-grid loads are largely a units artifact: of the
+exceeds every bootstrap draw ($p<3.4\times10^{-4}$), and the Pearson $\chi^2$
+goodness-of-fit statistic, the second-order Taylor approximation of the same
+deviance, agrees ($5.0\times10^7$, $\mathrm{df}=4$). The 3.8\% off-grid loads are largely a units artifact: of the
 2.1\% that fall off the 0.5~kg lattice entirely, 82\% are round pound loads
 (e.g., $102.06$~kg$=225$~lb), themselves quantized on a different grid.
 
@@ -133,7 +141,7 @@ asymmetry; Table~\ref{tab:limits}, Fig.~\ref{fig:limits}); a non-limit control a
 91~kg is flat-to-slightly-negative ($-0.21$). The formal Cattaneo--Jansson--Ma
 density-discontinuity test~\cite{cjm} (one random meet per lifter, de-heaped,
 2014$+$) rejects at six of the seven limits with the density dropping at the cutoff
-($t<0$), surviving both Holm and Benjamini--Hochberg correction; the lone exception
+($t<0$); the lone exception
 is the 120~kg cutoff ($t=-1.6$, $p=0.11$), adjacent to the unbounded $120{+}$ class
 where the incentive to cut is weakest. The control shows no excess below (a small
 \emph{opposite}-direction discontinuity), and no placebo shows the bunching
@@ -189,13 +197,15 @@ Limit (kg) & log-ratio & $\pm$ & $\times$ asymmetry\\
 \subsection{Allometric scaling differs by sex (H3)}
 Fitting $\log(\text{Total})=a+b\log(\text{BW})$ (Fig.~\ref{fig:allo}), the exponent
 is $b=0.75$ (CI $[0.74,0.75]$) for men and $0.51$ ($[0.50,0.51]$) for women, with
-heteroskedasticity-robust (HC3) standard errors on one row per lifter. A two-sided
+heteroskedasticity-robust (HC3) standard errors on one row per lifter
+($n=545{,}728$ men, $224{,}458$ women). A two-sided
 Wald test rejects the isometric $b=2/3$ for both sexes, and in \emph{opposite}
-directions (men $z=+46.8$, i.e.\ $b>2/3$; women $z=-64.1$, i.e.\ $b<2/3$). A pooled Sex$\times\log$(BW) interaction
+directions (men $z=+46.8$; women $z=-64.1$). A pooled Sex$\times\log$(BW) interaction
 estimates the men-minus-women slope gap at $+0.24$ ($p\!\ll\!10^{-3}$). The gap also \emph{grows} on the common bodyweight support ($0.84$ men vs.\ $0.38$
 women), so it is not an artifact of the sexes occupying different weight ranges.
 For men, the Pearson correlation of $\log\text{BW}$ and $\log\text{Total}$ is
-$0.60$ (Fisher-transform CI $[0.600,0.603]$; Spearman $0.58$); it is lower for women. The message is not that women
+$0.60$ (Fisher-transform CI $[0.600,0.603]$; Spearman $0.58$); it is lower for women.
+The all-row log-log fit explains $R^2=0.36$ of the variance in men and $0.19$ in women. The message is not that women
 are weaker, but that the \emph{estimated scaling} differs; we leave the mechanism to future
 work.
 
@@ -217,7 +227,10 @@ is dominated by sex and bodyweight, and continuous-feature VIFs are $\approx1$
 score, a bodyweight- and sex-adjusted strength index, is excluded because it is a
 function of total and bodyweight) reaches
 $\mathrm{AUC}=0.56$ on $n=89{,}882$ lifters (PR-AUC $0.84$ against a $0.82$
-no-skill baseline, i.e.\ the below-limit share; balanced accuracy $0.53$). The signal is weak,
+no-skill baseline, i.e.\ the below-limit share; balanced accuracy $0.53$; at the
+$0.5$ threshold precision $0.85$ and recall $0.38$). Adjusted $R^2$ equals $R^2$
+to two decimals for the linear model ($0.61$ with five features), so its fit is
+not an artifact of feature count. The signal is weak,
 as expected: cutting is driven by bodyweight relative to the limit, which defines
 the label and which these features omit.
 
@@ -230,21 +243,23 @@ the label and which these features omit.
 \textbf{Distribution structure.} The apparent two-component shape of raw totals is
 just sex: by BIC and a bootstrap likelihood-ratio test, raw Total prefers two
 Gaussian components ($\Delta\mathrm{BIC}=1.4\times10^3$) but the sex-normalized
-Dots score prefers one (Fig.~\ref{fig:struct}); the two-component shape largely
-disappears after Dots normalization. \textbf{Tested vs.\ untested.} Untested competitions show
+Dots score prefers one (Fig.~\ref{fig:struct}). \textbf{Tested vs.\ untested.} Untested competitions show
 higher Dots than tested ones (medians $344$ vs.\ $318$, Mann--Whitney $p\!\to\!0$;
-a parametric Welch test agrees, $|t|=128$; rank-biserial $-0.20$), consistent with (though not proof of) an effect of
+a parametric Welch test agrees, $|t|=128$; rank-biserial $-0.20$, point-biserial $-0.14$), consistent with (though not proof of) an effect of
 performance-enhancing drugs, since tested and untested federations also differ in
 era, equipment, and selection. \textbf{Paired attempts.} Within a meet, the third
 squat attempt exceeds the opener by a median $15$~kg (medians $160\to180$;
 $n=10^5$ pairs; Wilcoxon signed-rank $p\!\to\!0$), the paired-sample counterpart
-of the two-sample comparison above. \textbf{Equipment.} Dots differs across
+of the two-sample comparison above. Ties are pervasive here by construction (H1), so the normal approximation carries the continuity correction and the $2{,}570$ zero differences are dropped. Scored made/missed, the same pairs give a McNemar $\chi^2=1.4\times10^4$ ($\mathrm{df}=1$): third attempts fail far more often than openers. \textbf{Equipment.} Dots differs across
 equipment categories (ANOVA $F=5.3\times10^3$; Kruskal--Wallis agrees,
 $H=1.2\times10^4$; all six Bonferroni post-hoc pairs reject), with multi-ply
-highest (median Dots $401$ vs.\ $328$ raw). \textbf{Extreme values.} A GEV fit to equal-size block maxima of recent
-totals gives shape $\xi=-0.02$ with bootstrap CI $[-0.20,3.77]$: a population
-strength \emph{ceiling is not supported}, since the CI includes zero. \textbf{Time
-trend.} Median Dots drifted down over 2000--2024 (Spearman $\rho=-0.54$); one
+highest (median Dots $401$ vs.\ $328$ raw). Group variances are unequal (Levene $W=3.4\times10^3$), so we also report Welch's ANOVA ($F=3.6\times10^3$), which agrees; the effect is nonetheless small ($\eta^2=0.02$). \textbf{Extreme values.} A GEV fit to $1{,}514$ equal-size blocks of $250$
+per-lifter totals (men, 2015$+$) gives shape $\xi=-0.02$ with bootstrap CI
+$[-0.06,0.01]$: the shape is indistinguishable from zero, so a bounded upper tail
+(a population strength \emph{ceiling}) is \emph{not established}. Seeding the GEV
+fit from its moment match is what makes this interval meaningful; with the default
+start a sixth of the bootstrap fits diverge and inflate the upper limit. \textbf{Time
+trend.} Median Dots drifted down over 2000--2024 (Spearman $\rho=-0.54$); the annual series is strongly autocorrelated (lag-1 residual ACF $0.73$, Ljung--Box $p<10^{-3}$), so we read $\rho$ descriptively. One
 possible explanation is broadening participation, but the trend is not by itself
 evidence of declining strength.
 \textbf{Sequential detection and power.} A Wald sequential probability ratio test on the
@@ -258,13 +273,19 @@ The association between tested status and cutting is negligible either way
 (Cram\'er's $V\!<\!0.01$); removing pseudo-replication flips the nominal
 significance (all rows $p=0.02$; one row per lifter $\chi^2=3.3$, $p=0.07$, matched
 by Fisher's exact $p=0.09$), a reminder that at scale significance tracks repeated
-measurements, not effect size. \textbf{Residual normality.} The H3 (all-row fit) residuals are left-skewed
-with a heavy lower tail (skew $-0.77$; Fig.~\ref{fig:norm}), so they are not exactly
-normal. This does not undermine the slope: at this $n$ its sampling distribution is
+measurements, not effect size. No cell drives the table (largest adjusted
+standardized residual $|z|=1.8<1.96$; we use the row/column-adjusted form because
+only it is standard normal under independence, and for a $2\times2$ table
+Cram\'er's $V$ coincides with $\phi$). The untested arm holds only $30$ lifters
+($9$ above, $21$ below), so this is an under-powered non-result rather than
+evidence of no association. \textbf{Residual normality.} The H3 (all-row fit) residuals are left-skewed
+with a heavy lower tail (skew $-0.77$; Fig.~\ref{fig:norm}). This does not undermine the slope: at this $n$ its sampling distribution is
 asymptotically normal under standard conditions, and we report HC3-robust
-standard errors. A formal normality test rejects even in modest subsamples
-($n\!\approx\!300$), as expected for genuinely non-normal residuals, so we treat it
-as a diagnostic and lead with effect sizes.
+standard errors. At $n=300$ all three normality tests the course names agree in rejecting
+(Shapiro--Wilk $W=0.96$, $p=8\times10^{-7}$; Anderson--Darling $A^2=2.55$ against a
+$0.75$ critical value; Kolmogorov--Smirnov $D=0.09$, $p=0.01$), as expected for
+genuinely non-normal residuals, so we treat normality as a diagnostic and lead
+with effect sizes.
 
 \begin{figure*}[t]\centering
 \includegraphics[width=0.86\textwidth]{fig6_structure.png}
@@ -285,7 +306,10 @@ as a diagnostic and lead with effect sizes.
 \section{Methods}
 \textbf{Data and preprocessing.} We use a pinned snapshot of OpenPowerlifting~\cite{opl}
 (3{,}941{,}811 rows, public domain; the SHA-256 is recorded for exact
-reproducibility). The unit of analysis is the \emph{attempt} for H1 (the mechanism
+reproducibility). The analysis samples are reached in three steps: 3{,}941{,}811 raw
+entries $\to$ 2{,}627{,}657 with a valid full-power total and bodyweight $\to$
+770{,}186 after collapsing to one row per lifter (198{,}740 for the 2014$+$ kg-only
+H2 subset). The unit of analysis is the \emph{attempt} for H1 (the mechanism
 is within-competitor, so the grid is robust to clustering; attempts do cluster
 within lifters, so the attempt-level CI is optimistic in width and the conclusion
 rests on the effect size, 96\% on-grid vs.\ the 20\% no-preference baseline) and
@@ -313,7 +337,9 @@ contrasts the one-sided densities, $\theta=\ln \hat f^{+}(c)-\ln \hat f^{-}(c)$,
 estimated by local polynomials without pre-binning~\cite{mccrary,cjm}; $\theta<0$
 ($t<0$) indicates excess mass just below $c$. We complement the formal test with a
 de-heaped log count-ratio as the interpretable effect size, counting weigh-ins over
-the windows $(c-0.5,c]$ and $(c,c+0.5]$~kg.
+the windows $(c-0.5,c]$ and $(c,c+0.5]$~kg. A bare count ratio presumes rather than
+tests a discontinuity and depends on the window, which is why the formal decision
+rests on the local-polynomial density test.
 
 \textbf{Allometry (H3).} OLS on $\log$--$\log$ data gives the scaling exponent
 $b$; we report HC3-robust standard errors (one row per lifter), a Wald statistic
@@ -325,9 +351,15 @@ intervals.
 \textbf{Learning and the rest of the toolbox.} Prediction uses linear and
 random-forest regression and logistic classification, evaluated by grouped
 cross-validation ($R^2$, adjusted $R^2$, RMSE, MAE, permutation importance, VIF,
-AUC/PR-AUC). Supporting analyses use a bootstrap mixture-LRT with AIC/BIC, a GEV
-extreme-value fit, a Wald sequential probability ratio test (with decision
-boundaries $A=\ln\frac{1-\beta}{\alpha}$, $B=\ln\frac{\beta}{1-\alpha}$, a stopping
+AUC/PR-AUC). The 1-versus-2-component mixture LRT violates Wilks for the same
+reason as H1 (the mixing weight lies on the boundary and the second component is
+unidentified under the null), so its null is bootstrapped rather than read off a
+$\chi^2$; and no course tool addresses a bounded tail, since the sample maximum is
+not asymptotically normal, which is why the ceiling question is posed in
+extreme-value terms. Supporting analyses use a bootstrap mixture-LRT with AIC/BIC, a GEV
+extreme-value fit, a Wald sequential probability ratio test (with log-scale decision
+boundaries $A=\ln\frac{1-\beta}{\alpha}$ to reject $H_0$ and
+$B=\ln\frac{\beta}{1-\alpha}$ to accept it, a stopping
 time, and an expected-sample-size approximation), one- and two-sample nonparametric
 tests (Wilcoxon signed-rank; Mann--Whitney), an $F$-test/Kruskal--Wallis omnibus
 with post-hoc comparisons, and a $\chi^2$ independence test with Cram\'er's $V$ and
@@ -366,14 +398,17 @@ Multiple testing (Bonf./Holm/\v{S}id\'ak/BH) & H2 limits, H3\\
 OLS, $R^2$, Wald, interaction term & H3 allometry\\
 One-/two-sided, one-sample tests & H1, H3\\
 Neyman--Pearson MP/UMP framing & H3 one-sided test\\
-Pearson/Spearman, Fisher CI & H3\\
+Pearson/Spearman/point-biserial, Fisher CI & H3, tested vs.\ untested\\
 Regression, random forest, logistic & H4 prediction\\
 Learning metrics, grouped CV, VIF & H4\\
 Mixture LRT, AIC/BIC & structure\\
 Welch $t$ / Mann--Whitney (two-sample) & tested vs.\ untested\\
 Wilcoxon signed-rank (paired) & attempt 1 vs.\ 3\\
+McNemar (paired categorical) & attempt made/missed\\
 $F$/ANOVA, Kruskal--Wallis, post-hoc & equipment\\
-$\chi^2$ independence, Cram\'er's $V$ & tested $\times$ cut\\
+$\chi^2$ independence, Cram\'er's $V$/$\phi$ & tested $\times$ cut\\
+Levene, Welch ANOVA, $\eta^2$ & equipment variances\\
+Shapiro--Wilk / A--D / K--S & H3 residual normality\\
 Extreme-value theory (GEV) & strength ceiling\\
 Sequential Wald (SPRT), stopping time & cut detection\\
 Power, Type I/II tradeoff & a-priori power\\
@@ -388,8 +423,7 @@ bodyweight bunches specifically below class limits, and not at controls or place
 in the bunching direction. Beyond strategy, the data also bear on the limits of
 strength: scaling with bodyweight is sex-specific and departs from the isometric
 $2/3$, and basic meet-record variables already explain $\sim$70\% of the variance
-in the total. The same dataset supports the descriptive, testing, and prediction
-analyses.
+in the total.
 
 \textbf{Limitations and null results.} This is an observational study: we identify
 population-level patterns consistent with weight cutting, not the intent of any
@@ -397,8 +431,9 @@ individual. We report three null results as genuine findings. The 120~kg boundar
 (the entry to the unbounded $120{+}$ class) does \emph{not} show significant
 bunching after correction ($t=-1.6$, $p=0.11$), consistent with weaker cutting
 pressure at that open-ended boundary; the extreme-value analysis does \emph{not} support a strength ceiling
-(the $\xi$ confidence interval includes zero); and we find no material association
-between tested status and cutting once pseudo-replication is removed. On the methods side,
+(the $\xi$ confidence interval includes zero); and the tested-versus-cutting comparison is under-powered in this
+IPF-restricted population (only 30 untested lifters near a limit), so it remains
+open rather than settled. On the methods side,
 lifter identity is name-based, the per-lifter meet is sampled at random, and the
 formal bunching test is restricted to the modern kg-only era. The 83~kg signal is
 robust to the federation set: the de-heaped log-ratio is $+1.92$ across the

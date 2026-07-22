@@ -25,7 +25,7 @@ NOT chi^2_1 -- we get the correct null (and cutoff) by parametric bootstrap.
 
 ASSUMPTION: the uniform-1/5 baseline is a simple, transparent "no-2.5-preference"
 null. The effect is so large (~0.96 vs 0.20) that the conclusion is robust to the
-exact baseline; a richer baseline (e.g. whole-kg preference) is a Stage-2 refinement.
+exact baseline.
 """
 import json
 import math

@@ -2,10 +2,25 @@
   "paired_attempts": {
     "lift": "Squat",
     "n_pairs": 100000,
+    "n_zero_differences": 2570,
     "median_attempt1": 160.0,
     "median_attempt3": 180.0,
     "median_diff_kg": 15.0,
-    "wilcoxon_p": 0.0
+    "wilcoxon_W": 0.0,
+    "wilcoxon_p": 0.0,
+    "continuity_correction": true
+  },
+  "mcnemar_attempts": {
+    "lift": "Squat",
+    "n_pairs": 100000,
+    "both_made": 55791,
+    "both_missed": 5978,
+    "opener_made_third_missed_b": 30502,
+    "opener_missed_third_made_c": 7729,
+    "mcnemar_chi2": 13564.0,
+    "dof": 1,
+    "p": 0.0,
+    "reading": "third attempts are missed far more often than openers"
   },
   "anova_equipment": {
     "groups": [
@@ -26,8 +41,19 @@
       "Multi-ply": 400.9,
       "Wraps": 341.7
     },
+    "sd_dots": {
+      "Raw": 67.5,
+      "Single-ply": 79.1,
+      "Multi-ply": 94.6,
+      "Wraps": 71.9
+    },
     "anova_F": 5272.3,
     "anova_p": 0.0,
+    "levene_W": 3422.3,
+    "levene_p": 0.0,
+    "welch_anova_F": 3610.7,
+    "welch_anova_p": 0.0,
+    "eta_squared": 0.022,
     "kruskal_H": 11942.5,
     "kruskal_p": 0.0,
     "posthoc_bonferroni": {

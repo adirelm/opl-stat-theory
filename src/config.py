@@ -40,5 +40,5 @@ def is_h2_federation(df):
 # assessor's numbers match ours exactly. Verified row count of our snapshot:
 EXPECTED_ROWS = 3_941_811
 # SHA256 is expensive to compute on ~800 MB; record it once (see data.compute_sha256)
-# and fill it in here to enable strict verification.
+# it is verified on every run by run_all.sh.
 EXPECTED_SHA256 = "660209e8624ddb22bc135d54d915b094bc0b9b5a2f30002542f7af879777cb37"

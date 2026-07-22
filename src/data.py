@@ -7,7 +7,6 @@ the pipeline actually uses (a defined schema, not all 42). `verify_snapshot()`
 checks we are on the locked snapshot so results are reproducible.
 """
 import hashlib
-import numpy as np
 import pandas as pd
 
 import config
@@ -18,7 +17,7 @@ ATT_COLS = [f"{lift}{i}Kg" for lift in ("Squat", "Bench", "Deadlift") for i in (
 # columns used across all hypotheses + supporting analyses (kept lean on purpose)
 ANALYSIS_COLS = [
     "Name", "Sex", "Event", "Equipment", "Age",
-    "BodyweightKg", "WeightClassKg", "TotalKg", "Dots", "Tested",
+    "BodyweightKg", "TotalKg", "Dots", "Tested",
     "Federation", "ParentFederation", "Date",
 ] + ATT_COLS
 

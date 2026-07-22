@@ -5,30 +5,22 @@ Data preparation shared by the hypotheses:
 - attempt-level expansion (the unit for H1 is a single attempt),
 - the plate-grid test,
 - one-row-per-lifter deduplication (the unit for the FORMAL tests, to kill
-  pseudo-replication),
-- grouped-by-lifter CV splits (so the same person is never in train and test).
+  pseudo-replication).
 """
 import numpy as np
-import pandas as pd
 
 import config
 from data import ATT_COLS
 
 
 # ---------- H1: attempt-level helpers ----------
-def valid_attempt_loads(df, with_fed=False):
+def valid_attempt_loads(df):
     """Flatten the 9 attempt columns to a 1-D array of |load| for valid (>0) attempts.
 
     Failed attempts are stored negative in OpenPowerlifting, so we take abs value.
-    If with_fed, also return the per-attempt Federation tag (same length).
     """
     A = np.abs(df[ATT_COLS].to_numpy(dtype="float64"))
-    mask = (~np.isnan(A)) & (A > 0)
-    att = A[mask]
-    if not with_fed:
-        return att
-    fed = np.repeat(df["Federation"].to_numpy()[:, None], len(ATT_COLS), axis=1)[mask]
-    return att, fed
+    return A[(~np.isnan(A)) & (A > 0)]
 
 
 def on_grid_mask(att, grid=config.GRID_KG, tol=1e-6):
@@ -65,9 +57,8 @@ def dedup_per_lifter(df, name_col="Name", rank_col="TotalKg", keep="random", see
       'random' -> a random (seeded) meet per lifter. Preferred for the bodyweight
                   density test: meet selection is INDEPENDENT of the outcome, so it
                   does not distort the bodyweight distribution near cutoffs.
-      'max'    -> the lifter's PR meet (max rank_col). Outcome-dependent; use only
-                  where the best meet is the intended unit.
-      'first'  -> first row seen per lifter.
+      'max'    -> the lifter's PR meet (max rank_col). Outcome-dependent, so it is
+                  kept only as the documented contrast to the 'random' rule.
     """
     if keep == "random":
         return (df.sample(frac=1, random_state=seed)
@@ -77,15 +68,4 @@ def dedup_per_lifter(df, name_col="Name", rank_col="TotalKg", keep="random", see
         d = df.dropna(subset=[rank_col])
         idx = d.groupby(name_col)[rank_col].idxmax()
         return d.loc[idx].reset_index(drop=True)
-    if keep == "first":
-        return df.drop_duplicates(subset=[name_col], keep="first").reset_index(drop=True)
     raise ValueError(f"unknown keep={keep!r}")
-
-
-# ---------- leakage-safe CV ----------
-def grouped_folds(groups, n_splits=5):
-    """Yield (train_idx, test_idx) split GROUPED by `groups` (e.g. lifter Name)."""
-    from sklearn.model_selection import GroupKFold        # lazy: heavy import
-    gkf = GroupKFold(n_splits=n_splits)
-    dummy = np.zeros(len(groups))
-    yield from gkf.split(dummy, dummy, groups)

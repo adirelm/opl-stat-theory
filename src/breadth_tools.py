@@ -27,12 +27,39 @@ def paired_attempts(df, lift="Squat", seed=config.SEED):
     d = df[df[a1].notna() & df[a3].notna() & (df[a1] != 0) & (df[a3] != 0)]
     s = d.sample(min(100_000, len(d)), random_state=seed)
     x1, x3 = np.abs(s[a1].to_numpy()), np.abs(s[a3].to_numpy())
-    W, p = sp.wilcoxon(x3, x1)                        # paired signed-rank, H0: no difference
-    return {"lift": lift, "n_pairs": int(len(s)),
+    # H1 guarantees heavy tying (loads sit on the 2.5 kg grid), so the normal
+    # approximation gets the continuity correction; zero differences are dropped
+    # (Wilcoxon's original handling) and counted.
+    n_zero = int(np.sum(x3 == x1))
+    W, p = sp.wilcoxon(x3, x1, correction=True, zero_method="wilcox")
+    return {"lift": lift, "n_pairs": int(len(s)), "n_zero_differences": n_zero,
             "median_attempt1": round(float(np.median(x1)), 1),
             "median_attempt3": round(float(np.median(x3)), 1),
             "median_diff_kg": round(float(np.median(x3 - x1)), 1),
-            "wilcoxon_p": float(p)}
+            "wilcoxon_W": float(W), "wilcoxon_p": float(p),
+            "continuity_correction": True}
+
+
+def mcnemar_attempts(df, lift="Squat", seed=config.SEED):
+    """PAIRED CATEGORICAL (McNemar): opener vs final attempt, scored made/missed.
+
+    OpenPowerlifting stores a missed attempt as a NEGATIVE load, so the same pairs the
+    Wilcoxon uses become a 2x2 of made/missed. McNemar conditions on the DISCORDANT
+    pairs only (b, c) -- the paired analogue of the chi^2 independence test.
+    """
+    a1, a3 = f"{lift}1Kg", f"{lift}3Kg"
+    d = df[df[a1].notna() & df[a3].notna() & (df[a1] != 0) & (df[a3] != 0)]
+    s = d.sample(min(100_000, len(d)), random_state=seed)
+    made1, made3 = s[a1].to_numpy() > 0, s[a3].to_numpy() > 0
+    b = int(np.sum(made1 & ~made3))        # opener made, third missed
+    c = int(np.sum(~made1 & made3))        # opener missed, third made
+    stat = (abs(b - c) - 1) ** 2 / (b + c) if (b + c) else float("nan")   # continuity-corrected
+    p = float(sp.chi2.sf(stat, 1))
+    return {"lift": lift, "n_pairs": int(len(s)),
+            "both_made": int(np.sum(made1 & made3)), "both_missed": int(np.sum(~made1 & ~made3)),
+            "opener_made_third_missed_b": b, "opener_missed_third_made_c": c,
+            "mcnemar_chi2": round(float(stat), 1), "dof": 1, "p": p,
+            "reading": "third attempts are missed far more often than openers"}
 
 
 def anova_equipment(df, seed=config.SEED):
@@ -44,16 +71,29 @@ def anova_equipment(df, seed=config.SEED):
     groups = [pl.loc[pl.Equipment == c, "Dots"].to_numpy() for c in cats]
     F, pF = sp.f_oneway(*groups)
     H, pH = sp.kruskal(*groups)
+    # the classical F assumes equal variances; test that assumption and, since it
+    # fails here, report Welch's ANOVA (which does not) alongside it.
+    lev_W, lev_p = sp.levene(*groups, center="median")
+    from statsmodels.stats.oneway import anova_oneway                # lazy: heavy import
+    wl = anova_oneway(groups, use_var="unequal")
+    # eta^2 = SS_between / SS_total: the effect size the omnibus F never reports
+    allv = np.concatenate(groups); gm = allv.mean()
+    ss_b = float(sum(len(g) * (g.mean() - gm) ** 2 for g in groups))
+    eta2 = ss_b / float(((allv - gm) ** 2).sum())
     # post-hoc pairwise Mann-Whitney with Bonferroni (Dunn-style)
     labels, raw = [], []
     for i in range(len(cats)):
         for j in range(i + 1, len(cats)):
-            U, pu = sp.mannwhitneyu(groups[i], groups[j])
+            _, pu = sp.mannwhitneyu(groups[i], groups[j])
             labels.append(f"{cats[i]} vs {cats[j]}"); raw.append(pu)
     p_adj, _ = su.correct_pvalues(raw, method="bonferroni")
     return {"groups": cats, "n_per_group": {c: int(len(g)) for c, g in zip(cats, groups)},
             "median_dots": {c: round(float(np.median(g)), 1) for c, g in zip(cats, groups)},
+            "sd_dots": {c: round(float(np.std(g, ddof=1)), 1) for c, g in zip(cats, groups)},
             "anova_F": round(float(F), 1), "anova_p": float(pF),
+            "levene_W": round(float(lev_W), 1), "levene_p": float(lev_p),
+            "welch_anova_F": round(float(wl.statistic), 1), "welch_anova_p": float(wl.pvalue),
+            "eta_squared": round(float(eta2), 3),
             "kruskal_H": round(float(H), 1), "kruskal_p": float(pH),
             "posthoc_bonferroni": {labels[k]: {"p_raw": float(raw[k]), "p_bonf": float(p_adj[k])}
                                    for k in range(len(labels))}}
@@ -166,7 +206,7 @@ def all_four_corrections():
     ps = [fm[str(L)]["p"] for L in config.IPF_MEN_CLASSES]
     out = {}
     for method in ("bonferroni", "holm", "sidak", "fdr_bh"):
-        p_adj, rej = su.correct_pvalues(ps, method=method)
+        _, rej = su.correct_pvalues(ps, method=method)
         out[method] = {"n_rejected": int(np.sum(rej)), "of": len(ps)}
     return {"family": "H2 seven class limits", "raw_p": ps, "corrections": out}
 
@@ -186,6 +226,7 @@ def run(save=True):
     df = data.load()
     res = {
         "paired_attempts": paired_attempts(df),
+        "mcnemar_attempts": mcnemar_attempts(df),
         "anova_equipment": anova_equipment(df),
         "independence_cut_tested": independence_cut_tested(df),
         "sprt_cut": sprt_cut(df),

@@ -30,7 +30,7 @@ src/
   h3_allometry.py    log-log OLS, HC3/clustered SE, Wald vs 2/3, Sex×log(BW), Fisher-CI, women-b diagnosis
   h4_prediction.py   (exists) finalize: reg+RF grouped-CV (R²/Adj/RMSE/MAE) + perm-importance + VIF; logistic classifier (AUC/conf)
   supporting.py      distribution structure (NOT a sex mixture), tested-vs-untested, EVT/GEV tails, time-trend
-  figures.py         publication figures (≥300 DPI, captioned, English labels) — refactor of make_figures.py
+  figures.py         publication figures (≥300 DPI, captioned, English labels)
 notebooks/
   results.ipynb      narrative layer: pulls src modules → every figure + table + interpretation
 paper/               IEEE 2-column LaTeX (Overleaf), ≤8 pages, Results-before-Methods

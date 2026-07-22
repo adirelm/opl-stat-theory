@@ -1,6 +1,6 @@
-# raw data (download via download_data.py; do not commit the ~800MB CSV)
+# raw data (fetched by run_all.sh / download_data.py; do not commit the ~800MB CSV)
 data/*.csv
-data/*.zip
+data/*.gz
 *.zip
 
 # python
@@ -11,7 +11,6 @@ venv/
 
 # os
 .DS_Store
-data/*.gz
 
 # course-provided materials (NOT part of the submission)
 private/

@@ -39,11 +39,10 @@ confidence intervals, not p-values.
 | `download_data.py` | Downloads the OpenPowerlifting bulk CSV into `data/`. |
 | `run_all.sh` | One command: data -> `results/*.json` -> `figures/` -> `paper/main.pdf`. |
 | `src/config.py` | Paths, constants, class limits, the pinned-snapshot SHA-256. |
-| `src/data.py`, `src/prep.py`, `src/stats_utils.py` | Loader, preprocessing (de-heaping, per-lifter dedup, grouped CV), shared statistics. |
+| `src/data.py`, `src/prep.py`, `src/stats_utils.py` | Loader, preprocessing (de-heaping, per-lifter dedup), shared statistics. |
 | `src/h1_quantization.py` ... `src/h5_supporting.py`, `src/breadth_tools.py` | The analyses; each writes a `results/*.json`. |
 | `src/figures.py` | Publication figures (>=300 DPI). |
 | `src/smoke_check.py` | Acceptance check: reproduces the headline numbers through the shared modules. |
-| `src/make_deck.py`, `src/make_figures.py` | Stage-1 mid-presentation deck + its figures. |
 | `results/` | Machine-readable numeric outputs (`h1.json` ... `breadth.json`). |
 | `figures/` | Generated figures (PNG). |
 | `notebooks/results.ipynb` | Narrative report. |
@@ -69,8 +68,7 @@ gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
 check, `src/figures.py`, and builds `paper/main.pdf` (if `latexmk` is installed).
 A full end-to-end run takes **~7.5 minutes** and peaks at **~2.3 GB RAM** (measured
 on an Apple-Silicon laptop); the data download is ~158 MB compressed, ~770 MB unpacked.
-Building the paper needs a LaTeX distribution; the deck (`src/make_deck.py`) needs
-`python-pptx`, and exporting it to PDF needs LibreOffice.
+Building the paper needs a LaTeX distribution (`latexmk`).
 
 ## Data
 **OpenPowerlifting** (https://www.openpowerlifting.org; data dictionary:
@@ -82,15 +80,9 @@ the authors' own coursework.
 different numbers. The exact snapshot behind the reported results is pinned by its
 **SHA-256 in `src/config.py`** (`660209e8...`); the row count is checked on every load
 by `src/data.py`, and the full SHA-256 is verified by `run_all.sh`. The snapshot is
-published as a GitHub Release asset for exact reproduction (no login needed):
-```bash
-mkdir -p data
-curl -L -o data/openpowerlifting.csv.gz \
-  https://github.com/adirelm/opl-stat-theory/releases/download/data-snapshot-2026-06/openpowerlifting.csv.gz
-gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
-```
+published as the GitHub Release asset `data-snapshot-2026-06` and fetched by the
+command in [Reproduce](#reproduce) above (or automatically by `run_all.sh`).
 
 ## Notes
 - Figures use **English axis labels** (matplotlib bidi); interpretation is in the text.
 - Formal tests use **one row per lifter** (independence); H1 uses attempt-level data.
-- `make_deck.py` sets RTL per paragraph via the OOXML `a:pPr rtl="1"` attribute.

@@ -30,7 +30,7 @@ def ols_loglog(x, y, z=Z95):
     """Plain OLS slope on (x, y) with R^2 and a naive (homoskedastic) slope CI.
 
     This is the DESCRIPTIVE estimate (matches the preliminary deck). The formal
-    H3 version uses robust/clustered SE -- see ols_robust().
+    H3 version uses HC3-robust SE on one row per lifter -- see ols_robust().
     """
     x = np.asarray(x, float); y = np.asarray(y, float)
     b, a = np.polyfit(x, y, 1)
@@ -58,7 +58,7 @@ def ols_robust(x, y, groups=None, add_const=True):
         res = model.fit(cov_type="HC3")
     b = res.params[-1]; se = res.bse[-1]
     return {"b": b, "se_b": se, "ci_lo": b - Z95 * se, "ci_hi": b + Z95 * se,
-            "n": len(y), "result": res}
+            "n": len(y)}
 
 
 def wald_test(estimate, se, null_value=0.0):

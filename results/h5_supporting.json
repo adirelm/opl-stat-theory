@@ -26,6 +26,7 @@
   "tested_vs_untested": {
     "n_tested": 591012,
     "n_untested": 179174,
+    "point_biserial_r": -0.144,
     "median_tested": 318.1,
     "median_untested": 344.1,
     "mannwhitney_p": 0.0,
@@ -36,13 +37,15 @@
   "evt_gev": {
     "n_blocks": 1514,
     "block_size": 250,
-    "scipy_c": 0.019,
-    "xi": -0.019,
+    "scipy_c": 0.02,
+    "xi": -0.02,
     "xi_ci": [
-      -0.2,
-      3.774
+      -0.055,
+      0.011
     ],
-    "tail": "ceiling unsupported (xi CI spans 0 and positive values)",
+    "boot_n_kept": 300,
+    "boot_n_diverged": 0,
+    "tail": "ceiling unsupported (xi CI spans 0)",
     "implied_upper_endpoint_kg": null,
     "cite": "Einmahl & Magnus (2008)"
   },
@@ -53,6 +56,9 @@
     ],
     "spearman_rho": -0.542,
     "spearman_p": 0.005101122263604564,
+    "resid_acf_lag1": 0.73,
+    "ljung_box_p_lag1": 0.0002,
+    "note": "annual medians are serially dependent, so rho is descriptive only",
     "direction": "falling"
   },
   "residual_normality": {
@@ -61,6 +67,14 @@
     "excess_kurtosis": 1.782,
     "dagostino_p_full": 0.0,
     "dagostino_p_median_at_n300": 0.0,
+    "at_n300": {
+      "shapiro_W": 0.964,
+      "shapiro_p": 7.893777502670464e-07,
+      "ks_D": 0.09,
+      "ks_p": 0.014,
+      "anderson_A2": 2.55,
+      "anderson_crit_5pct": 0.75
+    },
     "note": "residuals are left-skewed with a heavy lower tail, so they are not normal even at moderate n; this does not threaten the slope, whose sampling distribution is normal by the CLT at this n, and we report HC3-robust SEs and lead with effect size"
   }
 }
