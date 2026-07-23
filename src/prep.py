@@ -47,7 +47,7 @@ def bunching_counts(bw, limit, w=config.H2_WINDOW, do_deheap=True):
 
 
 # ---------- formal-test unit: one row per lifter ----------
-def dedup_per_lifter(df, name_col="Name", rank_col="TotalKg", keep="random", seed=7):
+def dedup_per_lifter(df, name_col="Name", rank_col="TotalKg", keep="random", seed=config.SEED):
     """Collapse to one row per lifter to kill pseudo-replication for the formal tests.
 
     OpenPowerlifting disambiguates distinct people who share a name with a '#N'

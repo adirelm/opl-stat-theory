@@ -53,8 +53,9 @@ def _mccrary(bw, cutoff, win=MCWIN):
 
 
 def _spike_width(bw, L):
-    """How tightly the just-below excess hugs the limit: share of the (L-2,L] mass
-    that falls in the innermost 0.5 kg. Sharp cut -> high share. Compare real vs control."""
+    """Share of the (L-2, L] mass falling in the innermost 0.5 kg (~0.25 if the
+    density is locally uniform). A descriptive shape diagnostic: compare the real
+    limit against the control; the direction is an empirical question, not assumed."""
     b = prep.deheap(bw)
     within2 = int(((b > L - 2) & (b <= L)).sum())
     within05 = int(((b > L - 0.5) & (b <= L)).sum())
