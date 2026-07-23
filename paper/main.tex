@@ -35,7 +35,7 @@ $\log(\text{below}/\text{above})=+1.92$ at 83~kg); a
 Cattaneo--Jansson--Ma density-discontinuity test rejects at six of the seven
 limits (surviving Holm and Benjamini--Hochberg); the lone exception is the
 120~kg boundary of the open-ended $120{+}$ class, where the incentive to cut is
-weakest. A non-limit
+plausibly weakest. A non-limit
 control shows no bunching, and placebos show no bunching-direction false positives. (iii)~\emph{Allometry}: strength scales with
 bodyweight differently by sex ($b\!=\!0.75$ men, $0.51$ women vs.\ the isometric
 $2/3$; a Sex$\times\log$(BW) interaction is highly significant and persists on
@@ -48,8 +48,8 @@ no evidence of a population strength ceiling. Code and data:
 \end{abstract}
 
 \begin{IEEEkeywords}
-density discontinuity, bunching, allometric scaling,
-likelihood-ratio test, extreme-value theory, large-sample inference, powerlifting
+allometric scaling, bunching, density discontinuity, extreme-value theory,
+large-sample inference, likelihood-ratio test, powerlifting
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -131,7 +131,7 @@ exceeds every bootstrap draw ($p<3.4\times10^{-4}$), and the Pearson $\chi^2$
 goodness-of-fit statistic, the second-order Taylor approximation of the same
 deviance, agrees ($5.0\times10^7$, $\mathrm{df}=4$). The 3.8\% off-grid loads are partly a units artifact: of the
 2.1\% that fall off the 0.5~kg lattice entirely, 82\% are round pound loads
-(e.g., $102.06$~kg$=225$~lb), themselves quantized on a different grid.
+(e.g., $102.06~\text{kg} = 225$~lb), themselves quantized on a different grid.
 
 \begin{figure}[t]\centering
 \includegraphics[width=\columnwidth]{fig1_quantization.png}
@@ -151,7 +151,7 @@ density-discontinuity test~\cite{cjm} (one random meet per lifter, de-heaped,
 ($t<0$; $t$ ranges from $-6.9$ at 59~kg to $-15.7$ at 66~kg, $-11.0$ at 83~kg, all
 Holm- and BH-corrected $p<0.001$); the lone exception
 is the 120~kg cutoff ($t=-1.6$, $p=0.11$), adjacent to the unbounded $120{+}$ class
-where the incentive to cut is weakest. The control shows no excess below (a small
+where the incentive to cut is plausibly weakest. The control shows no excess below (a small
 \emph{opposite}-direction discontinuity), and no placebo shows the bunching
 pattern. The effect is robust across equipment (raw $+2.14$, equipped $+1.51$) and
 concentrated in the tested majority ($+1.93$; the smaller untested subset reverses
@@ -210,7 +210,7 @@ heteroskedasticity-robust (HC3) standard errors on one row per lifter
 ($n=545{,}728$ men, $224{,}458$ women). A two-sided
 Wald test rejects the isometric $b=2/3$ for both sexes, and in \emph{opposite}
 directions (men $z=+46.8$; women $z=-64.1$). A pooled Sex$\times\log$(BW) interaction
-estimates the men-minus-women slope gap at $+0.24$ (HC3 95\% CI $[0.23,0.25]$, $p\!\ll\!10^{-3}$). The gap also \emph{grows} on the common bodyweight support ($0.84$ men vs.\ $0.38$
+estimates the men-minus-women slope gap at $+0.24$ (HC3 95\% CI $[0.233,0.245]$, $p\!\ll\!10^{-3}$). The gap also \emph{grows} on the common bodyweight support ($0.84$ men vs.\ $0.38$
 women), so it is not an artifact of the sexes occupying different weight ranges.
 For men, the Pearson correlation of $\log\text{BW}$ and $\log\text{Total}$ is
 $0.60$ (Fisher-transform CI $[0.600,0.603]$; Spearman $0.58$); it is lower for women.
@@ -250,9 +250,9 @@ the label and which these features omit.
 
 \subsection{Supporting analyses}
 \textbf{Distribution structure.} The apparent two-component shape of raw totals is
-just sex: by BIC and a bootstrap likelihood-ratio test, raw Total prefers two
-Gaussian components ($\Delta\mathrm{BIC}=1.4\times10^3$) but the sex-normalized
-Dots score prefers one (Fig.~\ref{fig:struct}). \textbf{Tested vs.\ untested.} Untested competitions show
+largely explained by sex and body size: by BIC and a bootstrap likelihood-ratio
+test, raw Total prefers two Gaussian components ($\Delta\mathrm{BIC}=1.4\times10^3$)
+but the sex- and bodyweight-normalized Dots score prefers one (Fig.~\ref{fig:struct}). \textbf{Tested vs.\ untested.} Untested competitions show
 higher Dots than tested ones (medians $344$ vs.\ $318$, Mann--Whitney $p\!\to\!0$;
 a parametric Welch test agrees, $|t|=128$; rank-biserial $-0.20$, point-biserial $-0.14$), consistent with (though not proof of) an effect of
 performance-enhancing drugs, since tested and untested federations also differ in
@@ -298,7 +298,8 @@ with effect sizes.
 
 \begin{figure*}[t]\centering
 \includegraphics[width=0.86\textwidth]{fig6_structure.png}
-\caption{The apparent ``mixture'' in raw Total is sex; Dots removes it.}
+\caption{The apparent ``mixture'' in raw Total tracks sex and body size;
+Dots normalization removes it.}
 \label{fig:struct}\end{figure*}
 
 \begin{figure*}[t]\centering

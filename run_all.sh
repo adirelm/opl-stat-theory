@@ -16,8 +16,9 @@ if [ ! -f data/openpowerlifting.csv ]; then
        gh release download data-snapshot-2026-06 -R adirelm/opl-stat-theory -p openpowerlifting.csv.gz -D data 2>/dev/null; then
     gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv
   elif command -v curl >/dev/null 2>&1 && \
-       curl -fL -o data/openpowerlifting.csv.gz \
-         https://github.com/adirelm/opl-stat-theory/releases/download/data-snapshot-2026-06/openpowerlifting.csv.gz; then
+       { curl -fL -o data/openpowerlifting.csv.gz \
+         https://github.com/adirelm/opl-stat-theory/releases/download/data-snapshot-2026-06/openpowerlifting.csv.gz \
+         || { rm -f data/openpowerlifting.csv.gz; false; }; }; then
     gunzip -c data/openpowerlifting.csv.gz > data/openpowerlifting.csv   # no-auth path: exact snapshot
   else
     "$PY" download_data.py     # last resort: CURRENT weekly data (numbers will differ from the paper)
@@ -55,4 +56,4 @@ if command -v latexmk >/dev/null 2>&1; then
 fi
 echo "$PAPER"
 
-echo "DONE. Outputs: results/*.json, figures/*.png, notebooks/results.ipynb; $PAPER"
+echo "DONE. Outputs: results/*.json, figures/*.png; $PAPER (see notebooks/results.ipynb for the narrative report)"
