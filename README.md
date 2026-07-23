@@ -4,7 +4,7 @@ How powerlifters work the two numbers they control, the weight on the bar and th
 bodyweight at weigh-in, and what ~3.94 million competition results say about the
 limits of strength.
 
-Bar-Ilan University, M.Sc. *Statistical Theory*. Authors: **Adir Elmakais, David Levin**.
+Bar-Ilan University, *Statistical Theory*. Authors: **Adir Elmakais, David Levin**.
 
 **[Read the paper (PDF)](paper/main.pdf)** · narrative walk-through:
 [`notebooks/results.ipynb`](notebooks/results.ipynb) · source: [`paper/main.tex`](paper/main.tex)
