@@ -1,4 +1,4 @@
-# Stage 2 — Implementation Plan (the full project)
+# Stage 2 - Implementation Plan (the full project)
 
 How we build the final analysis pipeline + IEEE paper from the locked spec
 (`project-spec.md`). Decided structure: **hybrid** (modular `src/` for compute +
@@ -10,13 +10,13 @@ analyses); **shared infrastructure first**.
 > Lock the per-hypothesis specifics *after* folding in the lecturer's feedback.
 
 ## Non-negotiable methodological commitments (carry into every phase)
-1. **Effect size + CI lead, not p** — n ≈ 3.9M makes almost anything "significant".
-2. **Pseudo-replication** — same lifter recurs → dedup to one row per lifter (PR), or clustered/robust SE. Declared per hypothesis.
+1. **Effect size + CI lead, not p** - n ≈ 3.9M makes almost anything "significant".
+2. **Pseudo-replication** - same lifter recurs → dedup to one row per lifter (PR), or clustered/robust SE. Declared per hypothesis.
 3. **Boundary / mixture LRTs violate Wilks** → calibrate the null with **parametric bootstrap** (and/or AIC), never naive χ².
-4. **Multiple-testing corrections** — Bonferroni/Holm/Šidák (FWER) + Benjamini-Hochberg (FDR) across thresholds/hypotheses.
-5. **Leakage guards** — H4 split grouped by lifter; drop bodyweight when the target is Dots.
-6. **Locked snapshot** — pin the CSV (download date + row count + hash); reproduction must match exactly.
-7. **Right test for the data** — discrete→GLRT/χ², density-jump→McCrary, power-law→log-log OLS, prediction→grouped-CV.
+4. **Multiple-testing corrections** - Bonferroni/Holm/Šidák (FWER) + Benjamini-Hochberg (FDR) across thresholds/hypotheses.
+5. **Leakage guards** - H4 split grouped by lifter; drop bodyweight when the target is Dots.
+6. **Locked snapshot** - pin the CSV (download date + row count + hash); reproduction must match exactly.
+7. **Right test for the data** - discrete→GLRT/χ², density-jump→McCrary, power-law→log-log OLS, prediction→grouped-CV.
 
 ## Target architecture (hybrid)
 ```
@@ -39,31 +39,31 @@ README.md            exact reproduction steps; requirements pinned; snapshot doc
 
 ## Phases & milestones
 
-### Phase 0 — Shared infrastructure (foundation) — *start here*
+### Phase 0 - Shared infrastructure (foundation) - *start here*
 - `config.py`, `data.py` (snapshot pin), `prep.py` (de-heap, dedup-per-lifter, attempt expansion, grouped-CV), `stats_utils.py` (effect-size+CI, clustered SE, FWER/FDR, parametric-bootstrap engine).
 - **Acceptance:** a smoke check reproduces the headline descriptive numbers (96.2% on-grid; +1.92 / −0.21 log-ratios; b≈0.72/0.49) through the new modules.
 
-### Phase 1 — H1 quantization (grid + GLRT + boundary bootstrap)
+### Phase 1 - H1 quantization (grid + GLRT + boundary bootstrap)
 - Rounded-likelihood model (continuous null vs grid alternative), MLE, GLRT statistic, **bootstrap-calibrated null** (boundary problem), χ² goodness-of-fit. Pound-grid units artifact as robustness (≈90% of off-grid = round-lb / 0.5 kg).
 - **Lead:** 96.2% as effect size; the test is the formal confirmation.
 
-### Phase 2 — H2 bunching (the headline)
+### Phase 2 - H2 bunching (the headline)
 - Formal **McCrary density-discontinuity** (Cattaneo-Jansson-Ma `rddensity` if available, else implement), de-heaping, **spike-width**, **placebo** (non-limit points), all 7 limits + the 91 control, subgroup robustness (federation/era/equipment).
 - **Lead:** de-heaped log-ratio + CI; control flat.
 
-### Phase 3 — H3 allometry
+### Phase 3 - H3 allometry
 - log-log OLS with **HC3 / clustered-by-lifter SE**, **Wald vs 2/3** (and vs 1), **Sex×log(BW)** interaction, Pearson/Spearman with **Fisher-transform CI**, diagnose women b≈0.49 (weight-range/leverage).
 - **Lead:** b + CI, sex difference tested formally.
 
-### Phase 4 — H4 prediction (ML + classification)
+### Phase 4 - H4 prediction (ML + classification)
 - Finalize `h4_prediction.py`: Linear + Random Forest, **grouped-by-lifter CV**, R²/Adj-R²/RMSE/MAE, permutation importance, VIF; logistic "made-weight" classifier (AUC/accuracy/confusion). Leakage guards.
 
-### Phase 5 — Supporting analyses + course-tools breadth (full)
+### Phase 5 - Supporting analyses + course-tools breadth (full)
 Core supporting analyses:
 - Strength-distribution structure (argue **not** a sex mixture; mixture-LRT via bootstrap/AIC), tested-vs-untested control, **EVT/GEV** tails (ξ sign → population ceiling; cite Einmahl & Magnus), time-trend.
 
-**Breadth coverage** — the instructions require "as many course tools as relevant." An audit (28.6) flagged these as MISSING or only planned; each is given a home here, serving the story (not a heap):
-- **Sequential Wald / SPRT + stopping times** (was MISSING): a sequential probability-ratio test of the just-below-vs-just-above cut indicator (H0: p=0.5 vs H1: p>0.5) with Wald's A/B log-likelihood boundaries and the **expected stopping time** — "how few weigh-ins near a threshold to sequentially detect cutting?" Ties to H2.
+**Breadth coverage** - the instructions require "as many course tools as relevant." An audit (28.6) flagged these as MISSING or only planned; each is given a home here, serving the story (not a heap):
+- **Sequential Wald / SPRT + stopping times** (was MISSING): a sequential probability-ratio test of the just-below-vs-just-above cut indicator (H0: p=0.5 vs H1: p>0.5) with Wald's A/B log-likelihood boundaries and the **expected stopping time** - "how few weigh-ins near a threshold to sequentially detect cutting?" Ties to H2.
 - **Power + Type I/II tradeoff** (was MISSING/planned): a-priori power analysis (α=0.05, target 0.90) and an explicit α–β tradeoff curve for one key test (bunching or allometry-Wald).
 - **MP/UMP (Neyman-Pearson)** as a real test: state the allometry test of b vs 2/3 **one-sided** so UMP holds for the one-parameter exponential family; the GLRTs are the composite generalization.
 - **Two-independent-samples** (Mann-Whitney / Welch) and **paired-samples** (Wilcoxon signed-rank, attempt-1 vs attempt-3 within lifter), with continuity correction noted.
@@ -71,21 +71,21 @@ Core supporting analyses:
 - **Independence χ²** (e.g. Tested × made-weight) + **Cramér's V** + **standardized residuals** (which cell drives it).
 - **All four multiple-comparison corrections** (Bonferroni / Holm / Šidák / BH) reported as a #-rejected table wherever a family of tests is run (upgrade H2/H3 from Holm+BH).
 
-### Phase 6 — Results notebook + publication figures
+### Phase 6 - Results notebook + publication figures
 - `notebooks/results.ipynb` + `figures.py`: every final figure (≥300 DPI, captioned) and table (every statistic with interpretation), driven by the src modules.
 
-### Phase 7 — Paper (Stage B, IEEE, English, ≤8 pages)
+### Phase 7 - Paper (Stage B, IEEE, English, ≤8 pages)
 - Abstract · Introduction (lit review + differentiation) · **Results (before Methods)** · Methods (short formal description of in-course tests) · Discussion (conclusions + limitations + null results). GitHub/Colab link.
 
-### Phase 8 — Reproduction + polish
+### Phase 8 - Reproduction + polish
 - README reproduction steps, pinned `requirements.txt`, documented snapshot, **clean-env acceptance test** (clone → `pip install -r` → run → reproduces everything). Readable vector/≥300 DPI figures.
-- **Data upload** (instructions: "יש להעלות אף את הדאטה"): the ~800 MB CSV cannot go in the repo directly — provide it via a **GitHub Release / LFS / shared link** AND keep `download_data.py` with the pinned snapshot date so the exact data is recoverable.
+- **Data upload** (instructions: "יש להעלות אף את הדאטה"): the ~800 MB CSV cannot go in the repo directly - provide it via a **GitHub Release / LFS / shared link** AND keep `download_data.py` with the pinned snapshot date so the exact data is recoverable.
 
 ## Rough timeline (28.6 → 15.8, ~7 weeks)
 | Week | Focus |
 |---|---|
 | 1 | Phase 0 (infra) + Phase 1 (H1) + fold in presentation feedback |
-| 2 | Phase 2 (H2 — the big one) |
+| 2 | Phase 2 (H2 - the big one) |
 | 3 | Phase 3 (H3) + Phase 4 (H4) |
 | 4 | Phase 5 (supporting analyses) |
 | 5 | Phase 6 (figures + results notebook) + start paper |
