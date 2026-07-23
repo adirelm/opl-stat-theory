@@ -3,6 +3,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
+\usepackage{balance}
 \hypersetup{pdftitle={Gaming the Two Numbers They Control: Quantization, Weight-Cut
 Bunching, and the Limits of Strength in 3.9 Million Powerlifting Results},
 pdfauthor={Adir Elmakais, David Levin}}
@@ -24,7 +25,7 @@ A powerlifting competitor controls exactly two numbers: the weight loaded on the
 bar and their bodyweight at weigh-in. We ask whether these choices leave
 measurable statistical patterns, using $\sim$3.94 million competition results
 from the public-domain OpenPowerlifting database. We report four findings, each
-answered with a course-appropriate test and led by effect size (at $n\!\approx\!3.9$M
+answered with an appropriate test and led by effect size (at $n\!\approx\!3.9$M
 almost everything is ``significant''). (i)~\emph{Quantization}: 96.2\% of 13.4M attempt
 loads sit exactly on the 2.5~kg plate grid; a generalized likelihood-ratio test
 (GLRT) whose null parameter lies on the boundary is calibrated by a parametric
@@ -45,6 +46,11 @@ the bar and strategic mass below the limit, while the extreme-value analysis fin
 no evidence of a population strength ceiling. Code and data:
 \url{https://github.com/adirelm/opl-stat-theory}.
 \end{abstract}
+
+\begin{IEEEkeywords}
+density discontinuity, bunching, allometric scaling,
+likelihood-ratio test, extreme-value theory, large-sample inference, powerlifting
+\end{IEEEkeywords}
 
 \section{Introduction}
 Powerlifting comprises three lifts (squat, bench press, deadlift), each with
@@ -76,7 +82,7 @@ data~\cite{einmahl}. On OpenPowerlifting specifically, recent work studies
 \emph{scoring and scaling} systems~\cite{peyen}.
 
 \textbf{Contribution.} We organize the paper around the two recorded choices,
-load and weigh-in bodyweight, and use both halves of the course, classical
+load and weigh-in bodyweight, and use both classical
 inference and machine learning. Our contributions are: (1)~a rounded-likelihood
 \emph{quantization} GLRT for the plate grid, with a parametric-bootstrap
 calibration that respects the boundary nature of the null; (2)~to our knowledge the
@@ -87,9 +93,9 @@ tests the scaling exponent against the isometric $2/3$; and (4)~a leakage-safe
 strength-\emph{prediction} model.
 
 \textbf{Methodological stance.} At $n\!\approx\!3.9$M the power to detect any
-non-zero effect is effectively one, so a $p$-value answers a question we do not
-care about (``is the effect exactly zero?'') rather than the one we do (``is it
-large?''). We therefore report effect sizes with 95\% confidence intervals as the
+non-zero effect is effectively one, so a $p$-value answers a question of limited
+interest (``is the effect exactly zero?'') rather than the one we care about
+(``is it large?''). We therefore report effect sizes with 95\% confidence intervals as the
 primary evidence, and use $p$-values only as a secondary screen. H1--H4 are
 \emph{a-priori} hypotheses, each declared before analysis and tested once; the
 comparisons that follow an omnibus rejection are \emph{post-hoc} and are the ones
@@ -123,7 +129,7 @@ calibrated 95\% cutoff $2.59$ vs.\ the theoretical $2.71$, both well below the
 naive $\chi^2_1$ value of $3.84$). The observed statistic, $2\ln\Lambda=3.9\times10^7$,
 exceeds every bootstrap draw ($p<3.4\times10^{-4}$), and the Pearson $\chi^2$
 goodness-of-fit statistic, the second-order Taylor approximation of the same
-deviance, agrees ($5.0\times10^7$, $\mathrm{df}=4$). The 3.8\% off-grid loads are largely a units artifact: of the
+deviance, agrees ($5.0\times10^7$, $\mathrm{df}=4$). The 3.8\% off-grid loads are partly a units artifact: of the
 2.1\% that fall off the 0.5~kg lattice entirely, 82\% are round pound loads
 (e.g., $102.06$~kg$=225$~lb), themselves quantized on a different grid.
 
@@ -142,7 +148,8 @@ asymmetry; Table~\ref{tab:limits}, Fig.~\ref{fig:limits}); a non-limit control a
 91~kg is flat-to-slightly-negative ($-0.21$). The formal Cattaneo--Jansson--Ma
 density-discontinuity test~\cite{cjm} (one random meet per lifter, de-heaped,
 2014$+$) rejects at six of the seven limits with the density dropping at the cutoff
-($t<0$); the lone exception
+($t<0$; $t$ ranges from $-6.9$ at 59~kg to $-15.7$ at 66~kg, $-11.0$ at 83~kg, all
+Holm- and BH-corrected $p<0.001$); the lone exception
 is the 120~kg cutoff ($t=-1.6$, $p=0.11$), adjacent to the unbounded $120{+}$ class
 where the incentive to cut is weakest. The control shows no excess below (a small
 \emph{opposite}-direction discontinuity), and no placebo shows the bunching
@@ -170,12 +177,13 @@ control (91~kg); round-number weigh-ins removed.}
 
 \begin{table}[t]\centering
 \caption{De-heaped $\log(\text{below}/\text{above})$ at each IPF men's limit
-(all rows; counts over the 0.5~kg windows just below/above each limit). Last row
-is a non-limit control.}
+(all rows; counts over the 0.5~kg windows just below/above each limit). The
+$\pm$ column is the descriptive delta-method 95\% half-width; formal inference
+uses the per-lifter CJM test. Last row is a non-limit control.}
 \label{tab:limits}
 \begin{tabular}{lccc}
 \toprule
-Limit (kg) & log-ratio & $\pm$ & $\times$ asymmetry\\
+Limit (kg) & log-ratio & 95\% CI $\pm$ & $\times$ asymmetry\\
 \midrule
 59 & $+0.99$ & 0.04 & 2.7\\
 66 & $+1.18$ & 0.03 & 3.2\\
@@ -202,7 +210,7 @@ heteroskedasticity-robust (HC3) standard errors on one row per lifter
 ($n=545{,}728$ men, $224{,}458$ women). A two-sided
 Wald test rejects the isometric $b=2/3$ for both sexes, and in \emph{opposite}
 directions (men $z=+46.8$; women $z=-64.1$). A pooled Sex$\times\log$(BW) interaction
-estimates the men-minus-women slope gap at $+0.24$ ($p\!\ll\!10^{-3}$). The gap also \emph{grows} on the common bodyweight support ($0.84$ men vs.\ $0.38$
+estimates the men-minus-women slope gap at $+0.24$ (HC3 95\% CI $[0.23,0.25]$, $p\!\ll\!10^{-3}$). The gap also \emph{grows} on the common bodyweight support ($0.84$ men vs.\ $0.38$
 women), so it is not an artifact of the sexes occupying different weight ranges.
 For men, the Pearson correlation of $\log\text{BW}$ and $\log\text{Total}$ is
 $0.60$ (Fisher-transform CI $[0.600,0.603]$; Spearman $0.58$); it is lower for women.
@@ -259,7 +267,7 @@ per-lifter totals (men, 2015$+$) gives shape $\xi=-0.02$ with bootstrap CI
 $[-0.06,0.01]$: the shape is indistinguishable from zero, so a bounded upper tail
 (a population strength \emph{ceiling}) is \emph{not established}. Seeding the GEV
 fit from its moment match is what makes this interval meaningful; with the default
-start a sixth of the bootstrap fits diverge and inflate the upper limit. \textbf{Time
+start a substantial share of the bootstrap fits diverge and inflate the upper limit. \textbf{Time
 trend.} Median Dots drifted down over 2000--2024 (Spearman $\rho=-0.54$); the annual series is strongly autocorrelated (lag-1 residual ACF $0.73$, Ljung--Box $p<10^{-3}$), so we read $\rho$ descriptively. One
 possible explanation is broadening participation, but the trend is not by itself
 evidence of declining strength.
@@ -282,7 +290,7 @@ Cram\'er's $V$ coincides with $\phi$). The untested arm holds only $30$ lifters
 evidence of no association. \textbf{Residual normality.} The H3 (all-row fit) residuals are left-skewed
 with a heavy lower tail (skew $-0.77$; Fig.~\ref{fig:norm}). This does not undermine the slope: at this $n$ its sampling distribution is
 asymptotically normal under standard conditions, and we report HC3-robust
-standard errors. At $n=300$ all three normality tests the course names agree in rejecting
+standard errors. At $n=300$ three standard normality tests agree in rejecting
 (Shapiro--Wilk $W=0.96$, $p=8\times10^{-7}$; Anderson--Darling $A^2=2.55$ against a
 $0.75$ critical value; Kolmogorov--Smirnov $D=0.09$, $p=0.01$), as expected for
 genuinely non-normal residuals, so we treat normality as a diagnostic and lead
@@ -355,7 +363,7 @@ cross-validation ($R^2$, adjusted $R^2$, RMSE, MAE, permutation importance, VIF,
 AUC/PR-AUC). The 1-versus-2-component mixture LRT violates Wilks for the same
 reason as H1 (the mixing weight lies on the boundary and the second component is
 unidentified under the null), so its null is bootstrapped rather than read off a
-$\chi^2$; and no course tool addresses a bounded tail, since the sample maximum is
+$\chi^2$; and no standard normal-theory tool addresses a bounded tail, since the sample maximum is
 not asymptotically normal, which is why the ceiling question is posed in
 extreme-value terms. Supporting analyses use a bootstrap mixture-LRT with AIC/BIC, a GEV
 extreme-value fit, a Wald sequential probability ratio test (with log-scale decision
@@ -376,7 +384,7 @@ not; we estimate $\xi$ from equal-size block maxima and bootstrap its interval. 
 sequential test's expected sample size under the alternative is approximated by
 $\mathbb{E}[N\mid H_1]\approx\big[(1-\beta)A+\beta B\big]/\big[p_1 s_1+(1-p_1)s_0\big]$,
 with $s_0,s_1$ the per-observation log-likelihood increments.
-Table~\ref{tab:tools} maps the course toolbox onto the study.
+Table~\ref{tab:tools} maps the statistical methods onto the study.
 
 \textbf{Reproducibility.} Every result is produced by a small set of scripts from
 the pinned snapshot; numbers are written to machine-readable files, figures are
@@ -386,7 +394,7 @@ numpy/scipy/statsmodels/scikit-learn and the \texttt{rddensity} implementation o
 the CJM test; exact versions are pinned in the repository.
 
 \begin{table}[t]\centering
-\caption{Coverage of the course toolbox.}
+\caption{Statistical methods and where each is applied.}
 \label{tab:tools}
 \begin{tabular}{ll}
 \toprule
@@ -443,6 +451,7 @@ Several extensions remain for future work: more federations and eras, a
 structural bunching model that recovers the share of manipulators, and a
 multiverse robustness check.
 
+\balance
 \begin{thebibliography}{9}
 \bibitem{kleven} H.~J.~Kleven, ``Bunching,'' \emph{Annual Review of Economics},
 vol.~8, pp.~435--464, 2016.
